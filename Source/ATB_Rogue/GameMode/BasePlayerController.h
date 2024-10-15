@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Misc/Utils.h"
+#include "Character/BaseCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
 #include "BasePlayerController.generated.h"
 
 /**
@@ -31,6 +33,14 @@ public:
 	void OnRightClick(const FInputActionValue& InputActionValue);
 	void SetupInputComponent();
 
+public:
+
+	void CameraSet();
+
+public:
+
+	void Cameraarrangement(APawn* Pawn);
+	FVector NewDestination();
 
 public:
 
@@ -40,7 +50,10 @@ public:
 	UPROPERTY()
 	FVector TargetLocation;
 
+	UPROPERTY()
+	TObjectPtr<ABaseCharacter> BasePlayer;
+
 	UCameraComponent* DefaultCamera;
 
-	UCameraComponent* EnemyViewCamera;
+	UCameraComponent* PawnViewCamera;
 };

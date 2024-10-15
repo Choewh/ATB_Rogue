@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Character.h"
+#include "Components/ChildActorComponent.h"
+
 #include "BaseCharacter.generated.h"
 
 UCLASS()
@@ -29,4 +32,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	UChildActorComponent* ChildActorComponent;
 };

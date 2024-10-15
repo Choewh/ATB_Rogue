@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Data/DataTableRows.h"
 #include "BasePawn.generated.h"
 
 UCLASS()
@@ -14,11 +15,18 @@ class ATB_ROGUE_API ABasePawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
+	virtual void SetData(const FDataTableRowHandle& InDataTableRowHandle);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+public:
 
+	virtual void PostDuplicate(EDuplicateMode::Type DuplicateMode) override;
+	virtual void PostLoad() override;
+	virtual void PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph) override;
+	virtual void PostInitializeComponents() override;
+	virtual void OnConstruction(const FTransform& Transform);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,10 +37,9 @@ public:
 public:
 
 	void ABTFeeling();
-
 	void MoveTo();
-
 	void SetActive(bool Active) { bActive = Active; }
+
 
 public:
 
@@ -41,12 +48,17 @@ public:
 	float GetABT() { return ABT_Cur; }
 
 private:
-	UPROPERTY()
-	TObjectPtr<APlayerController> PlayController;
+
 	UPROPERTY()
 	TObjectPtr<USceneComponent> DefaultSceneRoot;
-	UPROPERTY(EditAnywhere)
+
+	UPROPERTY()
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
+	
+	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))
+	FDataTableRowHandle DataTableRowHandle;
+
+	FPawnTableRow* EnemyData;
 
 private:
 

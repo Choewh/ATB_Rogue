@@ -19,7 +19,12 @@ ABaseCharacter::ABaseCharacter()
 		FTransform NewTransform = FTransform(FRotator(-30.f, 0.f, 0.f), FVector3d(-700.f, 0.f, 600.f));
 		Camera->SetRelativeTransform(NewTransform);
 	}
-
+	{
+		UCameraComponent* PawnViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnViewCamera"));
+		PawnViewCamera->SetupAttachment(RootComponent);
+	}
+	
+	//ChildActorComponent->SetChildActorClass(UCameraComponent::StaticClass());
 	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

@@ -23,6 +23,23 @@ ABasePawn::ABasePawn()
 	}
 }
 
+void ABasePawn::SetData(const FDataTableRowHandle& InDataTableRowHandle)
+{
+	DataTableRowHandle = InDataTableRowHandle;
+	if (DataTableRowHandle.IsNull()) { return; }
+	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Enemy"));
+	if (!Data) { ensure(false); return; }
+
+	EnemyData = Data;
+
+	{
+		SkeletalMeshComponent->SetSkeletalMesh(EnemyData->SkeletalMesh);
+		SkeletalMeshComponent->SetAnimClass(EnemyData->AnimClass);
+		SkeletalMeshComponent->SetRelativeTransform(EnemyData->MeshTransform);
+	}
+
+}
+
 // Called when the game starts or when spawned
 void ABasePawn::BeginPlay()
 {
@@ -30,6 +47,41 @@ void ABasePawn::BeginPlay()
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
 	BattleSubsystem->EntryEnemy(this);
+	SetData(DataTableRowHandle);
+}
+
+void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
+{
+	Super::PostDuplicate(DuplicateMode);
+
+	if (DuplicateMode == EDuplicateMode::Normal)
+	{
+		FTransform Backup = GetActorTransform();
+		SetData(DataTableRowHandle);
+		SetActorTransform(Backup);
+	}
+}
+
+void ABasePawn::PostLoad()
+{
+	Super::PostLoad();
+}
+
+void ABasePawn::PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph)
+{
+	Super::PostLoadSubobjects(OuterInstanceGraph);
+}
+
+void ABasePawn::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+void ABasePawn::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	SetData(DataTableRowHandle);
+	SetActorTransform(Transform);
 }
 
 // Called every frame

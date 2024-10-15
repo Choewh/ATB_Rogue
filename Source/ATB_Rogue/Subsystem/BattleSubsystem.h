@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "GameMode/BasePlayerController.h"
 #include "Pawn/BasePawn.h"
 
 #include "BattleSubsystem.generated.h"
@@ -16,6 +17,9 @@ class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 	
+
+public:
+	UBattleSubsystem();
 public :
 	/*
 	
@@ -25,6 +29,8 @@ public :
 	// 
 
 	*/
+	UFUNCTION()
+	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
 	UFUNCTION(BlueprintCallable)
 	void EntryEnemy(ABasePawn* EntryEnemy);
 
@@ -46,7 +52,9 @@ private:
 	UPROPERTY()
 	TArray<ABasePawn*> Playerble;
 
-
+	UPROPERTY()
+	TObjectPtr<ABasePlayerController> PlayerController;
+	//ABasePlayerController* PlayerController;
 	/*
 	Tarray<Player> ~
 	Tarray<Enemy> ~ 

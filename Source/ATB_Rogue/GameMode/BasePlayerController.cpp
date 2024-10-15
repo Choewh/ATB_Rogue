@@ -3,6 +3,7 @@
 
 #include "GameMode/BasePlayerController.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -13,7 +14,9 @@ ABasePlayerController::ABasePlayerController()
 	}
 	bShowMouseCursor = true;
 
-	//플레이어 카메라 추가
+	//플레이어 카메라 추가;
+	//SetViewTarget(DefaultCamera);
+	//PawnViewCamera 는 액터의 자식으로 넣어줌
 }
 
 void ABasePlayerController::BeginPlay()
@@ -21,6 +24,35 @@ void ABasePlayerController::BeginPlay()
 	Super::BeginPlay();
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	Subsystem->AddMappingContext(IMC, 0);
+	BasePlayer = Cast<ABaseCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	check(BasePlayer);
+	CameraSet();
+}
+
+void ABasePlayerController::CameraSet()
+{
+	TArray<UCameraComponent*> Components;
+	BasePlayer->GetComponents(UCameraComponent::StaticClass(), Components);
+	for (auto& it : Components)
+	{
+		if (it->GetName() == TEXT("PawnViewCamera"))
+		{
+			PawnViewCamera = it;
+		}
+		else if (it->GetName() == TEXT("Camera"))
+		{
+			DefaultCamera = it;
+		}
+	}
+	//카메라 전환 함수. 처음에는 디폴트 카메라로 설정
+	//{
+	//	FViewTargetTransitionParams TransitionParams;
+	//	TransitionParams.BlendTime = 1.0f; // 전환 시간 (초)
+	//	TransitionParams.BlendFunction = EViewTargetBlendFunction::VTBlend_Cubic; // 블렌딩 함수
+	//	SetViewTarget(DefaultCamera->GetOwner(), TransitionParams);
+	//}
+	PawnViewCamera->SetActive(false);
+	//DefaultCamera->SetActive(false);
 }
 
 void ABasePlayerController::SetupInputComponent()
@@ -38,6 +70,18 @@ void ABasePlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &ThisClass::OnRightClick);
 	}
+}
+
+
+void ABasePlayerController::Cameraarrangement(APawn* InPawn)
+{
+	//Pawn 이 스플라인이 있다면 PawnViewCamera 를 붙혀줌 BP_SplinCamera 참고
+}
+
+FVector ABasePlayerController::NewDestination()
+{
+	//HUD 에서 이동 확정을 누르면 호출 하는걸로 변경
+	return FVector::One();
 }
 
 //
