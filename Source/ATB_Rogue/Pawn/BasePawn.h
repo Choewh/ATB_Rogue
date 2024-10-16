@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Data/DataTableRows.h"
+#include "Component/SplineCameraChildActorComponent.h"
+
 #include "BasePawn.generated.h"
 
 UCLASS()
@@ -60,8 +62,9 @@ private:
 
 	FPawnTableRow* EnemyData;
 
-private:
-
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineCameraChildActorComponent> CameraSpline;
 
 private:
 

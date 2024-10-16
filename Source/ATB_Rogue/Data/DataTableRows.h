@@ -12,6 +12,7 @@
 #include "Misc/Utils.h"
 #include "Animation/AnimInstance.h"
 #include "AIController.h"
+#include "Actor/BaseCameraSplineActor.h"
 
 #include "DataTableRows.generated.h"
 /**
@@ -61,6 +62,8 @@ public: // UAnimMontage
 //	UPROPERTY(EditAnywhere, Category = "Pawn|Movement")
 //	float MovementMaxSpeed = 400.f;
 
+public:
+	TSubclassOf<ABaseCameraSplineActor> CameraSpline;
 //public: // AI
 //	UPROPERTY(EditAnywhere, Category = "Pawn|AI")
 //	TSubclassOf<AAIController> AIControllerClass;
