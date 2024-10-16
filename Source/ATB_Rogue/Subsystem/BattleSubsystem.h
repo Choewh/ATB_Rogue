@@ -6,7 +6,6 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "GameMode/BasePlayerController.h"
 #include "Pawn/BasePawn.h"
-
 #include "BattleSubsystem.generated.h"
 
 /**
@@ -36,29 +35,47 @@ public :
 
 	UFUNCTION()
 	void EnemyDeactive();
+	UFUNCTION()
+	void EnemyActive();
 
 	UFUNCTION(BlueprintCallable)
 	void ActiveTurn(ABasePawn* Enemy);
-
+	
+	UFUNCTION()
+	void FinishTrun();
 public:
 	//공격 이동 대기
 	//이동 확정시 호출 ㅇ
 	UFUNCTION()
-	void MoveTo(ABasePawn* Enemy, FVector TargetLocation);
-
+	void MoveTo(FVector TargetLocation);
+	
 private:
-
+	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
+public:
+	ABasePawn* GetActionPawn() { return ActionPawn; }
+public:
+	UFUNCTION(BlueprintCallable, Category = "BattleSubsystem")
+	TArray<ABasePawn*> GetPlayerblePawns() { return Playerble; }
+	
+	UFUNCTION(BlueprintPure, Category = "BattleSubsystem")
+	bool IsBattle() { return OnBattle; }
 private:
 	UPROPERTY()
 	TArray<ABasePawn*> Playerble;
 
 	UPROPERTY()
+	ABasePawn* ActionPawn;
+
+	UPROPERTY()
 	TObjectPtr<ABasePlayerController> PlayerController;
+
 	//ABasePlayerController* PlayerController;
 	/*
 	Tarray<Player> ~
 	Tarray<Enemy> ~ 
-	*/ 
+	*/
+	UPROPERTY()
+	bool OnBattle = false;
 	
 	
 };

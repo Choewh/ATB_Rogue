@@ -7,6 +7,8 @@
 #include "Data/DataTableRows.h"
 #include "BasePawn.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
+
 UCLASS()
 class ATB_ROGUE_API ABasePawn : public APawn
 {
@@ -36,8 +38,12 @@ public:
 
 public:
 
+	void ABTReset() { ABT_Cur = 0; }
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	float GetCurATBPercent() { return ABT_Cur / ABT_MAX; }
 	void ABTFeeling();
-	void MoveTo();
+	void MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
 
 
@@ -62,9 +68,6 @@ private:
 
 private:
 
-
-private:
-
 	UPROPERTY(EditAnywhere)
 	bool bActive = true;
 
@@ -77,5 +80,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ABT_Speed = 1.f;
 
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnATBChanged OnATBChanged;
 
 };

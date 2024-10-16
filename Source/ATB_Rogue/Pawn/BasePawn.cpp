@@ -121,8 +121,12 @@ void ABasePawn::ABTFeeling()
 	}
 }
 
-void ABasePawn::MoveTo()
+void ABasePawn::MoveTo(FVector NewDestination)
 {
+	SetActorLocation(NewDestination);
+	//배틀시스템에 완료 알림 비헤이비어 트리 사용하기
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	BattleSubsystem->FinishTrun();
 	
 }
 
