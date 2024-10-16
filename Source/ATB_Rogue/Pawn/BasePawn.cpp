@@ -17,9 +17,8 @@ ABasePawn::ABasePawn()
 	SkeletalMeshComponent->SetupAttachment(RootComponent);
 
 	{
-		//플레이어컨트롤 우클릭에 (타겟로케이션 업데이트) 함수 바인트해서 IsMoveAction 이면 업데이트
-		//이동 확정 지으면 BattleSubsystem 호출 이동.
-
+		CameraSpline = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
+		CameraSpline->SetupAttachment(RootComponent);
 	}
 }
 
@@ -48,6 +47,7 @@ void ABasePawn::BeginPlay()
 	check(BattleSubsystem);
 	BattleSubsystem->EntryEnemy(this);
 	SetData(DataTableRowHandle);
+	CameraSpline->SetData();
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
