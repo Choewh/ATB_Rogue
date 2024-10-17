@@ -3,7 +3,8 @@
 
 #include "Character/BaseCharacter.h"
 #include "GameFrameWork/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
+#include "Camera/PawnViewCameraComponent.h"
+
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -20,7 +21,7 @@ ABaseCharacter::ABaseCharacter()
 		Camera->SetRelativeTransform(NewTransform);
 	}
 	{
-		UCameraComponent* PawnViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnViewCamera"));
+		UPawnViewCameraComponent* PawnViewCamera = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
 		PawnViewCamera->SetupAttachment(RootComponent);
 	}
 	

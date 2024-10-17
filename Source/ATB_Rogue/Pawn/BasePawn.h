@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Data/DataTableRows.h"
+#include "Component/SplineCameraChildActorComponent.h"
+
 #include "BasePawn.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
@@ -53,6 +55,8 @@ public:
 
 	float GetABT() { return ABT_Cur; }
 
+	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSpline; }
+
 private:
 
 	UPROPERTY()
@@ -65,6 +69,10 @@ private:
 	FDataTableRowHandle DataTableRowHandle;
 
 	FPawnTableRow* EnemyData;
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineCameraChildActorComponent> CameraSpline;
 
 private:
 
@@ -84,4 +92,6 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;
 
+private:
+	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

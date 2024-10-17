@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Pawn|Animation")
 	TSubclassOf<UAnimInstance> AnimClass;
 public:
+	UPROPERTY(EditAnywhere, Category = "Pawn|CameraSpline")
+	TSubclassOf<ABaseCameraSplineActor> CameraSpline;
+public:
 	/*
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
 	TSubclassOf<UShapeComponent> CollisionClass = USphereComponent::StaticClass();
@@ -63,7 +66,6 @@ public: // UAnimMontage
 //	float MovementMaxSpeed = 400.f;
 
 public:
-	TSubclassOf<ABaseCameraSplineActor> CameraSpline;
 //public: // AI
 //	UPROPERTY(EditAnywhere, Category = "Pawn|AI")
 //	TSubclassOf<AAIController> AIControllerClass;

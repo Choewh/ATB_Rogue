@@ -8,7 +8,7 @@
 #include "Misc/Utils.h"
 #include "Character/BaseCharacter.h"
 #include "Pawn/BasePawn.h"
-#include "Camera/CameraComponent.h"
+#include "Camera/PawnViewCameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 
 #include "BasePlayerController.generated.h"
@@ -37,6 +37,7 @@ public:
 public:
 
 	void OnRightClick(const FInputActionValue& InputActionValue);
+	void OnLeftViewRotator(const FInputActionValue& InputActionValue);
 	void SetupInputComponent();
 
 public:
@@ -52,12 +53,18 @@ public:
 public:
 	//이동 공격 공통 카메라 위치로 이동
 	void SetActionCamera();
+
+
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveEnter(); // 우클릭시 받는 좌표를 목표 지점으로 삼아 좌표에 표식 찍어주기 / 
+
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
 	UFUNCTION(BlueprintCallable, Category = "Move")
-	void MoveAccept(); // 서브시스템에 움직임 확정 / 좌표 전달 ->
+	bool MoveAccept(); // 서브시스템에 움직임 확정 / 좌표 전달 ->
+
+	bool MoveCheck(); // TargetLocation이 이동가능한 범위내에 있는가 확인
+
 
 public:
 
@@ -75,15 +82,22 @@ public:
 
 	UCameraComponent* DefaultCamera;
 
-	UCameraComponent* PawnViewCamera; 
+	UPawnViewCameraComponent* PawnViewCamera;
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FShowWidget ShowWidget;
 
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bMove;
+	UPROPERTY(BlueprintReadOnly)
 	bool isMove;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool bAttack;
+	UPROPERTY(BlueprintReadOnly)
 	bool isAttack;
 
+private:
+	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

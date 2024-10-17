@@ -9,7 +9,8 @@ ABaseCameraSplineActor::ABaseCameraSplineActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//
+	//SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
+	///Script/Engine.Blueprint'/Game/BluePrint/Component/BP_Spline.BP_Spline'
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	RootComponent = SplineComponent;
 }

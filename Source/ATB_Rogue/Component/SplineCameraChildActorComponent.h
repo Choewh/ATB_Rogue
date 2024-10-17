@@ -15,6 +15,5 @@ public:
 	// Sets default values for this actor's properties
 	USplineCameraChildActorComponent();
 	void SetData(FDataTableRowHandle InDataTableRowHandle);
-	void SetData();
 	
 };

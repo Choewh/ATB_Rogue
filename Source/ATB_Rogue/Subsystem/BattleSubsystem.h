@@ -53,6 +53,7 @@ private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
 public:
 	ABasePawn* GetActionPawn() { return ActionPawn; }
+	bool IsValidActionPawn() { return ActionPawn ? true : false; }
 public:
 	UFUNCTION(BlueprintCallable, Category = "BattleSubsystem")
 	TArray<ABasePawn*> GetPlayerblePawns() { return Playerble; }

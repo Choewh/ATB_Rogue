@@ -3,6 +3,7 @@
 
 #include "Component/SplineCameraChildActorComponent.h"
 #include "Data/DataTableRows.h"
+
 #include "Actor/BaseCameraSplineActor.h"
 
 
@@ -26,17 +27,7 @@ void USplineCameraChildActorComponent::SetData(FDataTableRowHandle InDataTableRo
 
 
 	ABaseCameraSplineActor* ACameraSplineActor = Cast<ABaseCameraSplineActor>(GetChildActor());
-	check(ACameraSplineActor);
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	check(OwnerPawn);
-	ACameraSplineActor->SetOwner(OwnerPawn);
-	ACameraSplineActor->SetInstigator(OwnerPawn);
-}
-
-void USplineCameraChildActorComponent::SetData()
-{
-	ABaseCameraSplineActor* ACameraSplineActor = Cast<ABaseCameraSplineActor>(GetChildActor());
-	check(ACameraSplineActor);
+	if (!ACameraSplineActor) { ensure(false); return; }
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	check(OwnerPawn);
 	ACameraSplineActor->SetOwner(OwnerPawn);
