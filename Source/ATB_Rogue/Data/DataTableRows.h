@@ -37,11 +37,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	FTransform MeshTransform = FTransform::Identity;
 
-	UPROPERTY(EditAnywhere, Category = "Pawn|Animation")
+	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<UAnimInstance> AnimClass;
 public:
-	UPROPERTY(EditAnywhere, Category = "Pawn|CameraSpline")
-	TSubclassOf<ABaseCameraSplineActor> CameraSpline;
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	TObjectPtr<ABaseCameraSplineActor> CameraSpline;
+
+	UPROPERTY(EditAnywhere, Category = "Pawn")
+	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass;
 public:
 	/*
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")

@@ -55,7 +55,7 @@ public:
 
 	float GetABT() { return ABT_Cur; }
 
-	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSpline; }
+	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
 private:
 
@@ -72,7 +72,9 @@ private:
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USplineCameraChildActorComponent> CameraSpline;
+	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<ABaseCameraSplineActor> CameraSpline;
 
 private:
 

@@ -161,16 +161,14 @@ bool ABasePlayerController::MoveAccept()
 			BattleSubsystem->MoveTo(TargetLocation);
 			bMove = false; // bMove 를 배틀시스템에서 바꿔주는걸로 변경하기 
 			SetActionCamera();
-			isMove = false;
+			isMove = false; 
 			return true;
 		}
 		else //지정된 범위가 아니면 그냥 리턴
 		{
-			isMove = false;
 			return false;
 		}
 	}
-	isMove = false;
 	return false;
 }
 

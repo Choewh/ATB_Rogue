@@ -17,9 +17,10 @@ ABasePawn::ABasePawn()
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 	SkeletalMeshComponent->SetupAttachment(RootComponent);
 
+	//SplineCameraChildActorComponent
 	{
-		CameraSpline = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
-		CameraSpline->SetupAttachment(RootComponent);
+		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
+		CameraSplineClass->SetupAttachment(RootComponent);
 	}
 }
 
@@ -27,7 +28,7 @@ void ABasePawn::SetData(const FDataTableRowHandle& InDataTableRowHandle)
 {
 	DataTableRowHandle = InDataTableRowHandle;
 	if (DataTableRowHandle.IsNull()) { return; }
-	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Enemy"));
+	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Pawn")); // << 임시로 이렇게 쓰고있는데 수정해야함
 	if (!Data) { ensure(false); return; }
 
 	EnemyData = Data;
@@ -38,9 +39,8 @@ void ABasePawn::SetData(const FDataTableRowHandle& InDataTableRowHandle)
 		SkeletalMeshComponent->SetRelativeTransform(EnemyData->MeshTransform);
 	}
 	{
-		CameraSpline->SetData(DataTableRowHandle);
+		CameraSpline = EnemyData->CameraSpline;
 	}
-
 }
 
 // Called when the game starts or when spawned
@@ -123,7 +123,7 @@ void ABasePawn::ABTFeeling()
 		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}
 }
-
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 void ABasePawn::MoveTo(FVector NewDestination)
 {
 	SetActorLocation(NewDestination);
