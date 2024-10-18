@@ -32,33 +32,79 @@ void UBattleSubsystem::EnemyActive()
 	}
 }
 
-void UBattleSubsystem::ActiveTurn(ABasePawn* Enemy)
+void UBattleSubsystem::EnterActiveTurn(ABasePawn* Enemy)
 {
-	OnBattle = true;
 	EnemyDeactive(); // 그외 에너미 ATB 게이지 회복 중단
-	SetActionPawn(Enemy);
-	PlayerController->Cameraarrangement(); // 턴 진행하는 에너미에 카메라 이동
-	//UI 를 띄워줌 이동 공격 대기
-	// 버튼에 따라 필요한 함수 실행 
-	// 
-	// 
+	SetActionPawn(Enemy); // 액션폰 설정
+	if (PlayerController) { PlayerController->Init(); }
+
+	if (!PlayerController->SetViewCameraMode(ECameraViewMode::PawnView))
+	{
+		return;//전환실패시 종료 턴종료 에러임 ㅇㅇ
+	}
+	SelectActionView();
 	// Ex.Move // Player Controller/Camera Move ->  PlayerController/TargetPosition -> BattleSystem/Move To -> Pawn이동 -> 현재는 턴 종료 로 마무리 하기 
 }
+
+void UBattleSubsystem::SelectActionView()
+{
+	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
+	PlayerController->PawnAroundView(ActionPawn);
+	//폰에서 사거리 그려주기 어떻게?
+}
+
+void UBattleSubsystem::SelectMoveAction()
+{
+	PlayerController->SetBattleState(EBattleState::Move);				//이동상태로 변경
+	PlayerController->SetViewCameraMode(ECameraViewMode::DefaultView);	//카메라 뷰 디폴트로 변경
+}
+
+bool UBattleSubsystem::SelectMoveAccept()
+{
+	FVector NewDestination = PlayerController->GetMovePoint();
+	//액션폰에 자기 이동거리 확인 만들기
+	if (!ActionPawn->Movealbe(NewDestination))
+	{
+		return false;
+	}
+	//이동 가능시 무브
+	if (ActionPawn->MoveTo(NewDestination))
+	{
+		FinishTrun();
+		PlayerController->SetBattleState(EBattleState::Move);
+		return true;
+	}
+	return false;
+	//실패시 에러 띄움
+}
+
+void UBattleSubsystem::SelectMoveCancle()
+{
+	PlayerController->SetBattleState(EBattleState::Defalut);
+	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
+	PlayerController->PawnAroundView(ActionPawn);
+}
+
+void UBattleSubsystem::MoveActionView() //필요없는거같은데 일단 보류
+{
+
+}
+
+void UBattleSubsystem::AttackActionView()
+{
+}
+
 
 void UBattleSubsystem::FinishTrun()
 {
 	if (ActionPawn)
 	{
-		ActionPawn->ABTReset();
+		//턴종료시 해야할것
+		//액션폰의 ABT 게이지를 비워주고
+		//에너미들의 ABTFeeling On 
+		//액션폰은 null로 초기화
+		ActionPawn->ABTReset(); 
 		EnemyActive();
 		ActionPawn = nullptr;
-		OnBattle = false;
 	}
-}
-
-void UBattleSubsystem::MoveTo(FVector NewDestination)
-{
-	//여기부턴 비헤이비어 트리 구현하기.
-	//지금은 그냥 Set Location 해주기
-	ActionPawn->MoveTo(NewDestination);
 }

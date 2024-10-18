@@ -113,7 +113,7 @@ void ABasePawn::ABTFeeling()
 	if (ABT_Cur >= ABT_MAX)
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-		BattleSubsystem->ActiveTurn(this);
+		BattleSubsystem->EnterActiveTurn(this);
 	}
 	else
 	{
@@ -123,14 +123,34 @@ void ABasePawn::ABTFeeling()
 		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}
 }
-// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-void ABasePawn::MoveTo(FVector NewDestination)
+bool ABasePawn::Movealbe(FVector NewDestination)
 {
+	FVector CenterPoint = GetActorLocation();
+
+	float Range = 1000.0f; // 설정한 범위 폰데이터를 받아와야함 배틀시스템에서 읽어오는걸 만들기?
+
+	float Distance = FVector::Dist(CenterPoint, NewDestination);
+
+	if (Distance <= Range) {
+		// 범위 내에 있는 경우
+		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
+		return true;
+	}
+	else {
+		// 범위 밖인 경우
+		UE_LOG(LogTemp, Warning, TEXT("Target is out of range."));
+		return false;
+	}
+}
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+bool ABasePawn::MoveTo(FVector NewDestination)
+{
+	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
 	SetActorLocation(NewDestination);
-	//배틀시스템에 완료 알림 비헤이비어 트리 사용하기
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	BattleSubsystem->FinishTrun();
-	
+	return true;
+
+
+	// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
 }
 
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)

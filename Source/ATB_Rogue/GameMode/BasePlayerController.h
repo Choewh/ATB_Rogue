@@ -10,6 +10,9 @@
 #include "Pawn/BasePawn.h"
 #include "Camera/PawnViewCameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Enums/CameraViewMode.h"
+#include "Enums/BattleState.h"
+#include "Enums/ControllerInput.h"
 
 #include "BasePlayerController.generated.h"
 
@@ -36,9 +39,11 @@ public:
 
 public:
 
-	void OnRightClick(const FInputActionValue& InputActionValue);
-	void OnLeftViewRotator(const FInputActionValue& InputActionValue);
 	void SetupInputComponent();
+	void OnLeftClick(const FInputActionValue& InputActionValue);
+	void OnRightPress(const FInputActionValue& InputActionValue);
+	void OnViewCameraMove(const FInputActionValue& InputActionValue);
+	void OnViewAroundMove(const FInputActionValue& InputActionValue);
 
 public:
 
@@ -48,44 +53,51 @@ public:
 
 	void Init(); // 관련함수 초기화
 
-	void Cameraarrangement();
+	bool PawnAroundView(ABasePawn* ViewEnemy);
+
+	bool SetViewCameraMode(ECameraViewMode Cameramode);
+
+	bool SetBattleState(EBattleState NewState);
 
 public:
-	//이동 공격 공통 카메라 위치로 이동
-	void SetActionCamera();
-
-
-	UFUNCTION(BlueprintCallable, Category = "Move")
-	void MoveEnter(); // 우클릭시 받는 좌표를 목표 지점으로 삼아 좌표에 표식 찍어주기 / 
-
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
-	UFUNCTION(BlueprintCallable, Category = "Move")
-	bool MoveAccept(); // 서브시스템에 움직임 확정 / 좌표 전달 ->
 
-	bool MoveCheck(); // TargetLocation이 이동가능한 범위내에 있는가 확인
-
+	FVector GetMovePoint() { return MovePoint; }
 
 public:
 
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FShowWidget ShowWidget;
+
+public:
 	UPROPERTY()
 	UInputMappingContext* IMC;
 
-	UPROPERTY()
-	FVector TargetLocation;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ABaseCharacter> BasePlayer;
 
 	UPROPERTY()
 	class UBattleSubsystem* BattleSubsystem;
 
+protected:
+	UPROPERTY()
+	FVector MovePoint = FVector::Zero();
+	EControllerInput ControllerInput = EControllerInput::Default;
+
+	UPROPERTY(VisibleAnywhere)
+	ECameraViewMode CameraViewMode = ECameraViewMode::DefaultView;
+
+	UPROPERTY(VisibleAnywhere)
+	EBattleState BattleState = EBattleState::Defalut;
+
+	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* DefaultCamera;
 
+	UPROPERTY(VisibleAnywhere)
 	UPawnViewCameraComponent* PawnViewCamera;
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FShowWidget ShowWidget;
 
 
 	UPROPERTY(BlueprintReadOnly)

@@ -17,7 +17,7 @@ ABaseCharacter::ABaseCharacter()
 	{
 		UCameraComponent* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 		Camera->SetupAttachment(SpringArm);
-		FTransform NewTransform = FTransform(FRotator(-30.f, 0.f, 0.f), FVector3d(-700.f, 0.f, 600.f));
+		FTransform NewTransform = FTransform(FRotator(-10.f, 0.f, 0.f), FVector3d(-1000.f, 0.f, 500.f)); // 음 맵? 
 		Camera->SetRelativeTransform(NewTransform);
 	}
 	{

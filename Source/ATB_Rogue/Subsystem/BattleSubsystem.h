@@ -28,26 +28,41 @@ public :
 	// 
 
 	*/
+
+	//컨트롤러 에너미 추가
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
 	UFUNCTION(BlueprintCallable)
 	void EntryEnemy(ABasePawn* EntryEnemy);
-
+	//에너미 컨트롤 
 	UFUNCTION()
 	void EnemyDeactive();
 	UFUNCTION()
 	void EnemyActive();
+	//턴시작
+	UFUNCTION(BlueprintCallable)
+	void EnterActiveTurn(ABasePawn* Enemy);
+	//액션창
+	UFUNCTION()
+	void SelectActionView();
 
 	UFUNCTION(BlueprintCallable)
-	void ActiveTurn(ABasePawn* Enemy);
-	
+	void SelectMoveAction();
+
+	UFUNCTION(BlueprintCallable)
+	bool SelectMoveAccept();
+
+	UFUNCTION(BlueprintCallable)
+	void SelectMoveCancle();
+
+	UFUNCTION()
+	void MoveActionView();
+
+	UFUNCTION()
+	void AttackActionView();
+	//턴종료
 	UFUNCTION()
 	void FinishTrun();
-public:
-	//공격 이동 대기
-	//이동 확정시 호출 ㅇ
-	UFUNCTION()
-	void MoveTo(FVector TargetLocation);
 	
 private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
@@ -58,8 +73,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "BattleSubsystem")
 	TArray<ABasePawn*> GetPlayerblePawns() { return Playerble; }
 	
-	UFUNCTION(BlueprintPure, Category = "BattleSubsystem")
-	bool IsBattle() { return OnBattle; }
 private:
 	UPROPERTY()
 	TArray<ABasePawn*> Playerble;
@@ -75,8 +88,6 @@ private:
 	Tarray<Player> ~
 	Tarray<Enemy> ~ 
 	*/
-	UPROPERTY()
-	bool OnBattle = false;
 	
 	
 };

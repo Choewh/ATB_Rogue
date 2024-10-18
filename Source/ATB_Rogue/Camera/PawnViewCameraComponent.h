@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Actor/BaseCameraSplineActor.h"
+#include "Pawn/BasePawn.h"
 #include "PawnViewCameraComponent.generated.h"
 
 /**
@@ -30,7 +31,7 @@ public:
 public:
 
 	UFUNCTION()
-	void OnPawnViewCamera();
+	void OnPawnViewCamera(ABasePawn* ViewEnemy);
 
 	bool SetView(bool View) { bView = View; if(!View)CameraSplineTimelineComponent->Stop(); return bView; }
 

@@ -16,7 +16,6 @@ USplineCameraChildActorComponent::USplineCameraChildActorComponent()
 
 void USplineCameraChildActorComponent::SetData(FDataTableRowHandle InDataTableRowHandle)
 {
-	//스플라인이 종류라 데이터 테이블로 관리중이라 변경될때 호출
 	if (InDataTableRowHandle.IsNull()) { return; }
 	FPawnTableRow* Data = InDataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Pawn"));
 	if (!Data->CameraSplineClass) { ensure(false); return; }

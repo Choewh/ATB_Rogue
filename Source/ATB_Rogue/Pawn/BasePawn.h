@@ -45,7 +45,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	float GetCurATBPercent() { return ABT_Cur / ABT_MAX; }
 	void ABTFeeling();
-	void MoveTo(FVector NewDestination);
+	bool Movealbe(FVector NewDestination);
+	bool MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
 
 
@@ -57,22 +58,23 @@ public:
 
 	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
-private:
 
-	UPROPERTY()
-	TObjectPtr<USceneComponent> DefaultSceneRoot;
+protected:
 
-	UPROPERTY()
-	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-	
 	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))
 	FDataTableRowHandle DataTableRowHandle;
 
 	FPawnTableRow* EnemyData;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> DefaultSceneRoot;
 
-protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ABaseCameraSplineActor> CameraSpline;
 
