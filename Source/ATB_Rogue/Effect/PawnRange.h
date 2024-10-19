@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "Pool/PooledActor.h"
 #include "Components/StaticMeshComponent.h"
-#include "Data/EffectTableRows.h"
-#include "Data/StatTableRows.h"
+#include "Data/EffectTableRow.h"
+#include "Data/StatTableRow.h"
 #include "PawnRange.generated.h"
 /**
  * 

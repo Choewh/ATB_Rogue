@@ -7,9 +7,10 @@
  *
  */
 UENUM(BlueprintType)
-enum class EPawnDataHandle : uint8
+enum class EMoves: uint8
 {
-	Effect UMETA(DisplayName = "Effect"),
-	Stat UMETA(DisplayName = "Stat"),
+	None UMETA(DisplayName = "None"),
+	TestMagic UMETA(DisplayName = "TestMagic"),
+	TestMelee UMETA(DisplayName = "TestMelee"),
 };
 	

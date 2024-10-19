@@ -8,15 +8,15 @@
 UPawnViewCameraComponent::UPawnViewCameraComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
-	static ConstructorHelpers::FObjectFinder<UCurveFloat> CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
+#if !WITH_EDITOR
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
 	check(CurveAsset.Object);
-
-	//SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
+#endif
 
 	CameraSplineTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraSplineTimelineComponent"));
-	CameraSplineTimelineComponent->SetFloatCurve(CurveAsset.Object, TEXT("CameraSplineCurve"));
-	CameraSplineTimelineComponent->SetPlayRate(0.1f);
+
+	//CameraSplineTimelineComponent->SetFloatCurve(CurveAsset.Object, TEXT("CameraSplineCurve"));
+	CameraSplineTimelineComponent->SetPlayRate(0.2f);
 
 	FOnTimelineFloat Delegate;
 	Delegate.BindDynamic(this, &ThisClass::StartSplineMoving);

@@ -175,14 +175,14 @@ void ABasePlayerController::OnRightPress(const FInputActionValue& InputActionVal
 {
 	switch (ControllerInput)
 	{
-	case EControllerInput::Default:
+	case EControllerInput::None:
 		ControllerInput = EControllerInput::MouseRight;
 		break;
 	case EControllerInput::MouseRight:
-		ControllerInput = EControllerInput::Default;
+		ControllerInput = EControllerInput::None;
 		break;
 	default:
-		ControllerInput = EControllerInput::Default;
+		ControllerInput = EControllerInput::None;
 		break;
 	}
 }

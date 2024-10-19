@@ -7,14 +7,17 @@
 #include "GameFramework/Pawn.h"
 
 #include "Misc/Utils.h"
-#include "Data/SkillTableRows.h"
-#include "Data/EffectTableRows.h"
-#include "Data/StatTableRows.h"
-#include "Data/AnimMontageTableRows.h"
+
+#include "Enums/Species.h"
+
+#include "Data/SkillTableRow.h"
+#include "Data/EffectTableRow.h"
+#include "Data/StatTableRow.h"
+#include "Data/AnimMontageTableRow.h"
 
 #include "Actor/BaseCameraSplineActor.h"
 
-#include "DataTableRows.generated.h"
+#include "PawnTableRow.generated.h"
 /**
  * 
  */
@@ -29,13 +32,13 @@ struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 		AnimClass(nullptr),
 		CameraSpline(nullptr),
 		BPCameraSpline(nullptr),
-		CameraSplineClass(nullptr),
-		Effect(), // Effect의 기본값 설정 (필요시)
-		Stat()    // Stat의 기본값 설정
+		CameraSplineClass(nullptr)
 	{
 
 	}
 public:
+	UPROPERTY(EditAnywhere, Category = "Species")
+	ESpecies Species;
 	UPROPERTY(EditAnywhere, Category = "Portrait")
 	TArray<UTexture*> Portraits;
 public:
@@ -56,12 +59,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass;
-public:
-	UPROPERTY(EditAnywhere, Category = "Effect" , meta = (RowType = "/Script/ATB_ROGUE.EffectTableRow"))
-	FDataTableRowHandle Effect;
-public:
-	UPROPERTY(EditAnywhere, Category = "Stat", meta = (RowType = "/Script/ATB_ROGUE.StatTableRow"))
-	FDataTableRowHandle Stat; 
+
+//public:
+//	UPROPERTY(EditAnywhere, Category = "Effect" , meta = (RowType = "/Script/ATB_ROGUE.EffectTableRow"))
+//	FDataTableRowHandle Effect;
+//public:
+//	UPROPERTY(EditAnywhere, Category = "Stat", meta = (RowType = "/Script/ATB_ROGUE.StatTableRow"))
+//	FDataTableRowHandle Stat; 
 
 
 };

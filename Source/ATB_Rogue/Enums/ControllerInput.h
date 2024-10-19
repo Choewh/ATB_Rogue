@@ -9,7 +9,7 @@
 UENUM(BlueprintType)
 enum class EControllerInput : uint8
 {
-	Default UMETA(DisplayName = "Default"),
+	None UMETA(DisplayName = "None"),
 	MouseRight UMETA(DisplayName = "MouseRight"),
 	MouseLeft UMETA(DisplayName = "MouseLeft"),
 };

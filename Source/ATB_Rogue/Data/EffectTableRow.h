@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EffectTableRows.generated.h"
+#include "EffectTableRow.generated.h"
 
 USTRUCT()
 struct ATB_ROGUE_API FEffectTableRow : public FTableRowBase

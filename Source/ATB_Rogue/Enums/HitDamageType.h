@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class EHitDamageType : uint8
 {
+	None UMETA(DisplayName = "None"),
 	Melee UMETA(DisplayName = "Melee"),
 	Magic UMETA(DisplayName = "Magic"),
 };

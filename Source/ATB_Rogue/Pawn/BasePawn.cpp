@@ -14,11 +14,23 @@ ABasePawn::ABasePawn()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
-	RootComponent = DefaultSceneRoot;
+	//폰 데이터 테이블 초기화
+	static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
+	if (PawnDataObject.Succeeded())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
+		PawnDataTable = PawnDataObject.Object;
+	}
 
-	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
-	SkeletalMeshComponent->SetupAttachment(RootComponent);
+	{
+		DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
+		RootComponent = DefaultSceneRoot;
+
+		SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
+		SkeletalMeshComponent->SetupAttachment(RootComponent);
+
+		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
+	}
 
 	//SplineCameraChildActorComponent
 	{
@@ -27,36 +39,49 @@ ABasePawn::ABasePawn()
 	}
 }
 
-void ABasePawn::SetData(const FDataTableRowHandle& InDataTableRowHandle)
-{
-	DataTableRowHandle = InDataTableRowHandle;
-	if (DataTableRowHandle.IsNull()) { return; }
-	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Guilmon")); // << 임시로 이렇게 쓰고있는데 수정해야함
-	if (!Data) { ensure(false); return; }
-
-	EnemyData = Data;
-
-	StatData = EnemyData->Stat.GetRow<FStatTableRow>(TEXT("StatData"));
-	EffectData = EnemyData->Effect.GetRow<FEffectTableRow>(TEXT("EffectData"));
-
-	{
-		SkeletalMeshComponent->SetSkeletalMesh(EnemyData->SkeletalMesh);
-		SkeletalMeshComponent->SetAnimClass(EnemyData->AnimClass);
-		SkeletalMeshComponent->SetRelativeTransform(EnemyData->MeshTransform);
-	}
-	{
-		CameraSpline = EnemyData->CameraSpline;
-	}
-}
 
 // Called when the game starts or when spawned
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	check(BattleSubsystem);
-	BattleSubsystem->EntryEnemy(this);
-	SetData(DataTableRowHandle);
+	{ //추후에 게임인스턴스서브시스템으로 기능 옮겨주기   //게임인스턴스에 등록->게임인스턴스에서 배틀서브시스템으로 전달->배틀시작 ㅇㅇ 이런식?
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		BattleSubsystem->EntryEnemy(this);
+	}
+	//초기화 해주기 init(); 하나 만들까 고민
+	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
+}
+
+void ABasePawn::SetData()
+{
+	//DataTableRowHandle = InDataTableRowHandle;
+	//if (DataTableRowHandle.IsNull()) { return; }
+	//FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Guilmon")); // << 임시로 이렇게 쓰고있는데 수정해야함
+	//if (!Data) { ensure(false); return; }
+
+	// 원래있던애들 ㅇ
+
+	TArray<FPawnTableRow*> PawnTable_Array;
+	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
+
+	for (auto& PawnTable : PawnTable_Array)
+	{
+		if (PawnTable->Species == Species)
+		{
+			PawnData = PawnTable;
+		}
+	}
+	if (!PawnData) { return; }
+	{
+		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
+		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
+		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);
+	}
+	if (StatusComponent)
+	{
+		StatusComponent->SetData(Species);
+	}
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
@@ -66,7 +91,7 @@ void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
 	if (DuplicateMode == EDuplicateMode::Normal)
 	{
 		FTransform Backup = GetActorTransform();
-		SetData(DataTableRowHandle);
+		SetData();
 		SetActorTransform(Backup);
 	}
 }
@@ -89,7 +114,7 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	SetData(DataTableRowHandle);
+	SetData();
 	SetActorTransform(Transform);
 }
 
@@ -106,7 +131,6 @@ void ABasePawn::Tick(float DeltaTime)
 void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABasePawn::ABTFeeling()
@@ -135,11 +159,12 @@ bool ABasePawn::Movealbe(FVector NewDestination)
 	float Distance;
 	float Range;
 	
-	if (StatData->MoveRange)
-	{
-		Range = StatData->MoveRange;
-	}
-	else
+	//스탯컴포넌트에서 받아오기 ㅇ
+	//if (StatData->MoveRange)
+	//{
+	//	Range = StatData->MoveRange;
+	//}
+	//else
 	{
 		Range = 1000.f;
 	}
@@ -157,12 +182,14 @@ bool ABasePawn::Movealbe(FVector NewDestination)
 }
 void ABasePawn::MakeViewMoveRange()
 {
-	if (!StatData) { ensure(false); return; }
+	
+	//스탯컴포넌트에서 받아오기 ㅇ
+	if (!StatusComponent) { ensure(false); return; }
 	{
-		float Scale = (StatData->MoveRange) * 2 / 100;
+		float Scale = (StatusComponent->GetMoveRange()) * 2 / 100;
 		FTransform NewTransform(FRotator::ZeroRotator, GetActorLocation(), FVector(Scale, Scale, 0.1f));
-
-		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, FUtils::GetTableRowFromName(DataTableRowHandle,EPawnDataHandle::Effect));
+		//UI 컴포넌트? 음 
+		//GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, FUtils::GetTableRowFromName(DataTableRowHandle,EPawnDataHandle::Effect));
 	}
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ

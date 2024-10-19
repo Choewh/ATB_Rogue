@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AnimMontageTableRows.generated.h"
+#include "AnimMontageTableRow.generated.h"
 
 USTRUCT()
 struct ATB_ROGUE_API FAnimMontageTableRow : public FTableRowBase

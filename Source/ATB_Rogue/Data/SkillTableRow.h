@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SkillTableRows.generated.h"
+#include "SkillTableRow.generated.h"
 
 USTRUCT()
 struct ATB_ROGUE_API FSkillTableRow : public FTableRowBase

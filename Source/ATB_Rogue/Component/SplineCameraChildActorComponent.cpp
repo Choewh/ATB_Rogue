@@ -2,11 +2,11 @@
 
 
 #include "Component/SplineCameraChildActorComponent.h"
-#include "Data/DataTableRows.h"
+#include "Data/PawnTableRow.h"
 
 #include "Actor/BaseCameraSplineActor.h"
 
-
+                                                             
 // Sets default values
 USplineCameraChildActorComponent::USplineCameraChildActorComponent()
 {

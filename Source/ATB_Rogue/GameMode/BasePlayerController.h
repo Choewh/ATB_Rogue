@@ -84,7 +84,7 @@ public:
 protected:
 	UPROPERTY()
 	FVector MovePoint = FVector::Zero();
-	EControllerInput ControllerInput = EControllerInput::Default;
+	EControllerInput ControllerInput = EControllerInput::None;
 
 	UPROPERTY(VisibleAnywhere)
 	ECameraViewMode CameraViewMode = ECameraViewMode::DefaultView;

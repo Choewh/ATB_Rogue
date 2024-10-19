@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Pawn.h"
-#include "Data/DataTableRows.h"
+#include "Engine/DataTable.h"
+#include "Data/PawnTableRow.h"
+#include "Enums/Species.h"
+
+#include "Component/StatusComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
 
 #include "BasePawn.generated.h"
@@ -24,7 +28,7 @@ public:
 
 	// Sets default values for this pawn's properties
 	ABasePawn();
-	virtual void SetData(const FDataTableRowHandle& InDataTableRowHandle);
+	virtual void SetData();
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,19 +69,17 @@ public:
 
 	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ESpecies Species; // 디지몬 종
 
 protected:
+	//Test
+	UDataTable* PawnDataTable;
+	FPawnTableRow* PawnData;
+	//
 
-	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))
-	FDataTableRowHandle DataTableRowHandle;
-
-	FPawnTableRow* EnemyData;
-
-	FStatTableRow* StatData;
-
-	FEffectTableRow* EffectData;
-
-	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 	
@@ -85,10 +87,10 @@ protected:
 	TObjectPtr<USceneComponent> DefaultSceneRoot;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
+	TObjectPtr<UStatusComponent> StatusComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<ABaseCameraSplineActor> CameraSpline;
+	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
 private:
 

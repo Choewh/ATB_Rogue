@@ -7,9 +7,11 @@
  *
  */
 UENUM(BlueprintType)
-enum class EDigimonType : uint8
+enum class EAttribute : uint8
 {
-	Data UMETA(DisplayName = "Data"),
+	None UMETA(DisplayName = "None"),
 	Vaccine UMETA(DisplayName = "Vaccine"),
+	Data UMETA(DisplayName = "Data"),
 	Virus UMETA(DisplayName = "Virus"),
+	Unknown UMETA(DisplayName = "Unknown"),
 };

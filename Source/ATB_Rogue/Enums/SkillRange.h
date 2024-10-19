@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class ESkillRange : uint8
 {
+	None UMETA(DisplayName = "None"),
 	Long UMETA(DisplayName = "Long"),
 	Short UMETA(DisplayName = "Short"),
 };
