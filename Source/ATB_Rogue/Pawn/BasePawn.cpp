@@ -3,12 +3,15 @@
 
 #include "Pawn/BasePawn.h"
 #include "DrawDebugHelpers.h"
+
+#include "Misc/Utils.h"
 #include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/ActorpoolSubsystem.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
@@ -28,10 +31,13 @@ void ABasePawn::SetData(const FDataTableRowHandle& InDataTableRowHandle)
 {
 	DataTableRowHandle = InDataTableRowHandle;
 	if (DataTableRowHandle.IsNull()) { return; }
-	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Pawn")); // << 임시로 이렇게 쓰고있는데 수정해야함
+	FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Guilmon")); // << 임시로 이렇게 쓰고있는데 수정해야함
 	if (!Data) { ensure(false); return; }
 
 	EnemyData = Data;
+
+	StatData = EnemyData->Stat.GetRow<FStatTableRow>(TEXT("StatData"));
+	EffectData = EnemyData->Effect.GetRow<FEffectTableRow>(TEXT("EffectData"));
 
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(EnemyData->SkeletalMesh);
@@ -91,7 +97,7 @@ void ABasePawn::OnConstruction(const FTransform& Transform)
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	ABTFeeling();
 
 }
@@ -126,11 +132,18 @@ void ABasePawn::ABTFeeling()
 bool ABasePawn::Movealbe(FVector NewDestination)
 {
 	FVector CenterPoint = GetActorLocation();
-
-	float Range = 1000.0f; // 설정한 범위 폰데이터를 받아와야함 배틀시스템에서 읽어오는걸 만들기?
-
-	float Distance = FVector::Dist(CenterPoint, NewDestination);
-
+	float Distance;
+	float Range;
+	
+	if (StatData->MoveRange)
+	{
+		Range = StatData->MoveRange;
+	}
+	else
+	{
+		Range = 1000.f;
+	}
+	Distance = FVector::Dist(CenterPoint, NewDestination);
 	if (Distance <= Range) {
 		// 범위 내에 있는 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
@@ -140,6 +153,16 @@ bool ABasePawn::Movealbe(FVector NewDestination)
 		// 범위 밖인 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is out of range."));
 		return false;
+	}
+}
+void ABasePawn::MakeViewMoveRange()
+{
+	if (!StatData) { ensure(false); return; }
+	{
+		float Scale = (StatData->MoveRange) * 2 / 100;
+		FTransform NewTransform(FRotator::ZeroRotator, GetActorLocation(), FVector(Scale, Scale, 0.1f));
+
+		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, FUtils::GetTableRowFromName(DataTableRowHandle,EPawnDataHandle::Effect));
 	}
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -155,11 +178,11 @@ bool ABasePawn::MoveTo(FVector NewDestination)
 
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)
 {
-		// 범위의 색상과 선 두께 설정
-		FColor SphereColor = FColor::Green;
-		float Duration = 0.0f; // 영구적으로 표시하려면 0으로 설정
+	// 범위의 색상과 선 두께 설정
+	FColor SphereColor = FColor::Green;
+	float Duration = 0.0f; // 영구적으로 표시하려면 0으로 설정
 
-		// 구체를 그립니다.
-		DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines , Duration);
+	// 구체를 그립니다.
+	DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines, Duration);
 }
 

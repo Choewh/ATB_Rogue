@@ -12,9 +12,25 @@ void UActorpoolSubsystem::SpawnEffect(const FTransform& SpawnTransform, const FD
 {
 }
 
-void UActorpoolSubsystem::SpawnRange(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
+void UActorpoolSubsystem::SpawnRangeEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& EffectDataTableRowHandle)
 {
+	APawnRange* NewPawnRange = PawnRange.GetActorFromPool();
+	NewPawnRange->SetData(EffectDataTableRowHandle);
+	NewPawnRange->SetActorTransform(SpawnTransform);
+	//LifeSpanExpired() , 리턴투풀
+}
+void UActorpoolSubsystem::DeSpawnRangeEffect()
+{
+	APawnRange* DeSpawnPawnRange = PawnRange.GetPoolingActor();
+	if (!DeSpawnPawnRange) { return; }
+	DeSpawnPawnRange->ReturnToPool();
+}
 
+void UActorpoolSubsystem::DeSpawnRangeEffect(APooledActor* DeSpawnActor)
+{
+	APawnRange* DeSpawnPawnRange =	Cast<APawnRange>(DeSpawnActor);
+	if (!DeSpawnPawnRange) { return; }
+	DeSpawnPawnRange->ReturnToPool();
 }
 
 void UActorpoolSubsystem::SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
@@ -23,4 +39,5 @@ void UActorpoolSubsystem::SpawnViewUI(const FTransform& SpawnTransform, const FD
 
 void UActorpoolSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
+	PawnRange.InitializePool(&InWorld, 1);
 }

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Pool/PooledActor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Data/EffectTableRows.h"
+#include "Data/StatTableRows.h"
 #include "PawnRange.generated.h"
 /**
  * 
@@ -18,7 +20,7 @@ public:
 	APawnRange();
 
 public:
-	void SetData(const FDataTableRowHandle& InDataTableRowHandle);
+	void SetData(const FDataTableRowHandle& EffectDataTableRowHandle);
 
 
 protected:
@@ -28,4 +30,10 @@ protected:
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UStaticMeshComponent* StaticMeshComponent;
+
+//protected:
+//	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))
+//	FDataTableRowHandle DataTableRowHandle;
+//
+//	FEffectTableRow* EffectData;
 };

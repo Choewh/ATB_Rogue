@@ -9,28 +9,10 @@ UPawnViewCameraComponent::UPawnViewCameraComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	//static ConstructorHelpers::FObjectFinder<UCurveFloat> CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
-	//check(CurveAsset.Object);
-
-	////SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
-
-	//CameraSplineTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraSplineTimelineComponent"));
-	//CameraSplineTimelineComponent->SetFloatCurve(CurveAsset.Object, TEXT("CameraSplineCurve"));
-	//CameraSplineTimelineComponent->SetPlayRate(0.1f);
-
-	//FOnTimelineFloat Delegate;
-	//Delegate.BindDynamic(this, &ThisClass::StartSplineMoving);
-
-	//CameraSplineTimelineComponent->AddInterpFloat(CurveAsset.Object, Delegate);
-	//CameraSplineTimelineComponent->SetLooping(true);
-}
-
-void UPawnViewCameraComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
 	static ConstructorHelpers::FObjectFinder<UCurveFloat> CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
 	check(CurveAsset.Object);
+
+	//SetRelativeRotation(FRotator(0.0, -90.0, 0.0));
 
 	CameraSplineTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraSplineTimelineComponent"));
 	CameraSplineTimelineComponent->SetFloatCurve(CurveAsset.Object, TEXT("CameraSplineCurve"));
@@ -41,6 +23,11 @@ void UPawnViewCameraComponent::BeginPlay()
 
 	CameraSplineTimelineComponent->AddInterpFloat(CurveAsset.Object, Delegate);
 	CameraSplineTimelineComponent->SetLooping(true);
+}
+
+void UPawnViewCameraComponent::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void UPawnViewCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

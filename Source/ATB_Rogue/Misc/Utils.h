@@ -6,6 +6,8 @@
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Enums/PawnDataHandle.h"
+#include "Data/DataTableRows.h"
 
 class FUtils
 {
@@ -23,4 +25,19 @@ public:
 		return nullptr;
 	}
 
+	static const FDataTableRowHandle GetTableRowFromName(const FDataTableRowHandle& InDataTableRowHandle, const EPawnDataHandle PawnDataHandle)
+	{
+		FPawnTableRow* Data = InDataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Guilmon"));
+		if (!Data) { ensure(false); return FDataTableRowHandle(); }
+		
+		switch (PawnDataHandle)
+		{
+		case EPawnDataHandle::Effect:
+			return Data->Effect;
+		case EPawnDataHandle::Stat:
+			return Data->Stat;
+		default:
+			return FDataTableRowHandle();
+		}
+	}
 };

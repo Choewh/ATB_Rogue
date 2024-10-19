@@ -11,6 +11,10 @@
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetPortrait , UTexture* , NewPortrait );
+
+
 UCLASS()
 class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
 {
@@ -72,7 +76,10 @@ public:
 public:
 	UFUNCTION(BlueprintCallable, Category = "BattleSubsystem")
 	TArray<ABasePawn*> GetPlayerblePawns() { return Playerble; }
-	
+
+	UPROPERTY(BlueprintAssignable)
+	FSetPortrait SetPortrait;
+
 private:
 	UPROPERTY()
 	TArray<ABasePawn*> Playerble;

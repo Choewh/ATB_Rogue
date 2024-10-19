@@ -9,6 +9,7 @@
 #include "Misc/Utils.h"
 #include "Data/SkillTableRows.h"
 #include "Data/EffectTableRows.h"
+#include "Data/StatTableRows.h"
 #include "Data/AnimMontageTableRows.h"
 
 #include "Actor/BaseCameraSplineActor.h"
@@ -22,6 +23,21 @@ struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
+	FPawnTableRow()
+		: SkeletalMesh(nullptr),
+		MeshTransform(FTransform::Identity),
+		AnimClass(nullptr),
+		CameraSpline(nullptr),
+		BPCameraSpline(nullptr),
+		CameraSplineClass(nullptr),
+		Effect(), // Effect의 기본값 설정 (필요시)
+		Stat()    // Stat의 기본값 설정
+	{
+
+	}
+public:
+	UPROPERTY(EditAnywhere, Category = "Portrait")
+	TArray<UTexture*> Portraits;
 public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	USkeletalMesh* SkeletalMesh = nullptr;
@@ -40,5 +56,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass;
+public:
+	UPROPERTY(EditAnywhere, Category = "Effect" , meta = (RowType = "/Script/ATB_ROGUE.EffectTableRow"))
+	FDataTableRowHandle Effect;
+public:
+	UPROPERTY(EditAnywhere, Category = "Stat", meta = (RowType = "/Script/ATB_ROGUE.StatTableRow"))
+	FDataTableRowHandle Stat; 
+
 
 };

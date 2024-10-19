@@ -5,25 +5,32 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Misc/Actorpool.h"
+#include "Effect/PawnRange.h"
 #include "ActorpoolSubsystem.generated.h"
 
 /**
- * 
+ *
  */
+
 UCLASS()
 class ATB_ROGUE_API UActorpoolSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
-	
+
 public:
 	void SpawnEnemy(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 	void SpawnEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
-	void SpawnRange(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
+
+
+	void SpawnRangeEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& EffectDataTableRowHandle);
+
+	void DeSpawnRangeEffect();
+	void DeSpawnRangeEffect(APooledActor* DeSpawnActor);
 	void SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
 protected:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 protected:
-	//FCirularActorPool<> ~~
+	FCircularActorPool<APawnRange> PawnRange;
 };

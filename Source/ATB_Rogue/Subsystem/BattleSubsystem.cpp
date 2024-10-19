@@ -2,6 +2,7 @@
 
 
 #include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/ActorpoolSubsystem.h"
 
 UBattleSubsystem::UBattleSubsystem()
 {
@@ -14,6 +15,7 @@ void UBattleSubsystem::EntryEnemy(ABasePawn* EntryEnemy)
 	
 	FString LogMessage = EntryEnemy->GetName();
 	UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
+	//HUD 델리게이트?
 }
 
 void UBattleSubsystem::EnemyDeactive()
@@ -50,6 +52,8 @@ void UBattleSubsystem::SelectActionView()
 {
 	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
 	PlayerController->PawnAroundView(ActionPawn);
+	//그럴일없겠지만 있으면 삭제 ㅇㅇ
+	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	//폰에서 사거리 그려주기 어떻게?
 }
 
@@ -57,11 +61,13 @@ void UBattleSubsystem::SelectMoveAction()
 {
 	PlayerController->SetBattleState(EBattleState::Move);				//이동상태로 변경
 	PlayerController->SetViewCameraMode(ECameraViewMode::DefaultView);	//카메라 뷰 디폴트로 변경
+	ActionPawn->MakeViewMoveRange();
 }
-
 bool UBattleSubsystem::SelectMoveAccept()
 {
 	FVector NewDestination = PlayerController->GetMovePoint();
+	//클릭없었으면 작동 X
+	if (NewDestination == FVector::Zero()) { return false; }
 	//액션폰에 자기 이동거리 확인 만들기
 	if (!ActionPawn->Movealbe(NewDestination))
 	{
@@ -72,6 +78,7 @@ bool UBattleSubsystem::SelectMoveAccept()
 	{
 		FinishTrun();
 		PlayerController->SetBattleState(EBattleState::Move);
+		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 		return true;
 	}
 	return false;
@@ -80,6 +87,7 @@ bool UBattleSubsystem::SelectMoveAccept()
 
 void UBattleSubsystem::SelectMoveCancle()
 {
+	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	PlayerController->SetBattleState(EBattleState::Defalut);
 	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
 	PlayerController->PawnAroundView(ActionPawn);

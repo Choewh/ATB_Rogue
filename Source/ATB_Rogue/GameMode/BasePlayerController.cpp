@@ -4,6 +4,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PlayerCameraManager/BasePlayerCameraManager.h"
 #include "Subsystem/BattleSubsystem.h"
 
 ABasePlayerController::ABasePlayerController()
@@ -14,7 +15,7 @@ ABasePlayerController::ABasePlayerController()
 		IMC = Asset.Object;
 	}
 	{
-
+		PlayerCameraManagerClass = ABasePlayerCameraManager::StaticClass();
 	}
 	bShowMouseCursor = true;
 

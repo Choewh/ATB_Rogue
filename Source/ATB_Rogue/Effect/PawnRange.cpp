@@ -14,10 +14,17 @@ APawnRange::APawnRange()
 	}
 }
 
-void APawnRange::SetData(const FDataTableRowHandle& InDataTableRowHandle)
+void APawnRange::SetData(const FDataTableRowHandle& EffectDataTableRowHandle)
 {
+	if (EffectDataTableRowHandle.IsNull()) { return; }
+	{
+		FEffectTableRow* Data = EffectDataTableRowHandle.GetRow<FEffectTableRow>(TEXT("RangeEffect"));
+		if (!Data) { ensure(false); return; }
 
+		StaticMeshComponent->SetStaticMesh(Data->RangeMesh);
+	}
 }
+
 
 void APawnRange::BeginPlay()
 {

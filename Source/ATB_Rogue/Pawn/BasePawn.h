@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Pawn.h"
 #include "Data/DataTableRows.h"
 #include "Component/SplineCameraChildActorComponent.h"
@@ -16,7 +17,11 @@ class ATB_ROGUE_API ABasePawn : public APawn
 {
 	GENERATED_BODY()
 
+
 public:
+
+	friend class UBattleSubsystem;
+
 	// Sets default values for this pawn's properties
 	ABasePawn();
 	virtual void SetData(const FDataTableRowHandle& InDataTableRowHandle);
@@ -46,6 +51,8 @@ public:
 	float GetCurATBPercent() { return ABT_Cur / ABT_MAX; }
 	void ABTFeeling();
 	bool Movealbe(FVector NewDestination);
+	void MakeViewMoveRange();
+	
 	bool MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
 
@@ -65,6 +72,11 @@ protected:
 	FDataTableRowHandle DataTableRowHandle;
 
 	FPawnTableRow* EnemyData;
+
+	FStatTableRow* StatData;
+
+	FEffectTableRow* EffectData;
+
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;

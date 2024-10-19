@@ -6,7 +6,7 @@
 #include "UObject/GCObject.h"
 #include "GameFramework/Actor.h"
 
-class ATB_ROGUE_API FActorPool : public FGCObject
+class FActorPool : public FGCObject
 {
 public:
 	virtual void ReturnActorToPool(class APooledActor* Actor) {}
@@ -49,6 +49,17 @@ public:
 		ActiveActors.Add(Actor);
 		ActivateActor(Actor);
 		return Actor;
+	}
+
+	T* GetPoolingActor()
+	{
+		if (ActiveActors.IsEmpty())
+		{
+			return nullptr;
+		}
+		TObjectPtr<T> Actor = ActiveActors.Top();
+		return Actor;
+
 	}
 
 	virtual void ReturnActorToPool(APooledActor* Actor) override
