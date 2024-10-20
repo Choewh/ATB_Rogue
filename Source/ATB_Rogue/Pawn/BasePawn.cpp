@@ -29,9 +29,11 @@ ABasePawn::ABasePawn()
 		SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 		SkeletalMeshComponent->SetupAttachment(RootComponent);
 
-		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	}
-
+	{
+		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
+		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
+	}
 	//SplineCameraChildActorComponent
 	{
 		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
@@ -65,22 +67,33 @@ void ABasePawn::SetData()
 	TArray<FPawnTableRow*> PawnTable_Array;
 	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
 
-	for (auto& PawnTable : PawnTable_Array)
+	if (!PawnData)
 	{
-		if (PawnTable->Species == Species)
+		for (auto& PawnTable : PawnTable_Array)
 		{
-			PawnData = PawnTable;
+			if (PawnTable->Species == Species)
+			{
+				PawnData = PawnTable;
+			}
 		}
 	}
+
 	if (!PawnData) { return; }
+
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
 		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);
 	}
+
 	if (StatusComponent)
 	{
 		StatusComponent->SetData(Species);
+	}
+
+	if (EffectComponent)
+	{
+		EffectComponent->SetData(Species);
 	}
 }
 
@@ -155,21 +168,12 @@ void ABasePawn::ABTFeeling()
 }
 bool ABasePawn::Movealbe(FVector NewDestination)
 {
+	//폰과 목표 사이거리 계산
 	FVector CenterPoint = GetActorLocation();
 	float Distance;
-	float Range;
-	
-	//스탯컴포넌트에서 받아오기 ㅇ
-	//if (StatData->MoveRange)
-	//{
-	//	Range = StatData->MoveRange;
-	//}
-	//else
-	{
-		Range = 1000.f;
-	}
 	Distance = FVector::Dist(CenterPoint, NewDestination);
-	if (Distance <= Range) {
+
+	if (Distance <= StatusComponent->GetMoveRange()) {
 		// 범위 내에 있는 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
 		return true;
@@ -182,14 +186,10 @@ bool ABasePawn::Movealbe(FVector NewDestination)
 }
 void ABasePawn::MakeViewMoveRange()
 {
-	
-	//스탯컴포넌트에서 받아오기 ㅇ
-	if (!StatusComponent) { ensure(false); return; }
+	//이동사거리 표시
+	if (!EffectComponent) { ensure(false); return; }
 	{
-		float Scale = (StatusComponent->GetMoveRange()) * 2 / 100;
-		FTransform NewTransform(FRotator::ZeroRotator, GetActorLocation(), FVector(Scale, Scale, 0.1f));
-		//UI 컴포넌트? 음 
-		//GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, FUtils::GetTableRowFromName(DataTableRowHandle,EPawnDataHandle::Effect));
+		EffectComponent->ViewMoveRange(GetActorLocation(),StatusComponent->GetMoveRange());
 	}
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ

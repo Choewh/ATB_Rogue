@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 
 #include "Components/ActorComponent.h"
+
 #include "Engine/DataTable.h"
 #include "Data/StatTableRow.h"
+
 #include "Enums/Stat.h"
 #include "Enums/Stage.h"
 #include "Enums/Species.h"

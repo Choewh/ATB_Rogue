@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Pool/PooledActor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/DecalComponent.h"
 #include "Data/EffectTableRow.h"
 #include "Data/StatTableRow.h"
 #include "PawnRange.generated.h"
@@ -20,16 +21,20 @@ public:
 	APawnRange();
 
 public:
-	void SetData(const FDataTableRowHandle& EffectDataTableRowHandle);
+	void SetData(UMaterial* DecalMaterial);
 
 
 protected:
 	virtual void BeginPlay() override;
 	
-	UFUNCTION()
-	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UStaticMeshComponent* StaticMeshComponent;
+	//UFUNCTION()
+	//virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	//	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* DefaultSceneRoot = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	UDecalComponent* DecalMeshComponent;
 
 //protected:
 //	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))

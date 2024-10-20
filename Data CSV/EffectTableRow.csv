@@ -1,0 +1,6 @@
+---,Species,MoveRangeMaterial
+Default,"Gigimon","/Script/Engine.Material'/Game/FX/M_RangeEffect.M_RangeEffect'"
+Default_0,"Guilmon","/Script/Engine.Material'/Game/FX/M_RangeEffect.M_RangeEffect'"
+Default_1,"Growmon","/Script/Engine.Material'/Game/FX/M_RangeEffect.M_RangeEffect'"
+Default_2,"Megalogrowmon","/Script/Engine.Material'/Game/FX/M_RangeEffect.M_RangeEffect'"
+Default_3,"Dukemon","/Script/Engine.Material'/Game/FX/M_RangeEffect.M_RangeEffect'"

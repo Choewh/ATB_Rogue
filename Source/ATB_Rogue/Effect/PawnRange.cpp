@@ -6,23 +6,16 @@
 
 APawnRange::APawnRange()
 {
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	RootComponent = StaticMeshComponent;
-	{
-		StaticMeshComponent->SetCollisionProfileName(TEXT("EnemySeach"));
-		StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
-	}
+	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
+	RootComponent = DefaultSceneRoot;
+	DecalMeshComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalMeshComponent"));
+	DecalMeshComponent->SetupAttachment(RootComponent);
 }
 
-void APawnRange::SetData(const FDataTableRowHandle& EffectDataTableRowHandle)
+void APawnRange::SetData(UMaterial* DecalMaterial)
 {
-	if (EffectDataTableRowHandle.IsNull()) { return; }
-	{
-		FEffectTableRow* Data = EffectDataTableRowHandle.GetRow<FEffectTableRow>(TEXT("RangeEffect"));
-		if (!Data) { ensure(false); return; }
-
-		StaticMeshComponent->SetStaticMesh(Data->RangeMesh);
-	}
+	DecalMeshComponent->SetMaterial(0,DecalMaterial);
+	DecalMeshComponent->DecalSize = FVector(100.f, 100.f, 1.f);
 }
 
 
@@ -30,6 +23,6 @@ void APawnRange::BeginPlay()
 {
 }
 
-void APawnRange::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-}
+//void APawnRange::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//}

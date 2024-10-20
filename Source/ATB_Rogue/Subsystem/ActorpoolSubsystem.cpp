@@ -12,10 +12,10 @@ void UActorpoolSubsystem::SpawnEffect(const FTransform& SpawnTransform, const FD
 {
 }
 
-void UActorpoolSubsystem::SpawnRangeEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& EffectDataTableRowHandle)
+void UActorpoolSubsystem::SpawnRangeEffect(const FTransform SpawnTransform, UMaterial* DecalMaterial)
 {
 	APawnRange* NewPawnRange = PawnRange.GetActorFromPool();
-	NewPawnRange->SetData(EffectDataTableRowHandle);
+	NewPawnRange->SetData(DecalMaterial);
 	NewPawnRange->SetActorTransform(SpawnTransform);
 	//LifeSpanExpired() , 리턴투풀
 }

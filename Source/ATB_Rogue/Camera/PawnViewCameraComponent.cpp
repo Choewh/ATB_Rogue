@@ -8,7 +8,7 @@
 UPawnViewCameraComponent::UPawnViewCameraComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-#if !WITH_EDITOR
+#if NDEBUG
 	static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
 	check(CurveAsset.Object);
 #endif

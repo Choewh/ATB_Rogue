@@ -10,7 +10,8 @@ struct ATB_ROGUE_API FEffectTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, Category = "Effect")
-	UStaticMesh* RangeMesh = nullptr;
-
+	UPROPERTY(EditAnywhere, Category = "Species")
+	ESpecies Species;
+	UPROPERTY(EditAnywhere, Category = "Effect|Decal|MoveRange")
+	UMaterial* MoveRangeMaterial;
 };

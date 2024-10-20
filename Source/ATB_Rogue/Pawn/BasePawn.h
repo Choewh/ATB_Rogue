@@ -10,6 +10,8 @@
 #include "Enums/Species.h"
 
 #include "Component/StatusComponent.h"
+#include "Component/EffectComponent.h"
+
 #include "Component/SplineCameraChildActorComponent.h"
 
 #include "BasePawn.generated.h"
@@ -88,7 +90,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStatusComponent> StatusComponent;
-
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UEffectComponent> EffectComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 

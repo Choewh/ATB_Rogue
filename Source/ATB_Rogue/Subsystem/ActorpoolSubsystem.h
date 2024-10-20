@@ -22,7 +22,7 @@ public:
 	void SpawnEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
 
-	void SpawnRangeEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& EffectDataTableRowHandle);
+	void SpawnRangeEffect(const FTransform SpawnTransform, UMaterial* DecalMaterial);
 
 	void DeSpawnRangeEffect();
 	void DeSpawnRangeEffect(APooledActor* DeSpawnActor);
