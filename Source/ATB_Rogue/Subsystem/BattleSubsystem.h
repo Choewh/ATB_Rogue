@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Subsystem/ATBGameInstanceSubsystem.h"
 #include "GameMode/BasePlayerController.h"
+#include "Engine/Texture2D.h"
 #include "Pawn/BasePawn.h"
 #include "BattleSubsystem.generated.h"
 
@@ -12,7 +14,7 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetPortrait , UTexture* , NewPortrait );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetPortrait, UTexture2D* , NewPortrait );
 
 
 UCLASS()
@@ -23,6 +25,11 @@ class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
 
 public:
 	UBattleSubsystem();
+
+	UFUNCTION(BlueprintCallable)
+	void BattleStart();
+	UFUNCTION(BlueprintCallable)
+	void BattleEnd();
 public :
 	/*
 	
@@ -37,12 +44,14 @@ public :
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
 	UFUNCTION(BlueprintCallable)
-	void EntryEnemy(ABasePawn* EntryEnemy);
+	void SetPortraits();
+	//액션
+	void PawnAction();
 	//에너미 컨트롤 
 	UFUNCTION()
-	void EnemyDeactive();
+	void PawnsDeactive();
 	UFUNCTION()
-	void EnemyActive();
+	void PawnsActive();
 	//턴시작
 	UFUNCTION(BlueprintCallable)
 	void EnterActiveTurn(ABasePawn* Enemy);
@@ -74,15 +83,12 @@ public:
 	ABasePawn* GetActionPawn() { return ActionPawn; }
 	bool IsValidActionPawn() { return ActionPawn ? true : false; }
 public:
-	UFUNCTION(BlueprintCallable, Category = "BattleSubsystem")
-	TArray<ABasePawn*> GetPlayerblePawns() { return Playerble; }
-
 	UPROPERTY(BlueprintAssignable)
 	FSetPortrait SetPortrait;
 
-private:
+public:
 	UPROPERTY()
-	TArray<ABasePawn*> Playerble;
+	TArray<TObjectPtr<ABasePawn>> Pawns;
 
 	UPROPERTY()
 	ABasePawn* ActionPawn;

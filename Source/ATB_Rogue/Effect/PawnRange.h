@@ -21,7 +21,7 @@ public:
 	APawnRange();
 
 public:
-	void SetData(UMaterial* DecalMaterial);
+	void SetData(FEffectTableRow& DecalMaterial);
 
 
 protected:

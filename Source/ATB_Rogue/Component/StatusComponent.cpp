@@ -40,7 +40,7 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 		}
 	}
 
-	//ÃÊ±â°ªÀ¸·Î ¼¼ÆÃ
+	//ï¿½Ê±â°ªï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (!StatData) { UE_LOG(LogTemp, Log, TEXT("StatusComponent is Not Find")); return; }
 
 	{
@@ -71,23 +71,23 @@ float UStatusComponent::GetStat(EStat StatName)
 	switch (StatName)
 	{
 	case EStat::HP:
-		return HP;    // HP¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return HP;    // HPï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::ATK:
-		return ATK;   // ATK¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return ATK;   // ATKï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::DEF:
-		return DEF;   // DEF¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return DEF;   // DEFï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::SPATK:
-		return SPATK; // SPATK¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return SPATK; // SPATKï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::SPDEF:
-		return SPDEF; // SPDEF¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return SPDEF; // SPDEFï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::SPD:
-		return SPD;   // SPD¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return SPD;   // SPDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::ACC:
-		return ACC;   // ACC¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return ACC;   // ACCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	case EStat::EVA:
-		return EVA;   // EVA¿¡ ´ëÇÑ °ª ¹ÝÈ¯
+		return EVA;   // EVAï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
 	default:
-		return -1.f;  // ¾øÀ¸¸é -1.f
+		return -1.f;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -1.f
 	}
 }
 

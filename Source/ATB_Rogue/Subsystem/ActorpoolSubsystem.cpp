@@ -4,20 +4,16 @@
 #include "SubSystem/ActorpoolSubsystem.h"
 #include "ActorpoolSubsystem.h"
 
-void UActorpoolSubsystem::SpawnEnemy(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
-{
-}
-
 void UActorpoolSubsystem::SpawnEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
 {
 }
 
-void UActorpoolSubsystem::SpawnRangeEffect(const FTransform SpawnTransform, UMaterial* DecalMaterial)
+void UActorpoolSubsystem::SpawnRangeEffect(const FTransform SpawnTransform,FEffectTableRow& EffectTableRow)
 {
 	APawnRange* NewPawnRange = PawnRange.GetActorFromPool();
-	NewPawnRange->SetData(DecalMaterial);
+	NewPawnRange->SetData(EffectTableRow);
 	NewPawnRange->SetActorTransform(SpawnTransform);
-	//LifeSpanExpired() , ¸®ÅÏÅõÇ®
+	//LifeSpanExpired() , ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç®
 }
 void UActorpoolSubsystem::DeSpawnRangeEffect()
 {
@@ -25,13 +21,13 @@ void UActorpoolSubsystem::DeSpawnRangeEffect()
 	if (!DeSpawnPawnRange) { return; }
 	DeSpawnPawnRange->ReturnToPool();
 }
-
-void UActorpoolSubsystem::DeSpawnRangeEffect(APooledActor* DeSpawnActor)
-{
-	APawnRange* DeSpawnPawnRange =	Cast<APawnRange>(DeSpawnActor);
-	if (!DeSpawnPawnRange) { return; }
-	DeSpawnPawnRange->ReturnToPool();
-}
+//
+//void UActorpoolSubsystem::DeSpawnRangeEffect(APooledActor* DeSpawnActor)
+//{
+//	APawnRange* DeSpawnPawnRange =	Cast<APawnRange>(DeSpawnActor);
+//	if (!DeSpawnPawnRange) { return; }
+//	DeSpawnPawnRange->ReturnToPool();
+//}
 
 void UActorpoolSubsystem::SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
 {

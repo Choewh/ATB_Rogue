@@ -3,49 +3,80 @@
 
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/ActorpoolSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 UBattleSubsystem::UBattleSubsystem()
 {
 }
-//여기서 ATB 게이지에 초상화도 세팅
-void UBattleSubsystem::EntryEnemy(ABasePawn* EntryEnemy)
+void UBattleSubsystem::BattleStart()
 {
-	ABasePawn* Pawn = Cast<ABasePawn>(EntryEnemy);
-	Playerble.Add(Pawn);
-	
-	FString LogMessage = EntryEnemy->GetName();
-	UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
+	Pawns = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->GetPawns();
+	SetPortraits();
+	for (auto& Pawn : Pawns)
+	{
+		//폰만 받아오고 위치 알아서 ㄱ
+		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->ActivatePawn(Pawn);
+	}
+}
+void UBattleSubsystem::BattleEnd()
+{
+	for (auto& Pawn : Pawns)
+	{
+		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->DeactivatePawn(Pawn);
+	}
+}
+//여기서 ATB 게이지에 초상화도 세팅
+void UBattleSubsystem::SetPortraits()
+{
+	for (auto& Pawn : Pawns)
+	{
+		SetPortrait.Broadcast(Pawn->PawnData->Portraits);
+		FString LogMessage = Pawn->GetName();
+		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
+	}
 	//HUD 델리게이트?
 }
 
-void UBattleSubsystem::EnemyDeactive()
+void UBattleSubsystem::PawnAction()
 {
-	for(ABasePawn* enemy : Playerble)
+	if (ActionPawn->PawnGroup == EPawnGroup::Friendly)
+	{	//플레이어 폰일때 할 행동들
+		if (PlayerController) { PlayerController->Init(); }
+
+		if (!PlayerController->SetViewCameraMode(ECameraViewMode::PawnView))
+		{
+			return;//전환실패시 종료 턴종료 에러임 ㅇㅇ
+		}
+		SelectActionView();
+	}
+	// Ex.Move // Player Controller/Camera Move ->  
+	// PlayerController/TargetPosition -> BattleSystem/Move To 
+	// -> Pawn이동 -> 현재는 턴 종료 로 마무리 하기 
+}
+
+void UBattleSubsystem::PawnsDeactive()
+{
+	//인스턴스에서 전부 받아와서 설정
+	for(ABasePawn* Pawn : Pawns)
 	{
-		enemy->SetActive(false);
+		Pawn->SetActive(false);
 	}
 }
 
-void UBattleSubsystem::EnemyActive()
+	
+void UBattleSubsystem::PawnsActive()
 {
-	for (ABasePawn* enemy : Playerble)
+	//인스턴스에서 전부 받아와서 설정
+	for (ABasePawn* Pawn : Pawns)
 	{
-		enemy->SetActive(true);
+		Pawn->SetActive(true);
 	}
 }
 
-void UBattleSubsystem::EnterActiveTurn(ABasePawn* Enemy)
+void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
-	EnemyDeactive(); // 그외 에너미 ATB 게이지 회복 중단
-	SetActionPawn(Enemy); // 액션폰 설정
-	if (PlayerController) { PlayerController->Init(); }
-
-	if (!PlayerController->SetViewCameraMode(ECameraViewMode::PawnView))
-	{
-		return;//전환실패시 종료 턴종료 에러임 ㅇㅇ
-	}
-	SelectActionView();
-	// Ex.Move // Player Controller/Camera Move ->  PlayerController/TargetPosition -> BattleSystem/Move To -> Pawn이동 -> 현재는 턴 종료 로 마무리 하기 
+	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
+	SetActionPawn(InPawn); // 액션폰 설정
 }
 
 void UBattleSubsystem::SelectActionView()
@@ -112,7 +143,7 @@ void UBattleSubsystem::FinishTrun()
 		//에너미들의 ABTFeeling On 
 		//액션폰은 null로 초기화
 		ActionPawn->ABTReset(); 
-		EnemyActive();
+		PawnsActive();
 		ActionPawn = nullptr;
 	}
 }

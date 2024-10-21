@@ -33,7 +33,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	//µ¥ÀÌÅÍ Å×ÀÌºí
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½
 	UDataTable* EffectDataTable;
 	FEffectTableRow* EffectData;
 	

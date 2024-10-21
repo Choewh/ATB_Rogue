@@ -34,30 +34,30 @@ public:
 	/// Script / Engine.DataTable'/Game/DataTable/StatTableRow.StatTableRow'
 
 public:
-	//µ¥ÀÌÅÍ Å×ÀÌºí
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½
 	UDataTable* StatDataTable;
 	FStatTableRow* StatData;
 
 public:
-	//½ºÅÈ°ª ¹Þ¾Æ¿À±â
+	//ï¿½ï¿½ï¿½È°ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½
 	EStage GetStage() { return Stage; }
 	EAttribute GetAttribute() { return Attribute; }
 	float GetStat(EStat StatName);
 	float GetMoveRange() { return MoveRange; }
 
 private:
-	//±âÅ¸ µ¥ÀÌÅÍ
+	//ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(VisibleAnywhere) EStage Stage;
 
 	UPROPERTY(VisibleAnywhere) EAttribute Attribute;
-	//Æù¿¡ ÇÊ¿äÇÑ ½ºÅÈµé
-	UPROPERTY(VisibleAnywhere) float HP;       // Ã¼·Â
-	UPROPERTY(VisibleAnywhere) float ATK;      // °ø°Ý·Â
-	UPROPERTY(VisibleAnywhere) float DEF;      // ¹æ¾î·Â
-	UPROPERTY(VisibleAnywhere) float SPATK;    // Æ¯¼ö °ø°Ý
-	UPROPERTY(VisibleAnywhere) float SPDEF;    // Æ¯¼ö ¹æ¾î
-	UPROPERTY(VisibleAnywhere) float SPD;      // ½ºÇÇµå
-	UPROPERTY(VisibleAnywhere) float ACC;      // ¸íÁß·ü
-	UPROPERTY(VisibleAnywhere) float EVA;      // È¸ÇÇÀ²
-	UPROPERTY(VisibleAnywhere) float MoveRange; // ÀÌµ¿ °¡´É °Å¸®
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Èµï¿½
+	UPROPERTY(VisibleAnywhere) float HP;       // Ã¼ï¿½ï¿½
+	UPROPERTY(VisibleAnywhere) float ATK;      // ï¿½ï¿½ï¿½Ý·ï¿½
+	UPROPERTY(VisibleAnywhere) float DEF;      // ï¿½ï¿½ï¿½ï¿½
+	UPROPERTY(VisibleAnywhere) float SPATK;    // Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	UPROPERTY(VisibleAnywhere) float SPDEF;    // Æ¯ï¿½ï¿½ ï¿½ï¿½ï¿½
+	UPROPERTY(VisibleAnywhere) float SPD;      // ï¿½ï¿½ï¿½Çµï¿½
+	UPROPERTY(VisibleAnywhere) float ACC;      // ï¿½ï¿½ï¿½ß·ï¿½
+	UPROPERTY(VisibleAnywhere) float EVA;      // È¸ï¿½ï¿½ï¿½ï¿½
+	UPROPERTY(VisibleAnywhere) float MoveRange; // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
 };

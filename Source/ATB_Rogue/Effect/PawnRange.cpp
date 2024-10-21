@@ -12,10 +12,11 @@ APawnRange::APawnRange()
 	DecalMeshComponent->SetupAttachment(RootComponent);
 }
 
-void APawnRange::SetData(UMaterial* DecalMaterial)
+void APawnRange::SetData(FEffectTableRow& EffectData)
 {
-	DecalMeshComponent->SetMaterial(0,DecalMaterial);
-	DecalMeshComponent->DecalSize = FVector(100.f, 100.f, 1.f);
+	DecalMeshComponent->SetMaterial(0, EffectData.RangeDecalMaterial);
+	DecalMeshComponent->SetRelativeTransform(EffectData.RangeDecalTransform);
+	DecalMeshComponent->DecalSize = FVector(1.f, 100.f, 100.f);
 }
 
 

@@ -22,6 +22,9 @@ public:
 
 public:
 
+
+	UFUNCTION()
+	void ShowATBBar(UTexture2D* Portrait);
 	UFUNCTION()
 	void ShowViewPort();
 
@@ -34,7 +37,7 @@ private:
 	TObjectPtr<class UABTUserWidget> Widget;
 
 	UPROPERTY()
-	TObjectPtr<class UUserWidget> ATBWidget;
+	TObjectPtr<class UABTUserWidget> ATBWidget;
 
 	
 

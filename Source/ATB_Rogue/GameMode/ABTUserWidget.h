@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Subsystem/BattleSubsystem.h"
 #include "GameMode/BasePlayerController.h"
 #include "ABTUserWidget.generated.h"
 
@@ -25,5 +26,6 @@ protected:
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	ABasePlayerController* PlayerController;
-	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UBattleSubsystem* BattleSubsystem;
 };

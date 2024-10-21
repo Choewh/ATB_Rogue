@@ -22,4 +22,5 @@ enum class ESpecies : uint8
 	Megalogrowmon UMETA(DisplayName = "Megalo Growmon"),
 	//Mege
 	Dukemon UMETA(DisplayName = "Dukemon"),
+	End UMETA(DisplayName = "End")
 };

@@ -5,7 +5,9 @@
 #include "DrawDebugHelpers.h"
 
 #include "Misc/Utils.h"
+
 #include "Subsystem/BattleSubsystem.h"
+
 #include "Subsystem/ActorpoolSubsystem.h"
 
 // Sets default values
@@ -46,29 +48,20 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	{ //추후에 게임인스턴스서브시스템으로 기능 옮겨주기   //게임인스턴스에 등록->게임인스턴스에서 배틀서브시스템으로 전달->배틀시작 ㅇㅇ 이런식?
-		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-		check(BattleSubsystem);
-		BattleSubsystem->EntryEnemy(this);
-	}
+	//추후에 게임인스턴스서브시스템으로 기능 옮겨주기   //게임인스턴스에 등록->게임인스턴스에서 배틀서브시스템으로 전달->배틀시작 ㅇㅇ 이런식?
+
 	//초기화 해주기 init(); 하나 만들까 고민
 	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
 }
-
+//서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
 {
-	//DataTableRowHandle = InDataTableRowHandle;
-	//if (DataTableRowHandle.IsNull()) { return; }
-	//FPawnTableRow* Data = DataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Guilmon")); // << 임시로 이렇게 쓰고있는데 수정해야함
-	//if (!Data) { ensure(false); return; }
-
-	// 원래있던애들 ㅇ
-
 	TArray<FPawnTableRow*> PawnTable_Array;
 	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
 
-	if (!PawnData)
+	if (!PawnData || PawnData->Species != Species)
 	{
+		if (Species == ESpecies::None) { return; }
 		for (auto& PawnTable : PawnTable_Array)
 		{
 			if (PawnTable->Species == Species)
@@ -78,8 +71,7 @@ void ABasePawn::SetData()
 		}
 	}
 
-	if (!PawnData) { return; }
-
+	if (PawnData)
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
@@ -189,7 +181,7 @@ void ABasePawn::MakeViewMoveRange()
 	//이동사거리 표시
 	if (!EffectComponent) { ensure(false); return; }
 	{
-		EffectComponent->ViewMoveRange(GetActorLocation(),StatusComponent->GetMoveRange());
+		EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetMoveRange());
 	}
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ

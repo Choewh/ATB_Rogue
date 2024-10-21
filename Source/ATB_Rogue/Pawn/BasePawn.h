@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 
-#include "GameFramework/Pawn.h"
 #include "Engine/DataTable.h"
 #include "Data/PawnTableRow.h"
 #include "Enums/Species.h"
+#include "Enums/PawnGroup.h"
 
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
-
 #include "Component/SplineCameraChildActorComponent.h"
+#include "Components/Slider.h"
 
 #include "BasePawn.generated.h"
 
@@ -21,8 +21,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, f
 UCLASS()
 class ATB_ROGUE_API ABasePawn : public APawn
 {
-	GENERATED_BODY()
 
+	GENERATED_BODY()
 
 public:
 
@@ -51,6 +51,9 @@ public:
 
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void SetATBBar(USlider* InSlider) { ATBBar = InSlider; }
+
 	void ABTReset() { ABT_Cur = 0; }
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
@@ -72,11 +75,12 @@ public:
 	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESpecies Species; // 디지몬 종
+	ESpecies Species;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EPawnGroup PawnGroup;
 
-protected:
+public:
 	//Test
 	UDataTable* PawnDataTable;
 	FPawnTableRow* PawnData;
@@ -94,6 +98,9 @@ protected:
 	TObjectPtr<UEffectComponent> EffectComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
+
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<USlider> ATBBar;
 
 private:
 

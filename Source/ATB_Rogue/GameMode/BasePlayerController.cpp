@@ -193,7 +193,7 @@ void ABasePlayerController::OnViewCameraMove(const FInputActionValue& InputActio
 	if (BattleState == EBattleState::Move && ControllerInput == EControllerInput::MouseRight)
 	{
 		FRotator CurRotator = DefaultCamera->GetRelativeRotation();
-		DefaultCamera->SetRelativeRotation(FRotator(CurRotator.Pitch + InputValue.Y, CurRotator.Yaw + InputValue.X, 0));
+		DefaultCamera->SetRelativeRotation(FRotator((CurRotator.Pitch - InputValue.Y), (CurRotator.Yaw - InputValue.X), 0));
 	}
 }
 

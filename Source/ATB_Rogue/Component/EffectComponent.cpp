@@ -6,11 +6,9 @@
 #include "EffectComponent.h"
 
 
-// Sets default values for this component's properties
 UEffectComponent::UEffectComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
+
 	PrimaryComponentTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> EffectDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/EffectTableRow.EffectTableRow'"));
@@ -19,16 +17,13 @@ UEffectComponent::UEffectComponent()
 		UE_LOG(LogTemp, Warning, TEXT("EffectData Succeeded"));
 		EffectDataTable = EffectDataObject.Object;
 	}
-	// ...
 }
 
 
-// Called when the game starts
 void UEffectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 	
 }
 
@@ -46,19 +41,17 @@ void UEffectComponent::SetData(ESpecies InSpecies)
 	}
 }
 
-// Called every frame
 void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void UEffectComponent::ViewMoveRange(FVector PawnLocation,float MoveRange)
 {
 	float Scale = (MoveRange) / 100;
-	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(Scale, Scale, 0.1f));
-	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform,EffectData->MoveRangeMaterial);
+	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(0.1f, Scale, Scale));
+	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform,*EffectData);
 }
 
 void UEffectComponent::DeViewMoveRange()

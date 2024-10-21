@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Pawn/BasePawn.h"
 #include "Misc/Actorpool.h"
 #include "Effect/PawnRange.h"
 #include "ActorpoolSubsystem.generated.h"
@@ -18,14 +19,13 @@ class ATB_ROGUE_API UActorpoolSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	void SpawnEnemy(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 	void SpawnEffect(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
-
-	void SpawnRangeEffect(const FTransform SpawnTransform, UMaterial* DecalMaterial);
-
+	//이펙트 스폰 ㅇ
+	void SpawnRangeEffect(const FTransform SpawnTransform, FEffectTableRow& EffectTableRow);
 	void DeSpawnRangeEffect();
-	void DeSpawnRangeEffect(APooledActor* DeSpawnActor);
+	
+
 	void SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
 protected:

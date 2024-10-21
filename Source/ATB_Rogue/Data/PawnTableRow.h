@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Pawn.h"
-
+#include "Engine/Texture2D.h"
 #include "Misc/Utils.h"
 
 #include "Enums/Species.h"
@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Species")
 	ESpecies Species;
 	UPROPERTY(EditAnywhere, Category = "Portrait")
-	TArray<UTexture*> Portraits;
+	UTexture2D* Portraits;
 public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	USkeletalMesh* SkeletalMesh = nullptr;

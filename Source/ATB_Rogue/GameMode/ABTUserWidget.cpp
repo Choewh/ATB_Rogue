@@ -7,6 +7,7 @@ void UABTUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	PlayerController = Cast<ABasePlayerController>(GetOwningPlayer());
+	BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 }
 
 void UABTUserWidget::NativePreConstruct()
