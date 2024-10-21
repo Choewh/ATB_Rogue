@@ -51,7 +51,7 @@ public:
 		return Actor;
 	}
 
-	T* GetPoolingActor()
+	T* GetPoolingTopActor()
 	{
 		if (ActiveActors.IsEmpty())
 		{

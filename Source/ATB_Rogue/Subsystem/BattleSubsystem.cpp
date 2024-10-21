@@ -11,7 +11,7 @@ UBattleSubsystem::UBattleSubsystem()
 void UBattleSubsystem::BattleStart()
 {
 	Pawns = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->GetPawns();
-	SetPortraits();
+	//SetPortraits();
 	for (auto& Pawn : Pawns)
 	{
 		//폰만 받아오고 위치 알아서 ㄱ
@@ -30,7 +30,7 @@ void UBattleSubsystem::SetPortraits()
 {
 	for (auto& Pawn : Pawns)
 	{
-		SetPortrait.Broadcast(Pawn->PawnData->Portraits);
+		//SetPortrait.Broadcast(Pawn->PawnData->Portraits);
 		FString LogMessage = Pawn->GetName();
 		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}

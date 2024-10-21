@@ -12,7 +12,7 @@
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
-#include "Components/Slider.h"
+#include "Components/WidgetComponent.h"
 
 #include "BasePawn.generated.h"
 
@@ -51,13 +51,7 @@ public:
 
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void SetATBBar(USlider* InSlider) { ATBBar = InSlider; }
-
 	void ABTReset() { ABT_Cur = 0; }
-
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	float GetCurATBPercent() { return ABT_Cur / ABT_MAX; }
 	void ABTFeeling();
 	bool Movealbe(FVector NewDestination);
 	void MakeViewMoveRange();
@@ -99,8 +93,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<USlider> ATBBar;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UWidgetComponent> ATBbarWidgetComponent;
 
 private:
 

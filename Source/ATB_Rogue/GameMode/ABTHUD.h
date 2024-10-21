@@ -23,8 +23,8 @@ public:
 public:
 
 
-	UFUNCTION()
-	void ShowATBBar(UTexture2D* Portrait);
+	//UFUNCTION()
+	//void ShowATBBar(UTexture2D* Portrait);
 	UFUNCTION()
 	void ShowViewPort();
 

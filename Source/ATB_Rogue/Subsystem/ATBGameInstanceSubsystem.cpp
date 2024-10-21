@@ -48,6 +48,7 @@ void UATBGameInstanceSubsystem::EntryEnemyPawn(ESpecies SpawnSpecies, EPawnGroup
 
 		break;
 	}
+	MatchSlider.Broadcast(NewPawn);
 }
 
 TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingActor()
@@ -59,7 +60,6 @@ TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingActor()
 		}
 		TObjectPtr<ABasePawn> Actor = ActivePawns.Top();
 		return Actor;
-
 	}
 }
 

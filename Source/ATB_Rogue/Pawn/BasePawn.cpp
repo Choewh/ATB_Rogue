@@ -5,7 +5,7 @@
 #include "DrawDebugHelpers.h"
 
 #include "Misc/Utils.h"
-
+#include "UI/ABTBarUserWidget.h"
 #include "Subsystem/BattleSubsystem.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
@@ -33,6 +33,17 @@ ABasePawn::ABasePawn()
 
 	}
 	{
+		ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar.ABT_Bar_C'"));
+		ATBbarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATBbarWidgetComponent"));
+		ATBbarWidgetComponent->SetupAttachment(DefaultSceneRoot);
+		//ATBbarWidgetComponent->SetRelativeLocation(FVector(0., 0., 130.0));
+		//ATBbarWidgetComponent->SetDrawSize(FVector2D(256.3, 17.0));
+		ATBbarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+		ATBbarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ATBbarWidgetComponent->SetWindowVisibility(EWindowVisibility::Visible);
+		ATBbarWidgetComponent->SetWidgetClass(WidgetClass.Class);
+	}
+	{
 		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
 	}
@@ -48,10 +59,14 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	//추후에 게임인스턴스서브시스템으로 기능 옮겨주기   //게임인스턴스에 등록->게임인스턴스에서 배틀서브시스템으로 전달->배틀시작 ㅇㅇ 이런식?
-
-	//초기화 해주기 init(); 하나 만들까 고민
+	UABTBarUserWidget* ABTBarUserWidget = Cast<UABTBarUserWidget>(ATBbarWidgetComponent->GetWidget());
+	check(ABTBarUserWidget);
+	ABTBarUserWidget->SetOwningPawn(this);
 	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
+	if (PawnData) {
+		ABTBarUserWidget->SetPortrait(PawnData->Portraits);
+		ABTBarUserWidget->AddToViewport();
+	}
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
@@ -75,7 +90,7 @@ void ABasePawn::SetData()
 	{
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
-		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);
+		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
 	}
 
 	if (StatusComponent)
@@ -157,6 +172,7 @@ void ABasePawn::ABTFeeling()
 		FString LogMessage = FString::Printf(TEXT("%f"), ABT_Cur);
 		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}
+	OnATBChanged.Broadcast(ABT_Cur, ABT_MAX);
 }
 bool ABasePawn::Movealbe(FVector NewDestination)
 {

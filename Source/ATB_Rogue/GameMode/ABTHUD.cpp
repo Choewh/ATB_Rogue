@@ -14,10 +14,10 @@ void AABTHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	{
-		UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar_C.ABT_Bar_C_C'"));
-		check(WidgetClass);
-		ATBWidget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
+		//UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
+		//	TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar_C.ABT_Bar_C_C'"));
+		//check(WidgetClass);
+		//ATBWidget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
 	}
 	{
 		UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
@@ -32,9 +32,9 @@ void AABTHUD::BeginPlay()
 		UUserWidget* Test = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
 		Test->AddToViewport();
 	}
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	check(BattleSubsystem);
-	BattleSubsystem->SetPortrait.AddDynamic(this, &ThisClass::ShowATBBar);
+	//UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	//check(BattleSubsystem);
+	//BattleSubsystem->SetPortrait.AddDynamic(this, &ThisClass::ShowATBBar);
 
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
@@ -44,14 +44,14 @@ void AABTHUD::BeginPlay()
 
 
 
-void AABTHUD::ShowATBBar(UTexture2D* Portrait)
-{
-	if (ATBWidget && !ATBWidget->IsInViewport())
-	{
-		ATBWidget->AddToViewport();
-		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
-	}
-}
+//void AABTHUD::ShowATBBar(UTexture2D* Portrait)
+//{
+//	if (ATBWidget && !ATBWidget->IsInViewport())
+//	{
+//		ATBWidget->AddToViewport();
+//		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+//	}
+//}
 
 void AABTHUD::ShowViewPort()
 {

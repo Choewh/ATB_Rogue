@@ -11,7 +11,7 @@ public class ATB_Rogue : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] 
 		{
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-                "UMG","AIModule"
+                "UMG","AIModule","Slate", "SlateCore"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

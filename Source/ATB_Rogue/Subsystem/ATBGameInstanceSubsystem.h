@@ -11,6 +11,9 @@
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMatchSlider, ABasePawn*, MatchPawn);
+
 UCLASS()
 class ATB_ROGUE_API UATBGameInstanceSubsystem : public UGameInstanceSubsystem
 {
@@ -48,6 +51,8 @@ private:
 	ESpecies GetRandomSpecies();//추후에는 레벨서브시스템에서 하는걸로
 
 	TArray<TObjectPtr<ABasePawn>> ActivePawns; //플레이어폰 자체만 담고있기 ㅇ 
+public:
 
-
+	UPROPERTY(BlueprintAssignable)
+	FMatchSlider MatchSlider;
 };
