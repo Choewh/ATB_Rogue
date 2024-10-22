@@ -24,9 +24,6 @@ ABaseCharacter::ABaseCharacter()
 		UPawnViewCameraComponent* PawnViewCamera = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
 		PawnViewCamera->SetupAttachment(RootComponent);
 	}
-	
-	//ChildActorComponent->SetChildActorClass(UCameraComponent::StaticClass());
-	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned

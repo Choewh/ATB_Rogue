@@ -15,7 +15,7 @@ ABasePawn::ABasePawn()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	//폰 데이터 테이블 초기화
 	static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
 	if (PawnDataObject.Succeeded())
@@ -23,23 +23,22 @@ ABasePawn::ABasePawn()
 		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
 		PawnDataTable = PawnDataObject.Object;
 	}
-
 	{
 		DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 		RootComponent = DefaultSceneRoot;
 
 		SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 		SkeletalMeshComponent->SetupAttachment(RootComponent);
-
+		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 	{
+		MovementComponent = CreateDefaultSubobject<UBaseFloatingPawnMovement>(TEXT("BaseFloatingPawnMovement"));
 		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
 	}
 	{
 		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
 		CameraSplineClass->SetupAttachment(RootComponent);
-
 	}
 }
 
@@ -74,6 +73,7 @@ void ABasePawn::SetData()
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
 		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
 		CameraSplineClass->SetData(PawnData->CameraSplineClass);
+		AIControllerClass = PawnData->AIController;
 	}
 
 	if (StatusComponent)
@@ -183,7 +183,8 @@ void ABasePawn::MakeViewMoveRange()
 bool ABasePawn::MoveTo(FVector NewDestination)
 {
 	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
-	SetActorLocation(NewDestination);
+	OnMove.Broadcast(NewDestination);
+	//SetActorLocation(NewDestination);
 	return true;
 
 

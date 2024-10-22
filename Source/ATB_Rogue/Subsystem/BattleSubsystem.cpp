@@ -147,5 +147,6 @@ void UBattleSubsystem::FinishTrun()
 		ActionPawn->ABTReset(); 
 		PawnsActive();
 		ActionPawn = nullptr;
+		FBattleEnd.Broadcast();
 	}
 }

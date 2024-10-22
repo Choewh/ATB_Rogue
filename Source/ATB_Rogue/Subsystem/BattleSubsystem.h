@@ -16,6 +16,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStart);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEnd);
 
 UCLASS()
 class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
@@ -85,6 +86,8 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FBattleStart StartBattle;
+	UPROPERTY(BlueprintAssignable)
+	FBattleEnd FBattleEnd;
 
 public:
 	UPROPERTY(BlueprintReadOnly)

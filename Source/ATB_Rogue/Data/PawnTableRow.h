@@ -7,6 +7,7 @@
 #include "GameFramework/Pawn.h"
 #include "Engine/Texture2D.h"
 #include "Misc/Utils.h"
+#include "AI/BaseAIController.h"
 
 #include "Enums/Species.h"
 
@@ -26,16 +27,6 @@ struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	FPawnTableRow()
-		: SkeletalMesh(nullptr),
-		MeshTransform(FTransform::Identity),
-		AnimClass(nullptr),
-		CameraSpline(nullptr),
-		BPCameraSpline(nullptr),
-		CameraSplineClass(nullptr)
-	{
-
-	}
 public:
 	UPROPERTY(EditAnywhere, Category = "Species")
 	ESpecies Species;
@@ -50,12 +41,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<UAnimInstance> AnimClass;
-public:
-	UPROPERTY(EditAnywhere, Category = "Pawn")
-	TObjectPtr<ABaseCameraSplineActor> CameraSpline;
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<AAIController> AIController;
 
-	UPROPERTY(EditAnywhere, Category = "Pawn")
-	TObjectPtr<USplineComponent> BPCameraSpline;
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass;

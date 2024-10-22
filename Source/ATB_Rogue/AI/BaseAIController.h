@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Component/StatusComponent.h"
 #include "BaseAIController.generated.h"
 
 /**
@@ -15,14 +18,23 @@ class ATB_ROGUE_API ABaseAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
-
-	ABaseAIController();
-
-public:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
 
-	
-	
+protected:
+	UFUNCTION()
+	void OnDamaged(float CurrentHP, float MaxHP);
+
+	UFUNCTION()
+	void ResetOnDamaged();
+
+	UFUNCTION()
+	void SetMovePoint(FVector MovePoint);
+
+	UFUNCTION()
+	void ResetValue();
+
+	UPROPERTY()
+	UStatusComponent* StatusComponentRef;
 };

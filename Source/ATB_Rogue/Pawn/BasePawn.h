@@ -12,12 +12,15 @@
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
+#include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
 
 
 #include "BasePawn.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
 
 UCLASS()
 class ATB_ROGUE_API ABasePawn : public APawn
@@ -83,7 +86,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	UBaseFloatingPawnMovement* MovementComponent;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneComponent> DefaultSceneRoot;
 
@@ -116,6 +122,9 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnMove OnMove;
 
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
