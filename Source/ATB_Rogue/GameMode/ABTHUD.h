@@ -23,13 +23,12 @@ public:
 public:
 
 
-	//UFUNCTION()
-	//void ShowATBBar(UTexture2D* Portrait);
+	UFUNCTION()
+	void ShowATBBar();
 	UFUNCTION()
 	void ShowViewPort();
 
 private:
-
 	UPROPERTY()
 	TObjectPtr<class ABasePlayerController> PlayerController;
 
@@ -37,7 +36,7 @@ private:
 	TObjectPtr<class UABTUserWidget> Widget;
 
 	UPROPERTY()
-	TObjectPtr<class UABTUserWidget> ATBWidget;
+	TObjectPtr<UABTUserWidget> ATBWidget;
 
 	
 

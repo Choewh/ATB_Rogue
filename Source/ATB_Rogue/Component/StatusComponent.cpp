@@ -40,7 +40,6 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 		}
 	}
 
-	//�ʱⰪ���� ����
 	if (!StatData) { UE_LOG(LogTemp, Log, TEXT("StatusComponent is Not Find")); return; }
 
 	{

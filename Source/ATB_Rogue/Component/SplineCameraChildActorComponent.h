@@ -14,6 +14,6 @@ class ATB_ROGUE_API USplineCameraChildActorComponent : public UChildActorCompone
 public:	
 	// Sets default values for this actor's properties
 	USplineCameraChildActorComponent();
-	void SetData(FDataTableRowHandle InDataTableRowHandle);
+	void SetData(UClass* NewClass);
 	
 };

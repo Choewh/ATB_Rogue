@@ -17,6 +17,7 @@ void UBattleSubsystem::BattleStart()
 		//폰만 받아오고 위치 알아서 ㄱ
 		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->ActivatePawn(Pawn);
 	}
+	StartBattle.Broadcast();
 }
 void UBattleSubsystem::BattleEnd()
 {
@@ -77,6 +78,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
 	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
 	SetActionPawn(InPawn); // 액션폰 설정
+	PawnAction();
 }
 
 void UBattleSubsystem::SelectActionView()

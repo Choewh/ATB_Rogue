@@ -12,30 +12,23 @@ USplineCameraChildActorComponent::USplineCameraChildActorComponent()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	SetChildActorClass(ABaseCameraSplineActor::StaticClass());
+	
 }
 
-void USplineCameraChildActorComponent::SetData(FDataTableRowHandle InDataTableRowHandle)
+
+void USplineCameraChildActorComponent::SetData(UClass* NewClass)
 {
-	if (InDataTableRowHandle.IsNull()) { return; }
-	FPawnTableRow* Data = InDataTableRowHandle.GetRow<FPawnTableRow>(TEXT("Pawn"));
-	if (!Data->CameraSplineClass) { ensure(false); return; }
-
-	//if (GetChildActorClass() != Data->CameraSplineClass)
-	//{
-	//	SetChildActorClass(Data->CameraSplineClass);
-//	}
-
-	if (GetChildActorClass() != Data->CameraSplineClass)
+	if (GetChildActorClass() != NewClass)
 	{
-		SetChildActorClass(Data->CameraSplineClass);
+		SetChildActorClass(NewClass);
 	}
 
 
-	ABaseCameraSplineActor* ACameraSplineActor = Cast<ABaseCameraSplineActor>(GetChildActor());
-	check(ACameraSplineActor);
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	check(OwnerPawn);
-	ACameraSplineActor->SetOwner(OwnerPawn);
-	ACameraSplineActor->SetInstigator(OwnerPawn);
+	//ABaseCameraSplineActor* ACameraSplineActor = Cast<ABaseCameraSplineActor>(GetChildActor());
+	//check(ACameraSplineActor);
+	//APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	//check(OwnerPawn);
+	//ACameraSplineActor->SetOwner(OwnerPawn);
+	//ACameraSplineActor->SetInstigator(OwnerPawn);
 }
 

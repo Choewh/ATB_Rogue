@@ -27,6 +27,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 protected:
 	UPROPERTY(EditAnywhere)
+	APawn* OwningPawn = nullptr;
+
+	UPROPERTY(EditAnywhere)
 	USplineComponent* SplineComponent;
 
 };

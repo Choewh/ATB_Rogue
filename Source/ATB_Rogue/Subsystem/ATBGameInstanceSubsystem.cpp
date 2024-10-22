@@ -10,6 +10,9 @@ UATBGameInstanceSubsystem::UATBGameInstanceSubsystem()
 //TArray<ABasePawn*> Pawns; //둘다 담고있기 ㅇ 
 //TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
 //TArray<ABasePawn*> EnemyPawns; //에너미폰 자체만 담고있기 ㅇ 
+
+
+
 void UATBGameInstanceSubsystem::EntryEnemyPawn(ESpecies SpawnSpecies, EPawnGroup SpawnGroup)//, FTransform SpawnTransform)
 {
 	FActorSpawnParameters ActorSpawnParameters;
@@ -48,10 +51,45 @@ void UATBGameInstanceSubsystem::EntryEnemyPawn(ESpecies SpawnSpecies, EPawnGroup
 
 		break;
 	}
-	MatchSlider.Broadcast(NewPawn);
 }
 
-TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingActor()
+ABasePawn* UATBGameInstanceSubsystem::SetPawn(ABasePawn* Pawn, ESpecies SpawnSpecies, EPawnGroup SpawnGroup)
+{
+	{
+		if (SpawnSpecies == ESpecies::None)
+		{
+			SpawnSpecies = GetRandomSpecies();
+		}
+		//임시
+		float RandomX = FMath::RandRange(-300, 300);
+		float RandomY = FMath::RandRange(-300, 300);
+		FVector Location(RandomX, RandomY, 0);
+
+		Pawn->PawnGroup = SpawnGroup;
+		Pawn->Species = SpawnSpecies;
+		Pawn->SetData();
+		Pawn->SetActorLocation(Location);
+	}
+	switch (SpawnGroup)
+	{
+	case EPawnGroup::Friendly:
+		check(Pawn);
+		DeactivatePawn(Pawn);
+		PawnsPool.Add(Pawn);
+		break;
+	case EPawnGroup::Enemy:
+		check(Pawn);
+		DeactivatePawn(Pawn);
+		PawnsPool.Add(Pawn);
+		break;
+	default:
+
+		break;
+	}
+	return Pawn;
+}
+
+TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingPawn()
 {
 	{
 		if (ActivePawns.IsEmpty())
@@ -63,7 +101,7 @@ TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingActor()
 	}
 }
 
-void UATBGameInstanceSubsystem::ReturnActorToPool(TObjectPtr<ABasePawn> Pawn)
+void UATBGameInstanceSubsystem::ReturnPawnToPool(TObjectPtr<ABasePawn> Pawn)
 {
 	DeactivatePawn(Pawn);
 	PawnsPool.Add(Pawn);
@@ -154,7 +192,7 @@ TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetActorFromPool()
 	{
 		TObjectPtr<ABasePawn> ActiveActor = ActivePawns[0];
 		ActivePawns.RemoveAt(0, EAllowShrinking::No);
-		ReturnActorToPool(ActiveActor);
+		ReturnPawnToPool(ActiveActor);
 	}
 
 	TObjectPtr<ABasePawn> Actor = PawnsPool.Pop(false);

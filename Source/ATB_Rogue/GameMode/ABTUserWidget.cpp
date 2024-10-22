@@ -19,5 +19,5 @@ void UABTUserWidget::NativePreConstruct()
 void UABTUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	ensure(OwningPawn);
+	//ensure(OwningPawn);
 }

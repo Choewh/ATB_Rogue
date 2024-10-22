@@ -5,7 +5,7 @@
 #include "DrawDebugHelpers.h"
 
 #include "Misc/Utils.h"
-#include "UI/ABTBarUserWidget.h"
+#include "Widget/ABTBarUserWidget.h"
 #include "Subsystem/BattleSubsystem.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
@@ -33,24 +33,13 @@ ABasePawn::ABasePawn()
 
 	}
 	{
-		ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar.ABT_Bar_C'"));
-		ATBbarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATBbarWidgetComponent"));
-		ATBbarWidgetComponent->SetupAttachment(DefaultSceneRoot);
-		//ATBbarWidgetComponent->SetRelativeLocation(FVector(0., 0., 130.0));
-		//ATBbarWidgetComponent->SetDrawSize(FVector2D(256.3, 17.0));
-		ATBbarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-		ATBbarWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		ATBbarWidgetComponent->SetWindowVisibility(EWindowVisibility::Visible);
-		ATBbarWidgetComponent->SetWidgetClass(WidgetClass.Class);
-	}
-	{
 		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
 	}
-	//SplineCameraChildActorComponent
 	{
 		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
 		CameraSplineClass->SetupAttachment(RootComponent);
+
 	}
 }
 
@@ -59,14 +48,7 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	UABTBarUserWidget* ABTBarUserWidget = Cast<UABTBarUserWidget>(ATBbarWidgetComponent->GetWidget());
-	check(ABTBarUserWidget);
-	ABTBarUserWidget->SetOwningPawn(this);
 	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
-	if (PawnData) {
-		ABTBarUserWidget->SetPortrait(PawnData->Portraits);
-		ABTBarUserWidget->AddToViewport();
-	}
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
@@ -91,11 +73,14 @@ void ABasePawn::SetData()
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
 		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
+		CameraSplineClass->SetData(PawnData->CameraSplineClass);
 	}
 
 	if (StatusComponent)
 	{
 		StatusComponent->SetData(Species);
+
+		ABT_Speed = StatusComponent->GetStat(EStat::SPD);
 	}
 
 	if (EffectComponent)
@@ -145,12 +130,6 @@ void ABasePawn::Tick(float DeltaTime)
 
 	ABTFeeling();
 
-}
-
-// Called to bind functionality to input
-void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 void ABasePawn::ABTFeeling()

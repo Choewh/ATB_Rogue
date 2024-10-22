@@ -12,7 +12,8 @@
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
-#include "Components/WidgetComponent.h"
+#include "Components/Slider.h"
+
 
 #include "BasePawn.generated.h"
 
@@ -46,13 +47,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 public:
 
 	void ABTReset() { ABT_Cur = 0; }
-	void ABTFeeling();
+	void ABTFeeling();	
 	bool Movealbe(FVector NewDestination);
 	void MakeViewMoveRange();
 	
@@ -65,6 +63,9 @@ public:
 	bool IsActive() { return bActive; }
 
 	float GetABT() { return ABT_Cur; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetPercent() { return ABT_Cur / ABT_MAX; }
 
 	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
@@ -93,8 +94,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UWidgetComponent> ATBbarWidgetComponent;
+	void SetATBbar(USlider* InSlider) {ATBbar = InSlider;}
+	USlider* GetABTbar() { return ATBbar; }
+	UPROPERTY()
+	USlider* ATBbar;
 
 private:
 
