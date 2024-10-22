@@ -14,7 +14,8 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSetPortrait, UTexture2D* , NewPortrait );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FShowATBbar);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStart);
 
 
 UCLASS()
@@ -84,8 +85,10 @@ public:
 	bool IsValidActionPawn() { return ActionPawn ? true : false; }
 public:
 	UPROPERTY(BlueprintAssignable)
-	FSetPortrait SetPortrait;
+	FShowATBbar ShowATBbar;
 
+	UPROPERTY(BlueprintAssignable)
+	FBattleStart DBattleStart;
 public:
 	UPROPERTY()
 	TArray<TObjectPtr<ABasePawn>> Pawns;

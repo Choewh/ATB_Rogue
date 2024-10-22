@@ -7,9 +7,13 @@
 
 UBattleSubsystem::UBattleSubsystem()
 {
+
 }
 void UBattleSubsystem::BattleStart()
 {
+	
+	DBattleStart.Broadcast();
+	ShowATBbar.Broadcast();
 	Pawns = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->GetPawns();
 	//SetPortraits();
 	for (auto& Pawn : Pawns)
@@ -28,13 +32,7 @@ void UBattleSubsystem::BattleEnd()
 //여기서 ATB 게이지에 초상화도 세팅
 void UBattleSubsystem::SetPortraits()
 {
-	for (auto& Pawn : Pawns)
-	{
-		//SetPortrait.Broadcast(Pawn->PawnData->Portraits);
-		FString LogMessage = Pawn->GetName();
-		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
-	}
-	//HUD 델리게이트?
+
 }
 
 void UBattleSubsystem::PawnAction()

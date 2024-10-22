@@ -4,25 +4,39 @@
 #include "UI/ABTBarUserWidget.h"
 #include "Styling/SlateBrush.h"
 #include "Styling/SlateTypes.h"
+#include "Kismet/GameplayStatics.h"
 //#include "Pawn/BasePawn.h"
+
+
+UABTBarUserWidget::UABTBarUserWidget()
+{
+
+}
 
 void UABTBarUserWidget::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
+	ATBbars.Add(ATBbar_0);
+	ATBbars.Add(ATBbar_1);
+	ATBbars.Add(ATBbar_2);
+	ATBbars.Add(ATBbar_3);
+	ATBbars.Add(ATBbar_4);
+	ATBbars.Add(ATBbar_5);
+	ATBbars.Add(ATBbar_6);
+	ATBbars.Add(ATBbar_7);
+	ATBbars.Add(ATBbar_8);
+	ATBbars.Add(ATBbar_9);
+	GetWorld()->GetSubsystem<UBattleSubsystem>()->DBattleStart.AddDynamic(this, &ThisClass::FindActivePawn);
 }
 
 void UABTBarUserWidget::NativePreConstruct()
 {
+	Super::NativePreConstruct();
 }
 
 void UABTBarUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	class ABasePawn* Pawn = Cast<ABasePawn>(GetOwningPawn());
-	check(Pawn);
-	Pawn->OnATBChanged.AddDynamic(this, &ThisClass::OnATBChanged);
-	// Pawn->HideATBbar 추가하기 죽엇을때 or 배틀중이 아닐때 호출
-	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UABTBarUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -30,26 +44,27 @@ void UABTBarUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
-void UABTBarUserWidget::OnHiddenUI()
-{
-	//ATB 바 가리기
-}
 
-void UABTBarUserWidget::SetPortrait(UTexture2D* Portrait)
-{
-	FSlateBrush DisabledThumbImage;
-	DisabledThumbImage.SetResourceObject(Portrait);
-	FSliderStyle SliderStyle;
-	ATBbar->SetWidgetStyle(SliderStyle.SetDisabledThumbImage(DisabledThumbImage));
-}
-
-void UABTBarUserWidget::OnATBChanged(float CurrentATB, float MaxATB)
+void UABTBarUserWidget::OnATBChanged(float CurATB, float MaxATB)
 {
 	SetVisibility(ESlateVisibility::Visible);
-	const float Percent = CurrentATB / MaxATB;
-	ATBbar->SetValue(Percent);
+	
 }
 
-void UABTBarUserWidget::OnDie()
+void UABTBarUserWidget::FindActivePawn()
 {
+	TArray<AActor*> ActivePawns;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABasePawn::StaticClass(), ActivePawns);
+	for(int i=0; i< ActivePawns.Num(); i++)
+	{
+		ABasePawn* BasePawn = Cast<ABasePawn>(ActivePawns[i]);
+		BasePawn->OnATBChanged.AddDynamic(this, &ThisClass::OnATBChanged);
+		FSlateBrush DisabledThumbImage;
+		DisabledThumbImage.SetResourceObject(BasePawn->PawnData->Portraits);
+		FSliderStyle SliderStyle;
+		ATBbars[i]->SetWidgetStyle(SliderStyle.SetDisabledThumbImage(DisabledThumbImage));
+		BasePawn->SetATBbar(ATBbars[i]);
+		ATBbars[i]->SetVisibility(ESlateVisibility::Visible);
+	}
 }
+

@@ -12,7 +12,7 @@
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
-#include "UI/ABTBarUserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Components/Slider.h"
 
 #include "BasePawn.generated.h"
@@ -94,8 +94,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
+	void SetATBbar(USlider* Slider) { ATBBar = Slider; }
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UABTBarUserWidget> Widget;
+	USlider* ATBBar;
 
 private:
 
