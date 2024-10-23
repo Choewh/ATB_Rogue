@@ -22,7 +22,8 @@ public:
 
 public:
 	void SetData(FEffectTableRow& DecalMaterial);
-
+protected:
+	void HideEffect();
 
 protected:
 	virtual void BeginPlay() override;
@@ -35,6 +36,7 @@ protected:
 	USceneComponent* DefaultSceneRoot = nullptr;
 	UPROPERTY(VisibleAnywhere)
 	UDecalComponent* DecalMeshComponent;
+
 
 //protected:
 //	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))

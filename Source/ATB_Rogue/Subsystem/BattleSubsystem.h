@@ -76,7 +76,7 @@ public :
 	void AttackActionView();
 	//턴종료
 	UFUNCTION()
-	void FinishTrun();
+	void FinishTurn();
 	
 private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }

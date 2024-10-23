@@ -17,7 +17,7 @@ void UActorpoolSubsystem::SpawnRangeEffect(const FTransform SpawnTransform,FEffe
 }
 void UActorpoolSubsystem::DeSpawnRangeEffect()
 {
-	APawnRange* DeSpawnPawnRange = PawnRange.GetPoolingTopActor();
+	APawnRange* DeSpawnPawnRange = PawnRange.GetPoolingPopActor();
 	if (!DeSpawnPawnRange) { return; }
 	DeSpawnPawnRange->ReturnToPool();
 }

@@ -109,7 +109,7 @@ bool UBattleSubsystem::SelectMoveAccept()
 	//폰이 따로 신호주면 턴 종료 ㄱ
 	ActionPawn->MoveTo(NewDestination);
 	//{
-	//	FinishTrun();
+	//	FinishTurn();
 
 		return true;
 	//}
@@ -135,7 +135,7 @@ void UBattleSubsystem::AttackActionView()
 }
 
 
-void UBattleSubsystem::FinishTrun()
+void UBattleSubsystem::FinishTurn()
 {
 	if (ActionPawn)
 	{
@@ -143,11 +143,10 @@ void UBattleSubsystem::FinishTrun()
 		//액션폰의 ABT 게이지를 비워주고
 		//에너미들의 ABTFeeling On 
 		//액션폰은 null로 초기화
-		ActionPawn->ABTReset(); 
+		ActionPawn->ABTReset();
 		PawnsActive();
 		ActionPawn = nullptr;
 		FBattleEnd.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 		PlayerController->SetBattleState(EBattleState::Move);
-		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	}
 }

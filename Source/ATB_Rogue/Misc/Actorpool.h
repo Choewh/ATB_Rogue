@@ -51,13 +51,13 @@ public:
 		return Actor;
 	}
 
-	T* GetPoolingTopActor()
+	T* GetPoolingPopActor()
 	{
 		if (ActiveActors.IsEmpty())
 		{
 			return nullptr;
 		}
-		TObjectPtr<T> Actor = ActiveActors.Top();
+		TObjectPtr<T> Actor = ActiveActors.Pop(false);
 		return Actor;
 
 	}

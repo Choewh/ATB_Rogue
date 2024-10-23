@@ -56,5 +56,6 @@ void UEffectComponent::ViewMoveRange(FVector PawnLocation,float MoveRange)
 
 void UEffectComponent::DeViewMoveRange()
 {
+	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 }
 

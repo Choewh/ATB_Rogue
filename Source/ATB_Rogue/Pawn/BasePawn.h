@@ -23,6 +23,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHideEffect);
 
 UCLASS()
 class ATB_ROGUE_API ABasePawn : public APawn
@@ -59,7 +60,7 @@ public:
 	void ABTFeeling();	
 	bool Movealbe(FVector NewDestination);
 	void MakeViewMoveRange();
-	
+	void HideMoveRange();
 	void MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
 
@@ -130,7 +131,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnMove OnMove;
-
+	UPROPERTY(BlueprintAssignable)
+	FHideEffect HideEffect;
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

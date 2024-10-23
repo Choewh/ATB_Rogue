@@ -16,7 +16,7 @@ public:
 	APooledActor();
 	void SetOwnerPool(class FActorPool* NewOwnerPool) { OwningPool = NewOwnerPool; }
 	void ReturnToPool();
-
+	
 	bool IsTickable() const { return bTick; }
 
 protected:

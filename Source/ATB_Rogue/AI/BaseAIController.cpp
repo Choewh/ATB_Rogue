@@ -48,11 +48,7 @@ void ABaseAIController::SetMovePoint(FVector MovePoint)
 {
 	Blackboard->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 	Blackboard->SetValueAsBool(TEXT("bMove"), true);
-	//EPathFollowingRequestResult::Type Result = MoveToLocation(MovePoint, 1000.f);
-	UE_LOG(LogTemp, Log, TEXT("%s"), *MovePoint.ToString());
-	//Blackboard->SetValueAsBool(TEXT("bMove"), false);
-	//if(Result = EPathFollowingRequestResult::RequestSuccessful)
-	
+	//Task 호출
 }
 
 void ABaseAIController::ResetValue()

@@ -76,10 +76,6 @@ void ABasePawn::SetData()
 
 	if (PawnData)
 	{
-		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
-		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
-		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
-		CameraSplineClass->SetData(PawnData->CameraSplineClass);
 		if (!IsValid(CollisionComponent) || CollisionComponent->GetClass() != PawnData->CollisionClass)
 		{
 			EObjectFlags SubobjectFlags = GetMaskedFlags(RF_PropagateToSubObjects) | RF_DefaultSubObject;
@@ -94,18 +90,21 @@ void ABasePawn::SetData()
 			UBoxComponent* BoxComponent = Cast<UBoxComponent>(CollisionComponent);
 			BoxComponent->SetBoxExtent(PawnData->CollisionBoxExtent);
 		}
+		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
+		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
+		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
+		CameraSplineClass->SetData(PawnData->CameraSplineClass);
+	}
+	if (StatusComponent)
+	{
+		StatusComponent->SetData(Species);
 
-		if (StatusComponent)
-		{
-			StatusComponent->SetData(Species);
+		ABT_Speed = StatusComponent->GetStat(EStat::SPD);
+	}
 
-			ABT_Speed = StatusComponent->GetStat(EStat::SPD);
-		}
-
-		if (EffectComponent)
-		{
-			EffectComponent->SetData(Species);
-		}
+	if (EffectComponent)
+	{
+		EffectComponent->SetData(Species);
 	}
 }
 
@@ -116,6 +115,7 @@ void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
 	if (DuplicateMode == EDuplicateMode::Normal)
 	{
 		FTransform Backup = GetActorTransform();
+		CollisionComponent->DestroyComponent();
 		SetData();
 		SetActorTransform(Backup);
 	}
@@ -162,7 +162,7 @@ bool ABasePawn::BattleStart()
 void ABasePawn::TurnEnd()
 {
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	BattleSubsystem->FinishTrun();
+	BattleSubsystem->FinishTurn();
 }
 
 void ABasePawn::ABTFeeling()
@@ -206,9 +206,14 @@ void ABasePawn::MakeViewMoveRange()
 {
 	//이동사거리 표시
 	if (!EffectComponent) { ensure(false); return; }
-	{
-		EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetMoveRange());
-	}
+
+	EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetMoveRange());
+
+}
+void ABasePawn::HideMoveRange()
+{
+	if (!EffectComponent) { ensure(false); return; }
+	EffectComponent->DeViewMoveRange();
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 void ABasePawn::MoveTo(FVector NewDestination)
@@ -216,12 +221,12 @@ void ABasePawn::MoveTo(FVector NewDestination)
 
 	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
 	//if (GetController() && GetController()->IsValidLowLevel())
-	{
-		OnMove.Broadcast(NewDestination);
-		// AI 컨트롤러가 활성화되어 있습니다.
-	}
-	//SetActorLocation(NewDestination);
-	// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
+
+	HideMoveRange();
+	OnMove.Broadcast(NewDestination);
+	// AI 컨트롤러가 활성화되어 있습니다.
+//SetActorLocation(NewDestination);
+// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
 }
 
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)
