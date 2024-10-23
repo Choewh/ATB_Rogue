@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/FloatingPawnMovement.h"
-#include "BaseFloatingPawnMovement.generated.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "BasePawnMovementComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API UBaseFloatingPawnMovement : public UFloatingPawnMovement
+class ATB_ROGUE_API UBasePawnMovementComponent : public UPawnMovementComponent
 {
 	GENERATED_BODY()
 	
-	
-	UBaseFloatingPawnMovement();
+public:
+
+	UBasePawnMovementComponent();
 
 protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
+
 	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite)
 	uint8 bOrientRotationToMovement : 1;
-	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite)
-	FRotator RotationRate;
 };

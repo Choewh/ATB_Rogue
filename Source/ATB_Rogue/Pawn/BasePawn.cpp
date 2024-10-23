@@ -7,21 +7,26 @@
 #include "Misc/Utils.h"
 #include "Widget/ABTBarUserWidget.h"
 #include "Subsystem/BattleSubsystem.h"
+#include "AI/BaseAIController.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
 
 // Sets default values
-ABasePawn::ABasePawn()
+ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	//폰 데이터 테이블 초기화
-	static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
-	if (PawnDataObject.Succeeded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
-		PawnDataTable = PawnDataObject.Object;
+		static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
+		if (PawnDataObject.Succeeded())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
+			PawnDataTable = PawnDataObject.Object;
+		}
 	}
 	{
 		DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
@@ -47,7 +52,7 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
+	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음	
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
@@ -57,15 +62,17 @@ void ABasePawn::SetData()
 
 	if (!PawnData || PawnData->Species != Species)
 	{
-		if (Species == ESpecies::None) { return; }
 		for (auto& PawnTable : PawnTable_Array)
 		{
 			if (PawnTable->Species == Species)
 			{
 				PawnData = PawnTable;
+				break;
 			}
 		}
 	}
+
+	AIControllerClass = PawnData->AIController;
 
 	if (PawnData)
 	{
@@ -73,19 +80,31 @@ void ABasePawn::SetData()
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
 		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
 		CameraSplineClass->SetData(PawnData->CameraSplineClass);
-		AIControllerClass = PawnData->AIController;
-	}
+		if (!IsValid(CollisionComponent) || CollisionComponent->GetClass() != PawnData->CollisionClass)
+		{
+			EObjectFlags SubobjectFlags = GetMaskedFlags(RF_PropagateToSubObjects) | RF_DefaultSubObject;
+			CollisionComponent = NewObject<UShapeComponent>(this, PawnData->CollisionClass, TEXT("CollisionComponent"), SubobjectFlags);
+			CollisionComponent->RegisterComponent();
+			CollisionComponent->SetCollisionProfileName(TEXT("Enemy"));
+			CollisionComponent->SetCanEverAffectNavigation(false);
+			SetRootComponent(CollisionComponent);
+			DefaultSceneRoot->SetRelativeTransform(FTransform::Identity);
+			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			UBoxComponent* BoxComponent = Cast<UBoxComponent>(CollisionComponent);
+			BoxComponent->SetBoxExtent(PawnData->CollisionBoxExtent);
+		}
 
-	if (StatusComponent)
-	{
-		StatusComponent->SetData(Species);
+		if (StatusComponent)
+		{
+			StatusComponent->SetData(Species);
 
-		ABT_Speed = StatusComponent->GetStat(EStat::SPD);
-	}
+			ABT_Speed = StatusComponent->GetStat(EStat::SPD);
+		}
 
-	if (EffectComponent)
-	{
-		EffectComponent->SetData(Species);
+		if (EffectComponent)
+		{
+			EffectComponent->SetData(Species);
+		}
 	}
 }
 
@@ -132,6 +151,19 @@ void ABasePawn::Tick(float DeltaTime)
 
 }
 
+bool ABasePawn::BattleStart()
+{
+
+	return true;
+
+}
+
+void ABasePawn::TurnEnd()
+{
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	BattleSubsystem->FinishTrun();
+}
+
 void ABasePawn::ABTFeeling()
 {
 	if (!bActive)
@@ -148,8 +180,6 @@ void ABasePawn::ABTFeeling()
 	{
 		ABT_Cur += ABT_Speed;
 		//뷰포트 로그 float->string
-		FString LogMessage = FString::Printf(TEXT("%f"), ABT_Cur);
-		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}
 	OnATBChanged.Broadcast(ABT_Cur, ABT_MAX);
 }
@@ -180,14 +210,16 @@ void ABasePawn::MakeViewMoveRange()
 	}
 }
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-bool ABasePawn::MoveTo(FVector NewDestination)
+void ABasePawn::MoveTo(FVector NewDestination)
 {
+
 	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
-	OnMove.Broadcast(NewDestination);
+	//if (GetController() && GetController()->IsValidLowLevel())
+	{
+		OnMove.Broadcast(NewDestination);
+		// AI 컨트롤러가 활성화되어 있습니다.
+	}
 	//SetActorLocation(NewDestination);
-	return true;
-
-
 	// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
 }
 

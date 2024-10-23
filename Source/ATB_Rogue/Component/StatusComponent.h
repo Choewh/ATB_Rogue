@@ -28,11 +28,6 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void SetData(ESpecies InSpecies);
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	/// Script / Engine.DataTable'/Game/DataTable/StatTableRow.StatTableRow'
-
 public:
 	//������ ���̺�
 	UDataTable* StatDataTable;

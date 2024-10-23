@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+	// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -10,11 +10,7 @@
 #include "AI/BaseAIController.h"
 
 #include "Enums/Species.h"
-
-#include "Data/SkillTableRow.h"
-#include "Data/EffectTableRow.h"
-#include "Data/StatTableRow.h"
-#include "Data/AnimMontageTableRow.h"
+#include "Components/BoxComponent.h"
 
 #include "Actor/BaseCameraSplineActor.h"
 
@@ -39,14 +35,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	FTransform MeshTransform = FTransform::Identity;
 
+
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<UAnimInstance> AnimClass;
+	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
+	TSubclassOf<UShapeComponent> CollisionClass = UBoxComponent::StaticClass();
+	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
+	FVector CollisionBoxExtent = FVector(32.0, 32.0, 32.0);
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<AAIController> AIController;
-
-
+	TSubclassOf<AAIController> AIController = ABaseAIController::StaticClass();
+		
 	UPROPERTY(EditAnywhere, Category = "Pawn")
-	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass;
+	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass = ABaseCameraSplineActor::StaticClass();
 
 //public:
 //	UPROPERTY(EditAnywhere, Category = "Effect" , meta = (RowType = "/Script/ATB_ROGUE.EffectTableRow"))

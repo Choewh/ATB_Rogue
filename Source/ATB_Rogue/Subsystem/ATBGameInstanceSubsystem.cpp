@@ -18,7 +18,7 @@ void UATBGameInstanceSubsystem::EntryEnemyPawn(ESpecies SpawnSpecies, EPawnGroup
 	FActorSpawnParameters ActorSpawnParameters;
 	ActorSpawnParameters.ObjectFlags = RF_Transient; // 저장을 하지마라 라는 키워드
 	ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
+	//
 	ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), ActorSpawnParameters);
 	{
 		if (SpawnSpecies == ESpecies::None)

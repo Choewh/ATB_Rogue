@@ -16,6 +16,7 @@ void UBattleSubsystem::BattleStart()
 	{
 		//폰만 받아오고 위치 알아서 ㄱ
 		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->ActivatePawn(Pawn);
+		Pawn->BattleStart();
 	}
 	StartBattle.Broadcast();
 }
@@ -107,14 +108,14 @@ bool UBattleSubsystem::SelectMoveAccept()
 		return false;
 	}
 	//이동 가능시 무브
-	if (ActionPawn->MoveTo(NewDestination))
-	{
-		FinishTrun();
-		PlayerController->SetBattleState(EBattleState::Move);
-		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
+	//폰이 따로 신호주면 턴 종료 ㄱ
+	ActionPawn->MoveTo(NewDestination);
+	//{
+	//	FinishTrun();
+
 		return true;
-	}
-	return false;
+	//}
+//	return false;
 	//실패시 에러 띄움
 }
 
@@ -147,6 +148,8 @@ void UBattleSubsystem::FinishTrun()
 		ActionPawn->ABTReset(); 
 		PawnsActive();
 		ActionPawn = nullptr;
-		FBattleEnd.Broadcast();
+		FBattleEnd.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
+		PlayerController->SetBattleState(EBattleState::Move);
+		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	}
 }

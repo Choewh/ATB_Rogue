@@ -14,6 +14,8 @@
 #include "Component/SplineCameraChildActorComponent.h"
 #include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
+#include "Components/BoxComponent.h"
+
 
 
 #include "BasePawn.generated.h"
@@ -33,7 +35,7 @@ public:
 	friend class UBattleSubsystem;
 
 	// Sets default values for this pawn's properties
-	ABasePawn();
+	ABasePawn(const FObjectInitializer& ObjectInitializer);
 	virtual void SetData();
 
 protected:
@@ -51,13 +53,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-
+	virtual bool BattleStart();
+	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
 	void ABTFeeling();	
 	bool Movealbe(FVector NewDestination);
 	void MakeViewMoveRange();
 	
-	bool MoveTo(FVector NewDestination);
+	void MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
 
 
@@ -84,6 +87,8 @@ public:
 	FPawnTableRow* PawnData;
 	//
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UShapeComponent> CollisionComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 

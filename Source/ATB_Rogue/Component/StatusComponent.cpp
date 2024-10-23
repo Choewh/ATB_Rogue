@@ -9,7 +9,7 @@ UStatusComponent::UStatusComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 	
 	static ConstructorHelpers::FObjectFinder<UDataTable> StatDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/StatTable.StatTable'"));
 	if (StatDataObject.Succeeded())
@@ -55,14 +55,6 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 		EVA = StatData->EVA;
 		MoveRange = StatData->MoveRange;
 	}
-}
-
-// Called every frame
-void UStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 float UStatusComponent::GetStat(EStat StatName)

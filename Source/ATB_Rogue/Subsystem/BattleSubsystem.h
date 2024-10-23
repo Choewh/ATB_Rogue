@@ -94,7 +94,7 @@ public:
 	TArray<TObjectPtr<ABasePawn>> Pawns;
 
 	UPROPERTY()
-	ABasePawn* ActionPawn;
+	ABasePawn* ActionPawn = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<ABasePlayerController> PlayerController;
