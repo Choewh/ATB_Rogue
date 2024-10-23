@@ -86,7 +86,7 @@ void ABasePawn::SetData()
 			CollisionComponent = NewObject<UShapeComponent>(this, PawnData->CollisionClass, TEXT("CollisionComponent"), SubobjectFlags);
 			CollisionComponent->RegisterComponent();
 			CollisionComponent->SetCollisionProfileName(TEXT("Enemy"));
-			CollisionComponent->SetCollisionProfileName(TEXT("NoCollision"));
+			//CollisionComponent->SetCollisionProfileName(TEXT("NoCollision"));
 			CollisionComponent->SetCanEverAffectNavigation(false);
 			SetRootComponent(CollisionComponent);
 			DefaultSceneRoot->SetRelativeTransform(FTransform::Identity);

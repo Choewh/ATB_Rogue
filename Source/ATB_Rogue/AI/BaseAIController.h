@@ -18,14 +18,13 @@ class ATB_ROGUE_API ABaseAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	ABaseAIController();
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
 
 protected:
 	UFUNCTION()
-	void OnDamaged(float CurrentHP, float MaxHP);
+	void OnDamaged(float CurrentHP, float MaxHP);	
 
 	UFUNCTION()
 	void SetMovePoint(FVector MovePoint);

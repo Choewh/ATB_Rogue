@@ -5,13 +5,10 @@
 #include "Pawn/BasePawn.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-ABaseAIController::ABaseAIController()
-{
-}
-
 void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (!IsValid(BrainComponent))
 	{
 		UBehaviorTree* BT = LoadObject<UBehaviorTree>(nullptr, TEXT("/Script/AIModule.BehaviorTree'/Game/BluePrint/AI/BT_Pawn.BT_Pawn'"));
@@ -23,6 +20,7 @@ void ABaseAIController::BeginPlay()
 void ABaseAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
 	ABasePawn* BasePawn = Cast<ABasePawn>(InPawn);
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
@@ -46,7 +44,7 @@ void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
 }
 
 //컨트롤러 -> 폰 -> 배틀
-void ABaseAIController::SetMovePoint(FVector MovePoint)
+void ABaseAIController::SetMovePoint(FVector MovePoint)	
 {
 	Blackboard->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 	Blackboard->SetValueAsBool(TEXT("bMove"), true);
