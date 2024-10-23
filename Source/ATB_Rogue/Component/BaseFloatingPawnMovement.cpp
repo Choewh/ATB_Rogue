@@ -13,7 +13,6 @@ UBaseFloatingPawnMovement::UBaseFloatingPawnMovement()
 void UBaseFloatingPawnMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	ApplyControlInputToVelocity(DeltaTime);
 }
 
 

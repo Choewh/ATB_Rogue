@@ -15,7 +15,6 @@ void UBattleSubsystem::BattleStart()
 	for (auto& Pawn : Pawns)
 	{
 		//폰만 받아오고 위치 알아서 ㄱ
-		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->ActivatePawn(Pawn);
 		Pawn->BattleStart();
 	}
 	StartBattle.Broadcast();
@@ -24,7 +23,6 @@ void UBattleSubsystem::BattleEnd()
 {
 	for (auto& Pawn : Pawns)
 	{
-		UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->DeactivatePawn(Pawn);
 	}
 }
 //여기서 ATB 게이지에 초상화도 세팅

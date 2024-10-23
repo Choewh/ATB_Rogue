@@ -4,8 +4,14 @@
 #include "AI/BaseAIController.h"
 #include "Pawn/BasePawn.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+ABaseAIController::ABaseAIController()
+{
+}
+
 void ABaseAIController::BeginPlay()
 {
+	Super::BeginPlay();
 	if (!IsValid(BrainComponent))
 	{
 		UBehaviorTree* BT = LoadObject<UBehaviorTree>(nullptr, TEXT("/Script/AIModule.BehaviorTree'/Game/BluePrint/AI/BT_Pawn.BT_Pawn'"));

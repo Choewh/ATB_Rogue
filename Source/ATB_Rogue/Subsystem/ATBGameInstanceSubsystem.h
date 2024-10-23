@@ -28,17 +28,6 @@ public:
 	ABasePawn* SetPawn(ABasePawn* Pawn ,ESpecies SpawnSpecies = ESpecies::None, EPawnGroup SpawnGroup = EPawnGroup::Defalut);
 
 	TArray<TObjectPtr<ABasePawn>> GetPawns() const { return PawnsPool; }
-
-	TArray<TObjectPtr<ABasePawn>> GetEnemyPawns();
-	TArray<TObjectPtr<ABasePawn>> GetPlayerPawns();
-
-	void ActivatePawn(ABasePawn* Pawn);
-	void DeactivatePawn(ABasePawn* Pawn);
-
-	TObjectPtr<ABasePawn> GetActorFromPool();
-
-	TObjectPtr<ABasePawn> GetPoolingPawn();
-
 	UPROPERTY(BlueprintReadOnly)
 	TArray<TObjectPtr<ABasePawn>> PawnsPool; //둘다 담고있기 ㅇ 
 private:
@@ -47,7 +36,6 @@ private:
 	//모두 PawnsPool로 반환한뒤 Enemy만 골라서 삭제
 	//에너미폰만 지우는거 추가하기 EPawnGroup==Enemy로 체크 생각해보니 지울게 아님ㅁ 
 	//void DeleteEnemy();
-	void ReturnPawnToPool(TObjectPtr<ABasePawn> Pawn);
 
 	ESpecies GetRandomSpecies();//추후에는 레벨서브시스템에서 하는걸로
 

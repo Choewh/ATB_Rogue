@@ -39,12 +39,10 @@ void UATBGameInstanceSubsystem::EntryEnemyPawn(ESpecies SpawnSpecies, EPawnGroup
 	{
 	case EPawnGroup::Friendly:
 		check(NewPawn);
-		DeactivatePawn(NewPawn);
 		PawnsPool.Add(NewPawn);
 		break;
 	case EPawnGroup::Enemy:
 		check(NewPawn);
-		DeactivatePawn(NewPawn);
 		PawnsPool.Add(NewPawn);
 		break;
 	default:
@@ -74,12 +72,10 @@ ABasePawn* UATBGameInstanceSubsystem::SetPawn(ABasePawn* Pawn, ESpecies SpawnSpe
 	{
 	case EPawnGroup::Friendly:
 		check(Pawn);
-		DeactivatePawn(Pawn);
 		PawnsPool.Add(Pawn);
 		break;
 	case EPawnGroup::Enemy:
 		check(Pawn);
-		DeactivatePawn(Pawn);
 		PawnsPool.Add(Pawn);
 		break;
 	default:
@@ -89,23 +85,7 @@ ABasePawn* UATBGameInstanceSubsystem::SetPawn(ABasePawn* Pawn, ESpecies SpawnSpe
 	return Pawn;
 }
 
-TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetPoolingPawn()
-{
-	{
-		if (ActivePawns.IsEmpty())
-		{
-			return nullptr;
-		}
-		TObjectPtr<ABasePawn> Actor = ActivePawns.Top();
-		return Actor;
-	}
-}
 
-void UATBGameInstanceSubsystem::ReturnPawnToPool(TObjectPtr<ABasePawn> Pawn)
-{
-	DeactivatePawn(Pawn);
-	PawnsPool.Add(Pawn);
-}
 
 ESpecies UATBGameInstanceSubsystem::GetRandomSpecies()
 {
@@ -120,84 +100,5 @@ ESpecies UATBGameInstanceSubsystem::GetRandomSpecies()
 	// 난수 값을 ESpecies로 변환하여 반환
 	Species = static_cast<ESpecies>(RandomIndex);
 	return Species;
-}
-
-TArray<TObjectPtr<ABasePawn>> UATBGameInstanceSubsystem::GetEnemyPawns()
-{
-	TArray<TObjectPtr<ABasePawn>> NewPawns;
-	if (!PawnsPool.IsEmpty())
-	{
-		for (auto& Pawn : PawnsPool)
-		{
-			switch (Pawn->PawnGroup)
-			{
-			case EPawnGroup::Enemy:
-				NewPawns.Add(Pawn);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	return NewPawns;
-}
-
-TArray<TObjectPtr<ABasePawn>> UATBGameInstanceSubsystem::GetPlayerPawns()
-{
-	TArray<TObjectPtr<ABasePawn>> NewPawns;
-	if (!PawnsPool.IsEmpty())
-	{
-		for (auto& Pawn : PawnsPool)
-		{
-			switch (Pawn->PawnGroup)
-			{
-			case EPawnGroup::Friendly:
-				NewPawns.Add(Pawn);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	return NewPawns;
-}
-
-void UATBGameInstanceSubsystem::ActivatePawn(ABasePawn* Actor)
-{
-	Actor->SetActorEnableCollision(true);
-	Actor->SetActorHiddenInGame(false);
-	Actor->SetActorTickEnabled(true);
-
-	for (UActorComponent* Component : Actor->GetComponents())
-	{
-		Component->SetActive(true);
-	}
-}
-
-void UATBGameInstanceSubsystem::DeactivatePawn(ABasePawn* Actor)
-{
-	Actor->SetActorEnableCollision(false);
-	Actor->SetActorHiddenInGame(true);
-	Actor->SetActorTickEnabled(false);
-
-	for (UActorComponent* Component : Actor->GetComponents())
-	{
-		Component->SetActive(false);
-	}
-}
-
-TObjectPtr<ABasePawn> UATBGameInstanceSubsystem::GetActorFromPool()
-{
-	if (PawnsPool.IsEmpty())
-	{
-		TObjectPtr<ABasePawn> ActiveActor = ActivePawns[0];
-		ActivePawns.RemoveAt(0, EAllowShrinking::No);
-		ReturnPawnToPool(ActiveActor);
-	}
-
-	TObjectPtr<ABasePawn> Actor = PawnsPool.Pop(false);
-	ActivePawns.Add(Actor);
-	ActivatePawn(Actor);
-	return Actor;
 }
 
