@@ -33,7 +33,7 @@ public:
 	}
 	static const FName Round(uint8 Round) 
 	{
-		FString RoundString	= FString::Printf(TEXT("Round_%d"), Round);
+		FString RoundString	= FString::Printf(TEXT("Round%d"), Round);
 		FName RoundName(*RoundString);
 		return RoundName;
 	}

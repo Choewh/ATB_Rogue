@@ -14,10 +14,10 @@ void AABTHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	{
-		UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
+		UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
 			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar.ABT_Bar_C'"));
 		check(WidgetClass);
-		ATBWidget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
+		ATBWidget = CreateWidget<UABTBarUserWidget>(GetWorld(), WidgetClass);
 
 	}
 	{
@@ -50,6 +50,7 @@ void AABTHUD::ShowATBBar(uint8 Round)
 
 	if (ATBWidget && !ATBWidget->IsInViewport())
 	{
+		ATBWidget->SetPortrait.Broadcast();
 		ATBWidget->AddToViewport();
 		UE_LOG(LogTemp, Log, TEXT("ShowATBBarAddTOViewport 바인딩 성공"));
 	}

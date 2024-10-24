@@ -6,8 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Pawn/BasePawn.h"
 
-#include "Subsystem/BattleSubsystem.h"
-#include "Subsystem/EnemyCreateSubsystem.h"
+
 
 #include "LevelManager.generated.h"
 
@@ -51,7 +50,7 @@ protected:
 	TArray<TArray<FTransform>> RoundsTransform; //라운드별 소환 위치
 private:
 	UPROPERTY(EditAnywhere)
-	uint8 CurRound = 0;
+	uint8 CurRound = 1;
 	UPROPERTY(EditAnywhere)
 	uint8 MaxRound = 10;
 	UPROPERTY(EditAnywhere)

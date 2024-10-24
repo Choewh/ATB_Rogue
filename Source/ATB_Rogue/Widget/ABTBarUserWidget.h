@@ -13,6 +13,8 @@
  */
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSetPortrait);
+
 UCLASS()
 class ATB_ROGUE_API UABTBarUserWidget : public UABTUserWidget
 {
@@ -29,6 +31,11 @@ protected:
 	void OnHiddenUI();
 	UFUNCTION()
 	void OnDie();
+public:
+	//UFUNCTION(BlueprintCallable)
+    //void SetPortrait();
+    UPROPERTY(BlueprintAssignable)
+    FSetPortrait SetPortrait;
 protected:
     void ResetActivePawn() {ActivePawns.Empty();}
 	UPROPERTY(VisibleAnywhere)

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-
+#include "Widget/ABTBarUserWidget.h"
 #include "ABTHUD.generated.h"
 
 /**
@@ -36,7 +36,7 @@ private:
 	TObjectPtr<class UABTUserWidget> Widget;
 
 	UPROPERTY()
-	TObjectPtr<UABTUserWidget> ATBWidget;
+	TObjectPtr<UABTBarUserWidget> ATBWidget;
 
 	
 

@@ -27,6 +27,9 @@ class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
 	
 
 public:
+
+	UPROPERTY(BlueprintReadWrite)
+	float FTest = 0.f;
 	UBattleSubsystem();
 
 	UFUNCTION(BlueprintCallable)

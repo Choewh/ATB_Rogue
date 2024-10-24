@@ -39,6 +39,7 @@ void UABTBarUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
+
 void UABTBarUserWidget::OnHiddenUI()
 {
 	SetVisibility(ESlateVisibility::Hidden);

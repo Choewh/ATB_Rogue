@@ -5,6 +5,14 @@
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Camera/PawnViewCameraComponent.h"
 
+#include "Misc/Utils.h"
+
+#include "Pawn/FriendlySpawnLocation.h"
+
+#include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/EnemyCreateSubsystem.h"
+
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -26,18 +34,6 @@ ABaseCharacter::ABaseCharacter()
 	}
 }
 
-// Called when the game starts or when spawned
-void ABaseCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-void ABaseCharacter::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-}
-
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
@@ -45,10 +41,70 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 }
 
+// Called when the game starts or when spawned
+void ABaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	check(BattleSubsystem);
+	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+	Init();
+}
+
+void ABaseCharacter::Init()
+{
+	SetRoundsTransform();
+}
+
+void ABaseCharacter::SetRoundsTransform()
+{
+	TArray<AActor*> AllRoundTransforms;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AFriendlySpawnLocation::StaticClass(), FName("RoundTransform"), AllRoundTransforms);
+	for (uint8 i = 0; i < AllRoundTransforms.Num(); i++)
+	{
+		TArray<AActor*> RoundTransforms;
+		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AFriendlySpawnLocation::StaticClass(), FUtils::Round(i), RoundTransforms);
+		//AEnemySpawnTransform* EnemySpawnTransform = Cast<AEnemySpawnTransform>(RoundTransforms[i]);
+		//RoundsTransform.Add(EnemySpawnTransform->GetSpawnTransform());
+		for (auto& Transforms : RoundTransforms)
+		{
+			AFriendlySpawnLocation* FriendlySpawnLocation = Cast<AFriendlySpawnLocation>(Transforms);
+			RoundsTransform.Add(FriendlySpawnLocation->GetSpawnTransform());
+		}
+	}
+}
+
+void ABaseCharacter::SpawnPawn()
+{
+	for (uint8 i = 0; i < CurHavePawns.Num(); i++)
+	{
+		if (CurHavePawns.IsEmpty()) { break; } //비었으면 끝
+		FActorSpawnParameters ActorSpawnParameters;
+		ActorSpawnParameters.Owner = this;
+		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
+		NewPawn->Species = CurHavePawns[CurRound-1][i].Species;
+		NewPawn->PawnGroup = CurHavePawns[CurRound-1][i].PawnGroup;
+		NewPawn->SetData();
+	}
+}
+
+void ABaseCharacter::OnFirstSet(uint8 Round)
+{
+}
+
+///
+
+void ABaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+void ABaseCharacter::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+}
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
-

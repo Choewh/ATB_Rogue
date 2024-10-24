@@ -3,7 +3,12 @@
 
 #include "Manager/LevelManager.h"
 #include "Misc/Utils.h"
+
 #include "Pawn/EnemySpawnTransform.h"
+
+#include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/EnemyCreateSubsystem.h"
+
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -33,7 +38,7 @@ void ALevelManager::BeginPlay()
 void ALevelManager::Init()
 {
 	RoundsPawns.Empty();
-	CurRound = 0;
+	CurRound = 1;
 	SetRoundPawns();
 	SetRoundsTransform();
 }
@@ -79,16 +84,20 @@ void ALevelManager::SetRoundsTransform()
 void ALevelManager::SpawnPawn()
 {
 	//EnemySpawn 액터를 찾아서 그 위치에 순서대로 배치 할지 고민
-
-	for (uint8 i = 0; i < RoundsPawns[CurRound].Num(); i++)
+	uint8 Round = CurRound - 1;
+	for (uint8 i = RoundsPawns[Round].Num(); i > 0 ; i--)
 	{
+		if (RoundsPawns.IsEmpty()) { break; } //비었으면 끝
+		if (RoundsTransform[Round ].IsEmpty()) { break; } //비었으면 끝
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[CurRound][i], ActorSpawnParameters);
-		NewPawn->Species = RoundsPawns[CurRound][i].Species;
-		NewPawn->PawnGroup = RoundsPawns[CurRound][i].PawnGroup;
+		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[Round][i-1], ActorSpawnParameters);
+		NewPawn->Species = RoundsPawns[Round][i-1].Species;
+		NewPawn->PawnGroup = RoundsPawns[Round][i-1].PawnGroup;
 		NewPawn->SetData();
 		CurRoundPawns.Add(NewPawn);
+		RoundsTransform[Round].RemoveAt(i-1);
+		RoundsPawns[Round].RemoveAt(i-1);
 	}
 }
 

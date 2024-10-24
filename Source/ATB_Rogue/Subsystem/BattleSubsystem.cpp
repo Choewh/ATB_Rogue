@@ -23,9 +23,11 @@ void UBattleSubsystem::BattleEnd()
 	BattleFinish.Broadcast();
 	for (auto& Pawn : EnemyPawns)
 	{
+
 	}
 	for (auto& Pawn : FriendlyPawns)
 	{
+
 	}
 }
 
