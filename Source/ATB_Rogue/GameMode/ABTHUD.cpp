@@ -36,7 +36,7 @@ void AABTHUD::BeginPlay()
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
-	BattleSubsystem->StartBattle.AddDynamic(this, &ThisClass::ShowATBBar);
+	BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowATBBar);
 
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
@@ -45,7 +45,7 @@ void AABTHUD::BeginPlay()
 
 
 
-void AABTHUD::ShowATBBar()
+void AABTHUD::ShowATBBar(uint8 Round)
 {
 
 	if (ATBWidget && !ATBWidget->IsInViewport())

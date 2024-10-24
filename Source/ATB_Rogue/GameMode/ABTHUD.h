@@ -24,7 +24,7 @@ public:
 
 
 	UFUNCTION()
-	void ShowATBBar();
+	void ShowATBBar(uint8 Round);
 	UFUNCTION()
 	void ShowViewPort();
 

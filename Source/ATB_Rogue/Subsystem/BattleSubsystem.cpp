@@ -8,33 +8,25 @@
 UBattleSubsystem::UBattleSubsystem()
 {
 }
-void UBattleSubsystem::BattleStart()
+void UBattleSubsystem::BattleStart(uint8 Round)
 {
-	Pawns = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>()->GetPawns();
-	//SetPortraits();
-	for (auto& Pawn : Pawns)
-	{
-		//폰만 받아오고 위치 알아서 ㄱ
-		Pawn->BattleStart();
-	}
-	StartBattle.Broadcast();
+	BattleStartFirst.Broadcast(Round);
+	BattleStartSecond.Broadcast(Round);
+
+
+	/// ABTBar 보여주기 Pawn들 소환과 ABTbar 세팅
+	/// Pawns 정보 가져오기 배틀중 관리 ㅇㅇ
+	///
 }
 void UBattleSubsystem::BattleEnd()
 {
-	for (auto& Pawn : Pawns)
+	BattleFinish.Broadcast();
+	for (auto& Pawn : EnemyPawns)
 	{
 	}
-}
-//여기서 ATB 게이지에 초상화도 세팅
-void UBattleSubsystem::SetPortraits()
-{
-	for (auto& Pawn : Pawns)
+	for (auto& Pawn : FriendlyPawns)
 	{
-		//SetPortrait.Broadcast(Pawn->PawnData->Portraits);
-		FString LogMessage = Pawn->GetName();
-		UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
 	}
-	//HUD 델리게이트?
 }
 
 void UBattleSubsystem::PawnAction()
@@ -57,7 +49,11 @@ void UBattleSubsystem::PawnAction()
 void UBattleSubsystem::PawnsDeactive()
 {
 	//인스턴스에서 전부 받아와서 설정
-	for(ABasePawn* Pawn : Pawns)
+	for(auto& Pawn : EnemyPawns)
+	{
+		Pawn->SetActive(false);
+	}
+	for (auto& Pawn : FriendlyPawns)
 	{
 		Pawn->SetActive(false);
 	}
@@ -67,7 +63,11 @@ void UBattleSubsystem::PawnsDeactive()
 void UBattleSubsystem::PawnsActive()
 {
 	//인스턴스에서 전부 받아와서 설정
-	for (ABasePawn* Pawn : Pawns)
+	for (auto& Pawn : EnemyPawns)
+	{
+		Pawn->SetActive(true);
+	}
+	for (auto& Pawn : FriendlyPawns)
 	{
 		Pawn->SetActive(true);
 	}
@@ -146,7 +146,7 @@ void UBattleSubsystem::FinishTurn()
 		ActionPawn->ABTReset();
 		PawnsActive();
 		ActionPawn = nullptr;
-		FBattleEnd.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
+		BattleFinish.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 		PlayerController->SetBattleState(EBattleState::Move);
 	}
 }

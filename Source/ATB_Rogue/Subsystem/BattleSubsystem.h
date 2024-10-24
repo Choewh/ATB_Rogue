@@ -14,9 +14,11 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStart);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartFirst, uint8 , First);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartSecond, uint8 , First);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinish);
 
 UCLASS()
 class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
@@ -28,10 +30,15 @@ public:
 	UBattleSubsystem();
 
 	UFUNCTION(BlueprintCallable)
-	void BattleStart();
+	void BattleStart(uint8 Round);
+
 	UFUNCTION(BlueprintCallable)
 	void BattleEnd();
-public :
+
+	UFUNCTION()
+	void SetEnemyPawns(TArray<ABasePawn*> InPawn) { EnemyPawns = InPawn; }
+	UFUNCTION()
+	void SetFriendlyPawns(TArray<ABasePawn*> InPawn) { FriendlyPawns = InPawn; }
 	/*
 	
 	//Attack (타격자 , 피격자 , 스킬정보 데이터 테이블 , 스킬 이름 )?
@@ -41,11 +48,10 @@ public :
 
 	*/
 
+public :
 	//컨트롤러 에너미 추가
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
-	UFUNCTION(BlueprintCallable)
-	void SetPortraits();
 	//액션
 	void PawnAction();
 	//에너미 컨트롤 
@@ -85,13 +91,18 @@ public:
 	bool IsValidActionPawn() { return ActionPawn ? true : false; }
 public:
 	UPROPERTY(BlueprintAssignable)
-	FBattleStart StartBattle;
-	UPROPERTY(BlueprintAssignable)
-	FBattleEnd FBattleEnd;
+	FBattleStartFirst BattleStartFirst;
 
+	UPROPERTY(BlueprintAssignable)
+	FBattleStartSecond BattleStartSecond;
+
+	UPROPERTY(BlueprintAssignable)
+	FBattleFinish BattleFinish;
 public:
 	UPROPERTY(BlueprintReadOnly)
-	TArray<TObjectPtr<ABasePawn>> Pawns;
+	TArray<ABasePawn*> EnemyPawns;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<ABasePawn*> FriendlyPawns;
 
 	UPROPERTY()
 	ABasePawn* ActionPawn = nullptr;

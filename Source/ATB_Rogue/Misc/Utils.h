@@ -7,6 +7,15 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+namespace CollisionProfileName
+{
+	static inline FName PawnTrigger = TEXT("Round_1");
+	static inline FName PlayerTrigger = TEXT("Round_2");
+	static inline FName Player = TEXT("Player");
+	static inline FName Enemy = TEXT("Enemy");
+	static inline FName Projectile = TEXT("Projectile");
+}
+
 class FUtils
 {
 public:
@@ -21,5 +30,11 @@ public:
 			}
 		}
 		return nullptr;
+	}
+	static const FName Round(uint8 Round) 
+	{
+		FString RoundString	= FString::Printf(TEXT("Round_%d"), Round);
+		FName RoundName(*RoundString);
+		return RoundName;
 	}
 };

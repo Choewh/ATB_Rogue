@@ -229,6 +229,12 @@ void ABasePawn::MoveTo(FVector NewDestination)
 // 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
 }
 
+UTexture2D* ABasePawn::GetPortrait()
+{
+	if (PawnData) return PawnData->Portraits;
+	return nullptr;
+}
+
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)
 {
 	// 범위의 색상과 선 두께 설정

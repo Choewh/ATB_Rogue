@@ -5,22 +5,20 @@
 #include "Subsystem/BattleSubsystem.h"
 #include "BaseBTTask_MoveTo.h"
 
-UBaseBTTask_MoveTo::UBaseBTTask_MoveTo(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UBaseBTTask_MoveTo::UBaseBTTask_MoveTo()
 {
-
+		NodeName = "MoveTo_Delegate";
+		bCreateNodeInstance = true;
+		bTickIntervals = true;
+		bNotifyTick = true;
 }
 
-void UBaseBTTask_MoveTo::SetOwner(AActor* InActorOwner)
-{
-	ActorOwner = InActorOwner;
-	AIOwner = Cast<AAIController>(InActorOwner);
-}
 
 EBTNodeResult::Type UBaseBTTask_MoveTo::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type NodeResult = Super::ExecuteTask(OwnerComp, NodeMemory);
 	BehaviorTreeComponent = &OwnerComp;
+	AActor* Actor = OwnerComp.GetOwner();
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	switch (NodeResult)

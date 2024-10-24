@@ -74,6 +74,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetPercent() { return ABT_Cur / ABT_MAX; }
 
+	UFUNCTION(BlueprintCallable)
+	UTexture2D* GetPortrait();
+
 	TObjectPtr<USplineCameraChildActorComponent> GetCameraSpline() { return CameraSplineClass; }
 
 public:
@@ -106,6 +109,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
+
+public:
+
 	void SetATBbar(USlider* InSlider) {ATBbar = InSlider;}
 	USlider* GetABTbar() { return ATBbar; }
 	UPROPERTY()
@@ -114,7 +120,7 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere)
-	bool bActive = true;
+	bool bActive = false;
 
 	UPROPERTY(EditAnywhere)
 	float ABT_Min = 0.f;
