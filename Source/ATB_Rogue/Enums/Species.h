@@ -9,7 +9,7 @@
 UENUM(BlueprintType)
 enum class ESpecies : uint8
 {
-	None UMETA(DisplayName = "None"),
+	None = 0 UMETA(DisplayName = "None"),
 	//BabyI
 	Jyarimon UMETA(DisplayName = "Jyarimon"),
 	//BabyII

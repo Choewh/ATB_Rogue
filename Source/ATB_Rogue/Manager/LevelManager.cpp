@@ -6,8 +6,6 @@
 
 #include "Pawn/EnemySpawnTransform.h"
 
-#include "Subsystem/BattleSubsystem.h"
-#include "Subsystem/EnemyCreateSubsystem.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -39,8 +37,17 @@ void ALevelManager::Init()
 {
 	RoundsPawns.Empty();
 	CurRound = 1;
+	SetMaxRound();
 	SetRoundPawns();
 	SetRoundsTransform();
+}
+
+void ALevelManager::SetMaxRound()
+{
+	TArray<AActor*> AllRoundTransforms;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AEnemySpawnTransform::StaticClass(), FName("RoundTransform"), AllRoundTransforms);
+	MaxRound = AllRoundTransforms.Num();
+	BossRound = MaxRound;
 }
 
 void ALevelManager::SetRoundPawns()
@@ -84,11 +91,12 @@ void ALevelManager::SetRoundsTransform()
 void ALevelManager::SpawnPawn()
 {
 	//EnemySpawn 액터를 찾아서 그 위치에 순서대로 배치 할지 고민
+	if (RoundsPawns.IsEmpty()) { return; }
 	uint8 Round = CurRound - 1;
 	for (uint8 i = RoundsPawns[Round].Num(); i > 0 ; i--)
 	{
 		if (RoundsPawns.IsEmpty()) { break; } //비었으면 끝
-		if (RoundsTransform[Round ].IsEmpty()) { break; } //비었으면 끝
+		if (RoundsTransform[Round].IsEmpty()) { break; } //비었으면 끝
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
 		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[Round][i-1], ActorSpawnParameters);
@@ -106,6 +114,19 @@ void ALevelManager::OnFirstSet(uint8 Round)
 	SpawnPawn();
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	BattleSubsystem->SetEnemyPawns(CurRoundPawns);
+}
+
+void ALevelManager::NextLevel()
+{
+	uint8 NextRound = CurRound + 1;
+	if (NextRound > MaxRound)
+	{
+		//다음 레벨로 넘어가기
+	}
+	else
+	{
+		CurRound++;
+	}
 }
 
 

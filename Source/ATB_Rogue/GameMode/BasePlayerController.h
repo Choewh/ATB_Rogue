@@ -7,7 +7,6 @@
 #include "GameFramework/PlayerController.h"
 #include "Misc/Utils.h"
 #include "Character/BaseCharacter.h"
-#include "Pawn/BasePawn.h"
 #include "Camera/PawnViewCameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Enums/CameraViewMode.h"

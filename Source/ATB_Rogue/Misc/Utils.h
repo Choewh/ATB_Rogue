@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Enums/Species.h"
 
 namespace CollisionProfileName
 {
@@ -36,5 +37,16 @@ public:
 		FString RoundString	= FString::Printf(TEXT("Round%d"), Round);
 		FName RoundName(*RoundString);
 		return RoundName;
+	}
+	// ESpecies를 넣으면 Display 네임으로 바꿔주는거
+	static const FText  GetSpeciesName(ESpecies InSpecies)
+	{
+		UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESpecies"), true);
+		if (EnumPtr)
+		{
+			// Enum 값을 기반으로 DisplayName을 가져옴
+			return EnumPtr->GetDisplayNameTextByValue(static_cast<int32>(InSpecies));
+		}
+		return FText(); // 유효하지 않을 경우 빈 FText 반환
 	}
 };

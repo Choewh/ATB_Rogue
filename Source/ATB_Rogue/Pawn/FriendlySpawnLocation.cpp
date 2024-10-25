@@ -33,10 +33,13 @@ void AFriendlySpawnLocation::PreEditChange(FProperty* PropertyAboutToChange)
 void AFriendlySpawnLocation::PostDuplicate(EDuplicateMode::Type DuplicateMode)
 {
 	Super::PostDuplicate(DuplicateMode);
-	PrevFriendlySpawnLocation = FriendlySpawnLocation;
-	for (uint8 Index = 0; Index < PrevFriendlySpawnLocation.Num(); Index++)
-	{
-		FriendlySpawnLocation[Index] = AddSpawnTransform(PrevFriendlySpawnLocation[Index]);
+	if (GIsEditor && !FApp::IsGame()) {
+		PrevFriendlySpawnLocation = FriendlySpawnLocation;
+		for (uint8 Index = 0; Index < PrevFriendlySpawnLocation.Num(); Index++)
+		{
+			FriendlySpawnLocation[Index] = AddSpawnTransform(PrevFriendlySpawnLocation[Index]);
+		}
+		PrevFriendlySpawnLocation.Empty();
 	}
 }
 
@@ -105,17 +108,6 @@ void AFriendlySpawnLocation::PostEditChangeProperty(FPropertyChangedEvent& Prope
 	}
 }
 
-TArray<FTransform> AFriendlySpawnLocation::GetSpawnTransform()
-{
-	TArray<FTransform> ReturnTransform;
-	for (int i = 0; FriendlySpawnLocation.Num(); i++)
-	{
-		//보유한 트랜스폼 1~10번까지
-		ReturnTransform.Add(FriendlySpawnLocation[i]->GetActorTransform());
-	}
-	return ReturnTransform;
-}
-
 ASpawnTransform* AFriendlySpawnLocation::AddSpawnTransform(ASpawnTransform* InTemplate)
 {
 	UWorld* World = GetWorld();
@@ -131,3 +123,18 @@ ASpawnTransform* AFriendlySpawnLocation::AddSpawnTransform(ASpawnTransform* InTe
 	return NewSpawnLocation;
 }
 #endif
+TArray<FTransform> AFriendlySpawnLocation::GetSpawnTransform()
+{
+	TArray<FTransform> ReturnTransform;
+
+	for (int i = 0; i < FriendlySpawnLocation.Num(); i++)
+	{
+		//보유한 트랜스폼 1~10번까지
+		if (FriendlySpawnLocation.IsValidIndex(i))
+		{
+			ReturnTransform.Add(FriendlySpawnLocation[i]->GetTransform());
+		}
+	}
+
+	return ReturnTransform;
+}

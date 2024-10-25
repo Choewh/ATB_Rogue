@@ -3,14 +3,12 @@
 
 #include "Character/BaseCharacter.h"
 #include "GameFrameWork/SpringArmComponent.h"
-#include "Camera/PawnViewCameraComponent.h"
 
 #include "Misc/Utils.h"
 
-#include "Pawn/FriendlySpawnLocation.h"
-
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/EnemyCreateSubsystem.h"
+#include "Pawn/FriendlySpawnLocation.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -23,14 +21,14 @@ ABaseCharacter::ABaseCharacter()
 	SpringArm->SetupAttachment(GetMesh());
 
 	{
-		UCameraComponent* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-		Camera->SetupAttachment(SpringArm);
+		CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+		CameraComponent->SetupAttachment(SpringArm);
 		FTransform NewTransform = FTransform(FRotator(-10.f, 0.f, 0.f), FVector3d(-2000.f, 0.f, 1000.f)); // 음 맵? 
-		Camera->SetRelativeTransform(NewTransform);
+		CameraComponent->SetRelativeTransform(NewTransform);
 	}
 	{
-		UPawnViewCameraComponent* PawnViewCamera = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
-		PawnViewCamera->SetupAttachment(RootComponent);
+		PawnViewCameraComponent = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
+		PawnViewCameraComponent->SetupAttachment(RootComponent);
 	}
 }
 
@@ -74,22 +72,33 @@ void ABaseCharacter::SetRoundsTransform()
 	}
 }
 
+
 void ABaseCharacter::SpawnPawn()
 {
-	for (uint8 i = 0; i < CurHavePawns.Num(); i++)
+	TArray<FBasePawnInfo> RoundsPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Friendly);
+	for (uint8 i = 0; i < RoundsPawns.Num(); i++)
 	{
-		if (CurHavePawns.IsEmpty()) { break; } //비었으면 끝
+		if (RoundsPawns.IsEmpty()) { break; } //비었으면 끝
+		if (RoundsTransform[(CurRound - 1) % 10].IsEmpty()) { break; }
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
 		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
-		NewPawn->Species = CurHavePawns[CurRound-1][i].Species;
-		NewPawn->PawnGroup = CurHavePawns[CurRound-1][i].PawnGroup;
+		NewPawn->Species = RoundsPawns[i].Species;
+		NewPawn->PawnGroup = RoundsPawns[i].PawnGroup;
 		NewPawn->SetData();
+		CurHavePawns.Add(NewPawn);
 	}
 }
 
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
+	if (CurRound % 10 == 1) //@TODO 
+	{
+		SpawnPawn();
+		CurRound++;
+	}
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	BattleSubsystem->SetFriendlyPawns(CurHavePawns);
 }
 
 ///

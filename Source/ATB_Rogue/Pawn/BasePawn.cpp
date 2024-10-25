@@ -92,7 +92,8 @@ void ABasePawn::SetData()
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
-		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);;
+		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);
+		CameraSplineClass->SetRelativeTransform(PawnData->MeshTransform);
 		CameraSplineClass->SetData(PawnData->CameraSplineClass);
 	}
 	if (StatusComponent)

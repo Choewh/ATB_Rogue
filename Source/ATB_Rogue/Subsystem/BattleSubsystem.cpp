@@ -12,7 +12,7 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 {
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
-
+	PawnsActive();
 
 	/// ABTBar 보여주기 Pawn들 소환과 ABTbar 세팅
 	/// Pawns 정보 가져오기 배틀중 관리 ㅇㅇ
@@ -80,6 +80,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
 	SetActionPawn(InPawn); // 액션폰 설정
 	PawnAction();
+	UE_LOG(LogTemp, Warning, TEXT("Pawn Name: %s"), *InPawn->GetActorLocation().ToString());
 }
 
 void UBattleSubsystem::SelectActionView()

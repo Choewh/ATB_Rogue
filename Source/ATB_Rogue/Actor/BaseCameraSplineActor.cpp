@@ -11,7 +11,10 @@ ABaseCameraSplineActor::ABaseCameraSplineActor()
 	PrimaryActorTick.bCanEverTick = true;
 	//SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	//Script/Engine.Blueprint'/Game/BluePrint/Component/BP_Spline.BP_Spline'
+	//DefaultScene = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultScene"));
+	//RootComponent = DefaultScene;
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
+	//SplineComponent->SetupAttachment(RootComponent);
 	RootComponent = SplineComponent;
 }
 

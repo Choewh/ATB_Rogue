@@ -16,8 +16,8 @@ ABasePlayerController::ABasePlayerController()
 	}
 	{
 		PlayerCameraManagerClass = ABasePlayerCameraManager::StaticClass();
-	}
-	bShowMouseCursor = true;
+		}
+		bShowMouseCursor = true;
 
 }
 

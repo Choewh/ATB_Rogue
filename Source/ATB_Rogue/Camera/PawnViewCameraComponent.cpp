@@ -8,10 +8,9 @@
 UPawnViewCameraComponent::UPawnViewCameraComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-#if NDEBUG
+
 	static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_CameraSpline.CV_CameraSpline'"));
 	check(CurveAsset.Object);
-#endif
 
 	CameraSplineTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraSplineTimelineComponent"));
 
@@ -36,17 +35,18 @@ void UPawnViewCameraComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 	if (bView && GetWorld()->GetSubsystem<UBattleSubsystem>()->IsValidActionPawn())
 	{
-		{
-			FVector StartVec = GetRelativeLocation();
-			FVector TargetVec = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn()->GetActorLocation();
+		//{
+		//	FVector StartVec = GetRelativeLocation();
+		//	ABasePawn* Temp = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
+		//	FVector TargetVec = Temp->GetNavAgentLocation();
+		//	
 
-
-			FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-			SetRelativeRotation(LookAtRotator);
-		}
-		{
-			//CameraSplineTimelineComponent->TickComponent(DeltaTime, TickType, ThisTickFunction);
-		}
+		//	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
+		//	SetWorldRotation(LookAtRotator);
+		//}
+		//{
+		//	CameraSplineTimelineComponent->TickComponent(DeltaTime, TickType, ThisTickFunction);
+		//}
 	}
 }
 
@@ -54,6 +54,13 @@ void UPawnViewCameraComponent::OnPawnViewCamera(ABasePawn* ViewEnemy)
 {
 	if (ViewEnemy)
 	{
+		FVector StartVec = GetComponentLocation();
+		ABasePawn* Temp = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
+		FVector TargetVec = Temp->GetNavAgentLocation();
+
+
+		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
+		SetWorldRotation(LookAtRotator);
 		CameraSplineTimelineComponent->PlayFromStart();
 	}
 }
@@ -63,14 +70,6 @@ void UPawnViewCameraComponent::StartSplineMoving(float InDissolve)
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	if (bView && BattleSubsystem->IsValidActionPawn())
 	{
-		{
-			FVector StartVec = GetRelativeLocation();
-			FVector TargetVec = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn()->GetActorLocation();
-
-
-			FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-			SetRelativeRotation(LookAtRotator);
-		}
 		ABasePawn* ActionPawn = BattleSubsystem->GetActionPawn();
 		AActor* tmepSpline = ActionPawn->GetCameraSpline()->GetChildActor();
 		ABaseCameraSplineActor* CameraSplineActor = Cast<ABaseCameraSplineActor>(tmepSpline);
@@ -86,5 +85,13 @@ void UPawnViewCameraComponent::StartSplineMoving(float InDissolve)
 		FRotator NewRotation = CameraSpline->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::Local);
 
 		SetWorldTransform(FTransform(NewRotation, NewLocation));
+		{
+			FVector StartVec = GetComponentLocation();
+			FVector TargetVec = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn()->GetActorLocation();
+
+
+			FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
+			SetRelativeRotation(LookAtRotator);
+		}
 	}
 }

@@ -30,10 +30,8 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpeci
 		SpawnSpecies = GetRandomSpecies();
 	}
 	//임시 //만들어줄때 보스면 StatusComponent 불러서 보스 체크
-
 	NewSpecies.PawnGroup = SpawnGroup;
 	NewSpecies.Species = SpawnSpecies;
-
 	return NewSpecies;
 }
 

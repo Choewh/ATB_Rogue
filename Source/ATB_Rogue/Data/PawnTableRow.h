@@ -26,7 +26,7 @@ struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, Category = "Species")
 	ESpecies Species;
-	UPROPERTY(EditAnywhere, Category = "Portrait")
+	UPROPERTY(BlueprintReadOnly,EditAnywhere, Category = "Portrait")
 	UTexture2D* Portraits;
 public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")

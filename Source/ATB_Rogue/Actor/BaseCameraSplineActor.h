@@ -28,7 +28,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	APawn* OwningPawn = nullptr;
-
+	//UPROPERTY(EditAnywhere)
+	//USceneComponent* DefaultScene;
 	UPROPERTY(EditAnywhere)
 	USplineComponent* SplineComponent;
 

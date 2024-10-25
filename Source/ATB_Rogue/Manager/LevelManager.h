@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Pawn/BasePawn.h"
 
+#include "Subsystem/BattleSubsystem.h"
 
+#include "Subsystem/EnemyCreateSubsystem.h"
 
 #include "LevelManager.generated.h"
 
@@ -31,6 +33,7 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void Init();
+	virtual void SetMaxRound();
 	virtual void SetRoundPawns();
 	virtual void SetRoundsTransform();
 public:
@@ -41,7 +44,7 @@ public:
 	virtual void OnFirstSet(uint8 Round);
 
 	UFUNCTION(BlueprintCallable)
-	void NextLevel() { CurRound++; }
+	void NextLevel();
 protected:
 	//그냥 배열로 1234 ㄱ
 	UPROPERTY(VisibleAnywhere)
