@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "Pawn/BasePawn.h"
+#include "Subsystem/EnemyCreateSubsystem.h"
 #include "ATBGameInstanceSubsystem.generated.h"
 
 /**
@@ -25,12 +25,17 @@ class ATB_ROGUE_API UATBGameInstanceSubsystem : public UGameInstanceSubsystem
 public:
 	UPROPERTY()
 	TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
+	TArray<ESpecies> PlayerSpecies; //플레이어폰 자체만 담고있기 ㅇ 
+	TArray<FBasePawnInfo> PlayerPawnsInfo; //플레이어폰 자체만 담고있기 ㅇ 
 
 public:
+
+	TArray<ESpecies> GetPlayerPawnInfo() { return PlayerSpecies; } // 플레이어 폰 반환
+	bool SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpeciesInfo);
 	UFUNCTION()
 	TArray<ABasePawn*> GetPlayerPawn() { return PlayerPawns; } // 플레이어 폰 반환
 	UFUNCTION()
-	void SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns) { PlayerPawns = InPlayerPawns; } // 플레이어 폰 받아 저장
+	bool SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns); // 플레이어 폰 받아 저장
 
 public:
 	//레벨 오픈 하면 플레이어 폰을 전달 | 델리게이트 ㄱ

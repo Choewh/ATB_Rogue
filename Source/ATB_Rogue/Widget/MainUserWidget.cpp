@@ -7,10 +7,15 @@
 
 #include "Data/PawnTableRow.h"
 
-#include "Components/Button.h"
+#include "Widget/USelectableCell.h"
+#include "Components/Overlay.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBoxSlot.h"
+#include "Components/OverlaySlot.h"
 #include "Components/ButtonSlot.h"
+#include "Subsystem/EnemyCreateSubsystem.h"
+#include "Subsystem/ATBGameInstanceSubsystem.h"
+
 
 #include "Enums/Species.h"
 
@@ -53,7 +58,6 @@ void UMainUserWidget::Init()
 	//폰테이블	
 	{   // Scroll SizeRule Fill set
 		TArray<UPanelSlot*> BoxSlots = SelectBox->GetSlots();
-		FSlateChildSize SlateChildSize(ESlateSizeRule::Fill);
 		for (auto& BoxSlot : BoxSlots)
 		{
 			UScrollBoxSlot* ScrollBoxSlot = Cast<UScrollBoxSlot>(BoxSlot);
@@ -62,14 +66,60 @@ void UMainUserWidget::Init()
 		}
 	}
 }
+UTexture2D* UMainUserWidget::GetTexture2DFromImage(UImage* InImage)
+{
+	UObject* Texture = InImage->Brush.GetResourceObject();
+	return Cast<UTexture2D>(Texture);
+}
+void UMainUserWidget::SelectPawnsUpdata(UImage* PortraitImage)
+{
+	int32 CurPawn = SelectPawns.Num();
+	UTexture2D* Portrait = GetTexture2DFromImage(PortraitImage);
+	switch (CurPawn)
+	{
+	case 1:
+		SelectPawn1->SetBrushFromTexture(Portrait);
+		break;
+	case 2:
+		SelectPawn2->SetBrushFromTexture(Portrait);
+		break;
+	case 3:
+		SelectPawn3->SetBrushFromTexture(Portrait);
+		break;
+	case 4:
+		SelectPawn4->SetBrushFromTexture(Portrait);
+	case 5:
+		SelectPawn5->SetBrushFromTexture(Portrait);
+		break;
+	default:
+		break; // CurPawn이 1~5가 아닐 때의 처리
+	}
+}
+bool UMainUserWidget::EnterGame()
+{
+	if (SelectPawns.IsEmpty()) { return false; }
+
+	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+	bool Result;
+
+	if (GameInstanceSubsystem)
+	{
+	Result = GameInstanceSubsystem->SavePlayerPawnsInfo(SelectPawns);
+	}
+
+	return Result;
+}
 void UMainUserWidget::OnButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Button Clicked!"));
 }
 
-
-
-
+void UMainUserWidget::SelectPawn(ESpecies SelectSpecies, UImage* Portrait) // 
+{
+	if (SelectPawns.Num() > 5) { return; }
+	SelectPawns.Add(SelectSpecies);
+	SelectPawnsUpdata(Portrait);
+}
 
 void UMainUserWidget::CreateButtons(uint8 InNum)
 {
@@ -80,21 +130,38 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 		//버튼 생성 텍스트 표기
 		FText SpeciesText = FUtils::GetSpeciesName(Species);
 		FName SpeciesName = *SpeciesText.ToString();
-		UButton* Button = NewObject<UButton>(this);
-		UImage* Image = NewObject<UImage>(Button);
-		Image->SetBrushSize(FVector2D(200.f, 200.f));
 
-		{	//폰데이터 찾기
-			SetSpeciesPortrait.Broadcast(Image, SpeciesName);
-			//이미지 추가해서 바꿔주기
-		}
-		// 클릭 -> 버튼 버튼이 폰을 어떻게 전달하나
-		// 위젯에 델리게이트 생성 버튼의 함수 ?
+		UOverlay* Overlay = NewObject<UOverlay>(this);
+
+
+		UImage* Image = NewObject<UImage>(Overlay);
+		USelectableCell* SelectableCell = NewObject<USelectableCell>(Overlay);
+		Image->SetBrushSize(FVector2D(200.f, 200.f));
 		{
-			Button->AddChild(Image);
-			Button->OnClicked.AddDynamic(this, &ThisClass::OnButtonClicked); // 클릭시 데이터 전달
-			SelectBox->AddChild(Button);
+			SetSpeciesPortrait.Broadcast(Image, SpeciesName);
+
 		}
+		{
+			SelectableCell->Species = Species;
+			SelectableCell->Image = Image;
+			SelectableCell->OnPressed.AddDynamic(this, &ThisClass::OnButtonClicked);
+			SelectableCell->AddPawn.AddDynamic(this, &ThisClass::SelectPawn);
+		}
+		{
+			Overlay->AddChild(Image);
+			Overlay->AddChild(SelectableCell);
+			SelectBox->AddChild(Overlay);
+		}
+
+		TArray<UPanelSlot*> Slots = Overlay->GetSlots();
+		for (auto& OverlaySlots : Slots)
+		{
+			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
+			OverlaySlot->HorizontalAlignment = EHorizontalAlignment::HAlign_Fill;
+			OverlaySlot->VerticalAlignment = EVerticalAlignment::VAlign_Fill;
+			OverlaySlot->SynchronizeProperties();
+		}
+
 		{
 			Species = GetNextSpecies(Species);
 			if (Species == ESpecies::None) { break; }

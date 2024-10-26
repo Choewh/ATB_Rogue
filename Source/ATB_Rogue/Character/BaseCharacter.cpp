@@ -7,7 +7,6 @@
 #include "Misc/Utils.h"
 
 #include "Subsystem/BattleSubsystem.h"
-#include "Subsystem/EnemyCreateSubsystem.h"
 #include "Pawn/FriendlySpawnLocation.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -75,16 +74,16 @@ void ABaseCharacter::SetRoundsTransform()
 
 void ABaseCharacter::SpawnPawn()
 {
-	TArray<FBasePawnInfo> RoundsPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Friendly);
-	for (uint8 i = 0; i < RoundsPawns.Num(); i++)
+	PlayerPawnsInfo = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Friendly);
+	for (uint8 i = 0; i < PlayerPawnsInfo.Num(); i++)
 	{
-		if (RoundsPawns.IsEmpty()) { break; } //비었으면 끝
+		if (PlayerPawnsInfo.IsEmpty()) { break; } //비었으면 끝
 		if (RoundsTransform[(CurRound - 1) % 10].IsEmpty()) { break; }
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
 		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
-		NewPawn->Species = RoundsPawns[i].Species;
-		NewPawn->PawnGroup = RoundsPawns[i].PawnGroup;
+		NewPawn->Species = PlayerPawnsInfo[i].Species;
+		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
 		CurHavePawns.Add(NewPawn);
 	}

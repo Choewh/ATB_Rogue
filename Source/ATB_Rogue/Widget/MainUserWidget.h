@@ -5,20 +5,20 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ScrollBox.h"
+#include "Components/Image.h"
 #include "Engine/DataTable.h"
 #include "Engine/Texture2D.h"
-#include "Components/Image.h"
 
 #include "Enums/Species.h"
 #include "MainUserWidget.generated.h"
 
 /**
- * 
+ *
  */
 
 class ABasePawn;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FFindPortraitFromName, UImage* , Image , FName, SpeciesName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FFindPortraitFromName, UImage*, Image, FName, SpeciesName);
 
 UCLASS()
 class ATB_ROGUE_API UMainUserWidget : public UUserWidget
@@ -31,21 +31,42 @@ public:
 protected:
 	UFUNCTION()
 	void OnButtonClicked();
+	UFUNCTION()
+	void SelectPawn(ESpecies SelectSpecies, UImage* Portrait);
 	virtual void NativeOnInitialized();
 	virtual void NativePreConstruct();
 	virtual void NativeConstruct();
 	void Init();
 
 private:
+
+	void SelectPawnsUpdata(UImage* Portrait);
+	UFUNCTION(BlueprintCallable)
+	bool EnterGame();
+
+private:
+
+	UTexture2D* GetTexture2DFromImage(UImage* InImage);
+
 	UPROPERTY(BlueprintAssignable)
 	FFindPortraitFromName SetSpeciesPortrait;
 
+	TArray<ESpecies> SelectPawns; //크기 300 300 /패딩 40
+
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	UScrollBox* SelectBox;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UImage* SelectPawn1;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UImage* SelectPawn2;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UImage* SelectPawn3;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UImage* SelectPawn4;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UImage* SelectPawn5;
 
-	ESpecies SelectSpecies;
 
-	TArray<ABasePawn*> SelectPawns; //크기 300 300 /패딩 40
 
 
 };

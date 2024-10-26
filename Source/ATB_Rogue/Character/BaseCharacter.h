@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Character.h"
-#include "Pawn/BasePawn.h"
+#include "Subsystem/EnemyCreateSubsystem.h"
+
 #include "Camera/PawnViewCameraComponent.h"
 
 #include "BaseCharacter.generated.h"
@@ -40,6 +41,8 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+	TArray<FBasePawnInfo> PlayerPawnsInfo;
+
 	UPROPERTY(VisibleAnywhere)
 	UPawnViewCameraComponent* PawnViewCameraComponent;
 protected:

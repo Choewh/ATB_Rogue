@@ -38,6 +38,12 @@ public:
 		FName RoundName(*RoundString);
 		return RoundName;
 	}
+	static const FName GetTextPlusInt(FString InString , uint8 Inint)
+	{
+		FString StringAddInt = FString::Printf(TEXT("%s%d"), *InString, Inint);
+		FName Result(*StringAddInt);
+		return Result;
+	}
 	// ESpecies를 넣으면 Display 네임으로 바꿔주는거
 	static const FText  GetSpeciesName(ESpecies InSpecies)
 	{
