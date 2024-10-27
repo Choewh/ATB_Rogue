@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Pawn/BasePawn.h"
+#include "Pawn/EnemyPawn.h"
 
 #include "Subsystem/BattleSubsystem.h"
 

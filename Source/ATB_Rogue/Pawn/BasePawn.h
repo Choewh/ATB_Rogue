@@ -16,13 +16,16 @@
 #include "Components/Slider.h"
 #include "Components/BoxComponent.h"
 
-
-
 #include "BasePawn.generated.h"
+
+/**
+ *
+ */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHideEffect);
 
 UCLASS()

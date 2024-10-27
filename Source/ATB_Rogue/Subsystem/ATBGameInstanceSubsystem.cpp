@@ -14,7 +14,7 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpe
 		PlayerPawnsInfo.Add(NewInfo);
 	}
 
-	if (InPawnsNum != PlayerSpecies.Num())
+	if (InPawnsNum != PlayerPawnsInfo.Num())
 	{
 		return false;
 	}

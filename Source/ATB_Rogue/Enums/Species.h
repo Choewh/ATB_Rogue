@@ -19,7 +19,7 @@ enum class ESpecies : uint8
 	//Champion
 	Growmon UMETA(DisplayName = "Growmon"),
 	//Ultimate
-	Megalogrowmon UMETA(DisplayName = "Megalo Growmon"),
+	Megalogrowmon UMETA(DisplayName = "Megalogrowmon"),
 	//Mege
 	Dukemon UMETA(DisplayName = "Dukemon"),
 	End UMETA(DisplayName = "End")

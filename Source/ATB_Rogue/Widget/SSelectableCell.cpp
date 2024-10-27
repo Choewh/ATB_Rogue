@@ -26,7 +26,6 @@ FReply SSelectableCell::OnMouseButtonDown(const FGeometry& MyGeometry, const FPo
 
 FReply SSelectableCell::OnMouseButtonUp(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
 {
-	OnReleased.ExecuteIfBound();
 	return FReply::Handled();
 }
 

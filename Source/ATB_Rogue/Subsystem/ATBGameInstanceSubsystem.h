@@ -24,13 +24,15 @@ class ATB_ROGUE_API UATBGameInstanceSubsystem : public UGameInstanceSubsystem
 	
 public:
 	UPROPERTY()
-	TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
 	TArray<ESpecies> PlayerSpecies; //플레이어폰 자체만 담고있기 ㅇ 
 	TArray<FBasePawnInfo> PlayerPawnsInfo; //플레이어폰 자체만 담고있기 ㅇ 
+	TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
 
 public:
 
-	TArray<ESpecies> GetPlayerPawnInfo() { return PlayerSpecies; } // 플레이어 폰 반환
+	TArray<ESpecies> GetPlayerSpecies() { return PlayerSpecies; } // 플레이어 폰 반환
+	TArray<FBasePawnInfo> GetPlayerPawnsInfo() { return PlayerPawnsInfo; } //플레이어폰 자체만 담고있기 ㅇ  
+	//스탯을 구조체로 폰마다 지니고있음 구조체가 Null 이면 기본 스탯입력.
 	bool SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpeciesInfo);
 	UFUNCTION()
 	TArray<ABasePawn*> GetPlayerPawn() { return PlayerPawns; } // 플레이어 폰 반환

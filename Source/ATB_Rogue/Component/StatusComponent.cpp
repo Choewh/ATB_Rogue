@@ -43,42 +43,46 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 	if (!StatData) { UE_LOG(LogTemp, Log, TEXT("StatusComponent is Not Find")); return; }
 
 	{
-		Stage = StatData->Stage;
-		Attribute = StatData->Attribute;
-		HP = StatData->HP;
-		ATK = StatData->ATK;
-		DEF = StatData->DEF;
-		SPATK = StatData->SPATK;
-		SPDEF = StatData->SPDEF;
-		SPD = StatData->SPD;
-		ACC = StatData->ACC;
-		EVA = StatData->EVA;
-		MoveRange = StatData->MoveRange;
+		TUniquePtr<FSpeciesInfo> NewSpeciesInfo = MakeUnique<FSpeciesInfo>();
+		NewSpeciesInfo.Get()->Stage = StatData->Stage;
+		NewSpeciesInfo.Get()->Attribute = StatData->Attribute;
+		NewSpeciesInfo.Get()->HP = StatData->HP;
+		NewSpeciesInfo.Get()->ATK = StatData->ATK;
+		NewSpeciesInfo.Get()->DEF = StatData->DEF;
+		NewSpeciesInfo.Get()->SPATK = StatData->SPATK;
+		NewSpeciesInfo.Get()->SPDEF = StatData->SPDEF;
+		NewSpeciesInfo.Get()->SPD = StatData->SPD;
+		NewSpeciesInfo.Get()->ACC = StatData->ACC;
+		NewSpeciesInfo.Get()->EVA = StatData->EVA;
+		NewSpeciesInfo.Get()->MoveRange = StatData->MoveRange;
+		SetSpeciesInfo(MoveTemp(NewSpeciesInfo));
 	}
 }
 
 float UStatusComponent::GetStat(EStat StatName)
 {
+	if(SpeciesInfo != nullptr)
 	switch (StatName)
 	{
 	case EStat::HP:
-		return HP;    // HP�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->HP;    // HP�� ���� �� ��ȯ
 	case EStat::ATK:
-		return ATK;   // ATK�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->ATK;   // ATK�� ���� �� ��ȯ
 	case EStat::DEF:
-		return DEF;   // DEF�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->DEF;   // DEF�� ���� �� ��ȯ
 	case EStat::SPATK:
-		return SPATK; // SPATK�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->SPATK; // SPATK�� ���� �� ��ȯ
 	case EStat::SPDEF:
-		return SPDEF; // SPDEF�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->SPDEF; // SPDEF�� ���� �� ��ȯ
 	case EStat::SPD:
-		return SPD;   // SPD�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->SPD;   // SPD�� ���� �� ��ȯ
 	case EStat::ACC:
-		return ACC;   // ACC�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->ACC;   // ACC�� ���� �� ��ȯ
 	case EStat::EVA:
-		return EVA;   // EVA�� ���� �� ��ȯ
+		return SpeciesInfo.Get()->EVA;   // EVA�� ���� �� ��ȯ
 	default:
 		return -1.f;  // ������ -1.f
 	}
+	return -1.f;
 }
 

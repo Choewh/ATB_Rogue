@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 
 #include "GameFramework/Character.h"
+
+#include "Pawn/FriendlyPawn.h"
+
 #include "Subsystem/EnemyCreateSubsystem.h"
 
 #include "Camera/PawnViewCameraComponent.h"

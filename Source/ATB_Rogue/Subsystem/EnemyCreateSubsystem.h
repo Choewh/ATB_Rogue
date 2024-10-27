@@ -11,8 +11,11 @@
 /**
  * 
  */
+USTRUCT()
 struct FBasePawnInfo
 {
+	GENERATED_BODY()
+public:
 	EPawnGroup PawnGroup;
 	ESpecies Species;
 };

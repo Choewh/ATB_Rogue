@@ -32,8 +32,7 @@ void USelectableCell::SlateHandlePressed()
 
 void USelectableCell::SlateHandleReleased()
 {
-    OnReleased.Broadcast();
-    AddPawn.Broadcast(Species, Image);
+
 }
 
 void USelectableCell::SlateHandleHovered()

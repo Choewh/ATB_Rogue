@@ -88,12 +88,39 @@ void UMainUserWidget::SelectPawnsUpdata(UImage* PortraitImage)
 		break;
 	case 4:
 		SelectPawn4->SetBrushFromTexture(Portrait);
+		break;
 	case 5:
 		SelectPawn5->SetBrushFromTexture(Portrait);
 		break;
 	default:
 		break; // CurPawn이 1~5가 아닐 때의 처리
 	}
+}
+void UMainUserWidget::AddedPawnsDelete()
+{
+	if (SelectPawns.IsEmpty()) { return; }
+	int32 CurPawn = SelectPawns.Num();
+	switch (CurPawn)
+	{
+	case 1:
+		SelectPawn1->SetBrushFromTexture(nullptr);
+		break;
+	case 2:
+		SelectPawn2->SetBrushFromTexture(nullptr);
+		break;
+	case 3:
+		SelectPawn3->SetBrushFromTexture(nullptr);
+		break;
+	case 4:
+		SelectPawn4->SetBrushFromTexture(nullptr);
+		break;
+	case 5:
+		SelectPawn5->SetBrushFromTexture(nullptr);
+		break;
+	default:
+		break; // CurPawn이 1~5가 아닐 때의 처리
+	}
+	SelectPawns.Pop();
 }
 bool UMainUserWidget::EnterGame()
 {

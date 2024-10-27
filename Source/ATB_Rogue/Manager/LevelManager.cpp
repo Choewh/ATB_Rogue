@@ -99,7 +99,7 @@ void ALevelManager::SpawnPawn()
 		if (RoundsTransform[Round].IsEmpty()) { break; } //비었으면 끝
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[Round][i-1], ActorSpawnParameters);
+		AEnemyPawn* NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[Round][i-1], ActorSpawnParameters);
 		NewPawn->Species = RoundsPawns[Round][i-1].Species;
 		NewPawn->PawnGroup = RoundsPawns[Round][i-1].PawnGroup;
 		NewPawn->SetData();
@@ -113,6 +113,7 @@ void ALevelManager::OnFirstSet(uint8 Round)
 {
 	SpawnPawn();
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+
 	BattleSubsystem->SetEnemyPawns(CurRoundPawns);
 }
 

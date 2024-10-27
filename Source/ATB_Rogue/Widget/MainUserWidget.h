@@ -42,6 +42,8 @@ private:
 
 	void SelectPawnsUpdata(UImage* Portrait);
 	UFUNCTION(BlueprintCallable)
+	void AddedPawnsDelete();
+	UFUNCTION(BlueprintCallable)
 	bool EnterGame();
 
 private:

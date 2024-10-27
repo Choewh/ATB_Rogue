@@ -42,9 +42,16 @@ void ABaseCharacter::Tick(float DeltaTime)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	check(BattleSubsystem);
-	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+	//레벨 시작시 Instance 에서 폰정보를 받아옴
+	{
+		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+		PlayerPawnsInfo = GameInstanceSubsystem->GetPlayerPawnsInfo();
+	}
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+	}
 	Init();
 }
 
@@ -74,14 +81,13 @@ void ABaseCharacter::SetRoundsTransform()
 
 void ABaseCharacter::SpawnPawn()
 {
-	PlayerPawnsInfo = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Friendly);
 	for (uint8 i = 0; i < PlayerPawnsInfo.Num(); i++)
 	{
 		if (PlayerPawnsInfo.IsEmpty()) { break; } //비었으면 끝
 		if (RoundsTransform[(CurRound - 1) % 10].IsEmpty()) { break; }
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		ABasePawn* NewPawn = GetWorld()->SpawnActor<ABasePawn>(ABasePawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
+		AFriendlyPawn* NewPawn = GetWorld()->SpawnActor<AFriendlyPawn>(AFriendlyPawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
