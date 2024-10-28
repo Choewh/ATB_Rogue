@@ -79,7 +79,7 @@ public:
     float MoveRange = 1200.f;
 };
 
-UCLASS( meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ATB_ROGUE_API UStatusComponent : public UActorComponent
 {
 	GENERATED_BODY()

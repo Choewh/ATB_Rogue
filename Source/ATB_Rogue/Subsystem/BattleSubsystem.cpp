@@ -79,7 +79,17 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
 	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
 	SetActionPawn(InPawn); // 액션폰 설정
-	PawnAction();
+	switch (InPawn->PawnGroup)
+	{
+	case EPawnGroup::Enemy:
+		InPawn->ActiveTurn.Broadcast(true);
+		break;
+	case EPawnGroup::Friendly:
+		SelectActionView();
+		break;
+	default:
+		break;
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Pawn Name: %s"), *InPawn->GetActorLocation().ToString());
 }
 
@@ -148,6 +158,7 @@ void UBattleSubsystem::FinishTurn()
 		//액션폰은 null로 초기화
 		ActionPawn->ABTReset();
 		PawnsActive();
+		ActionPawn->ActiveTurn.Broadcast(false);
 		ActionPawn = nullptr;
 		BattleFinish.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 		PlayerController->SetBattleState(EBattleState::Move);

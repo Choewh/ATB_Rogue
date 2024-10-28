@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Component/StatusComponent.h"
+#include "Component/SkillComponent.h"
 #include "BaseAIController.generated.h"
 
 /**
@@ -34,4 +35,5 @@ protected:
 
 	UPROPERTY()
 	UStatusComponent* StatusComponentRef;
+	USkillComponent* SkillComponentRef;
 };

@@ -10,25 +10,55 @@ USkillComponent::USkillComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	static ConstructorHelpers::FObjectFinder<UDataTable> SkillDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'"));
+	if (SkillDataObject.Succeeded())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
+		SkillDataTable = SkillDataObject.Object;
+	}
 }
 
 
-// Called when the game starts
 void USkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 
-// Called every frame
 void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	// ...
+void USkillComponent::SetData(ESpecies InSpecies)
+{
+	TArray<FSkillTableRow*> SkillTable_Array;
+	SkillDataTable->GetAllRows<FSkillTableRow>("", SkillTable_Array);
+
+	for (auto& SkillTable : SkillTable_Array)
+	{
+		if (SkillTable->Species == InSpecies)
+		{
+			SkillData = SkillTable;
+		}
+	}
+}
+
+float USkillComponent::GetSkillRange(ESkills InSkill)
+{
+	if (SkillData) { return -1.f; }
+	
+	switch (InSkill)
+	{
+	case ESkills::FirstSkill:
+		return SkillData->Skill1_Range;
+	case ESkills::SecondSkill:
+		return SkillData->Skill2_Range;
+	case ESkills::ThirdSkill:
+		return SkillData->Skill3_Range;
+	default:
+		return -1.f;
+	}
+	
 }
 

@@ -7,10 +7,10 @@
 #include "GameFramework/Pawn.h"
 #include "Engine/Texture2D.h"
 #include "Misc/Utils.h"
-#include "AI/BaseAIController.h"
-
 #include "Enums/Species.h"
 #include "Components/BoxComponent.h"
+
+#include "AI/BaseAIController.h"
 
 #include "Actor/BaseCameraSplineActor.h"
 
@@ -42,8 +42,11 @@ public:
 	TSubclassOf<UShapeComponent> CollisionClass = UBoxComponent::StaticClass();
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
 	FVector CollisionBoxExtent = FVector(32.0, 32.0, 32.0);
+
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<AAIController> AIController = ABaseAIController::StaticClass();
+	TSubclassOf<ABaseAIController> EnemyAIController;
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<ABaseAIController> FriendlyAIController;
 		
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass = ABaseCameraSplineActor::StaticClass();

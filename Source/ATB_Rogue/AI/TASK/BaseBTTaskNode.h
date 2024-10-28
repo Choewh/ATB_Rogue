@@ -15,14 +15,18 @@ UCLASS()
 class ATB_ROGUE_API UBaseBTTaskNode : public UBTTaskNode
 {
 	GENERATED_UCLASS_BODY()
-private:
+
+	public:
+
+
 	virtual void SetOwner(AActor* InActorOwner) override;
+
 protected:
 	/** Cached AIController owner of BehaviorTreeComponent. */
 	UPROPERTY(Transient)
 	TObjectPtr<AAIController> AIOwner;
 
-	/** Cached actor owner of BehaviorTreeComponent. */
+	/** Cached AIController owner of BehaviorTreeComponent. */
 	UPROPERTY(Transient)
 	TObjectPtr<AActor> ActorOwner;
 };
