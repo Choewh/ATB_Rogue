@@ -14,7 +14,9 @@ class ATB_ROGUE_API AFriendlyPawn : public ABasePawn
 {
 	GENERATED_BODY()
 	
+public:
+	AFriendlyPawn(const FObjectInitializer& ObjectInitializer);
 	
-	
+	virtual void SetData() override;
 	
 };

@@ -11,10 +11,11 @@
 
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
+#include "Component/SkillComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
 #include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
-#include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "BasePawn.generated.h"
 
@@ -25,6 +26,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActiveTurn , bool , Active);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHideEffect);
 
@@ -40,6 +43,7 @@ public:
 
 	// Sets default values for this pawn's properties
 	ABasePawn(const FObjectInitializer& ObjectInitializer);
+
 	virtual void SetData();
 
 protected:
@@ -57,7 +61,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	virtual bool BattleStart();
 	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
 	void ABTFeeling();	
@@ -110,6 +113,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UEffectComponent> EffectComponent;
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkillComponent> SkillComponent;
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
 
@@ -137,7 +142,8 @@ private:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;
-
+	UPROPERTY(BlueprintAssignable)
+	FActiveTurn ActiveTurn;
 	UPROPERTY(BlueprintAssignable)
 	FOnMove OnMove;
 	UPROPERTY(BlueprintAssignable)

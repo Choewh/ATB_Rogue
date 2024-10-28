@@ -19,7 +19,7 @@ void APawnRange::SetData(FEffectTableRow& EffectData)
 {
 	DecalMeshComponent->SetMaterial(0, EffectData.RangeDecalMaterial);
 	DecalMeshComponent->SetRelativeTransform(EffectData.RangeDecalTransform);
-	DecalMeshComponent->DecalSize = FVector(1.f, 100.f, 100.f);
+	DecalMeshComponent->DecalSize = FVector(20.f, 100.f, 100.f);
 }
 
 void APawnRange::HideEffect()

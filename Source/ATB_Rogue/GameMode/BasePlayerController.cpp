@@ -99,7 +99,13 @@ void ABasePlayerController::Init()
 
 bool ABasePlayerController::PawnAroundView(ABasePawn* ViewEnemy)
 {
-	if (CameraViewMode == ECameraViewMode::PawnView)
+	if (CameraViewMode != ECameraViewMode::PawnView)
+	{
+		SetViewCameraMode(ECameraViewMode::PawnView);
+		PawnViewCamera->OnPawnViewCamera(ViewEnemy);
+		return true;
+	}
+	else if(CameraViewMode == ECameraViewMode::PawnView)
 	{
 		PawnViewCamera->OnPawnViewCamera(ViewEnemy);
 		return true;

@@ -40,6 +40,7 @@ ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
 		MovementComponent = CreateDefaultSubobject<UBaseFloatingPawnMovement>(TEXT("BaseFloatingPawnMovement"));
 		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
+		SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 	}
 	{
 		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
@@ -60,6 +61,7 @@ void ABasePawn::SetData()
 	TArray<FPawnTableRow*> PawnTable_Array;
 	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
 
+	
 	if (!PawnData || PawnData->Species != Species)
 	{
 		for (auto& PawnTable : PawnTable_Array)
@@ -72,7 +74,25 @@ void ABasePawn::SetData()
 		}
 	}
 
-	AIControllerClass = PawnData->AIController;
+<<<<<<< HEAD
+
+=======
+	
+>>>>>>> origin/master
+	{
+		if (PawnGroup == EPawnGroup::Enemy)
+		{
+			AIControllerClass = PawnData->EnemyAIController;
+
+		}
+		else if (PawnGroup == EPawnGroup::Friendly)
+		{
+			AIControllerClass = PawnData->FriendlyAIController;
+		}
+
+
+	}
+
 
 	if (PawnData)
 	{
@@ -87,14 +107,15 @@ void ABasePawn::SetData()
 			SetRootComponent(CollisionComponent);
 			DefaultSceneRoot->SetRelativeTransform(FTransform::Identity);
 			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			UBoxComponent* BoxComponent = Cast<UBoxComponent>(CollisionComponent);
-			BoxComponent->SetBoxExtent(PawnData->CollisionBoxExtent);
+			UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(CollisionComponent);
+			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
 		SkeletalMeshComponent->SetRelativeTransform(PawnData->MeshTransform);
 		CameraSplineClass->SetRelativeTransform(PawnData->MeshTransform);
 		CameraSplineClass->SetData(PawnData->CameraSplineClass);
+		MovementComponent->SetUpdatedComponent(RootComponent);
 	}
 	if (StatusComponent)
 	{
@@ -106,6 +127,11 @@ void ABasePawn::SetData()
 	if (EffectComponent)
 	{
 		EffectComponent->SetData(Species);
+	}
+
+	if (SkillComponent)
+	{
+		SkillComponent->SetData(Species);
 	}
 }
 
@@ -150,13 +176,6 @@ void ABasePawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	ABTFeeling();
-
-}
-
-bool ABasePawn::BattleStart()
-{
-
-	return true;
 
 }
 
@@ -245,4 +264,3 @@ void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLine
 	// 구체를 그립니다.
 	DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines, Duration);
 }
-

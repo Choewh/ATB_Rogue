@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
+#include "Engine/DataTable.h"
+#include "Data/SkillTableRow.h"
+#include "Enums/Skills.h"
 #include "SkillComponent.generated.h"
 
 
@@ -17,12 +21,14 @@ public:
 	USkillComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+public:
+	virtual void SetData(ESpecies InSpecies);
+	float GetSkillRange(ESkills InSkill);
+
+public:
+	UDataTable* SkillDataTable;
+	FSkillTableRow* SkillData;
 };

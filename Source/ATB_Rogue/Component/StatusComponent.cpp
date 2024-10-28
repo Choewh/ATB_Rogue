@@ -86,3 +86,21 @@ float UStatusComponent::GetStat(EStat StatName)
 	return -1.f;
 }
 
+TUniquePtr<FSpeciesInfo> UStatusComponent::GetSpeciesInfo()
+{
+	TUniquePtr<FSpeciesInfo> ResultSpeciesInfo = MakeUnique<FSpeciesInfo>();
+	ResultSpeciesInfo.Get()->Stage = SpeciesInfo->Stage;
+	ResultSpeciesInfo.Get()->Attribute = SpeciesInfo->Attribute;
+	ResultSpeciesInfo.Get()->HP = SpeciesInfo->HP;
+	ResultSpeciesInfo.Get()->ATK = SpeciesInfo->ATK;
+	ResultSpeciesInfo.Get()->DEF = SpeciesInfo->DEF;
+	ResultSpeciesInfo.Get()->SPATK = SpeciesInfo->SPATK;
+	ResultSpeciesInfo.Get()->SPDEF = SpeciesInfo->SPDEF;
+	ResultSpeciesInfo.Get()->SPD = SpeciesInfo->SPD;
+	ResultSpeciesInfo.Get()->ACC = SpeciesInfo->ACC;
+	ResultSpeciesInfo.Get()->EVA = SpeciesInfo->EVA;
+	ResultSpeciesInfo.Get()->MoveRange = SpeciesInfo->MoveRange;
+
+	return ResultSpeciesInfo;
+}
+

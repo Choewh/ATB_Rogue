@@ -8,13 +8,6 @@
 void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!IsValid(BrainComponent))
-	{
-		UBehaviorTree* BT = LoadObject<UBehaviorTree>(nullptr, TEXT("/Script/AIModule.BehaviorTree'/Game/BluePrint/AI/BT_Pawn.BT_Pawn'"));
-		check(BT);
-		RunBehaviorTree(BT);
-	}
 }
 
 void ABaseAIController::OnPossess(APawn* InPawn)
@@ -24,6 +17,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	ABasePawn* BasePawn = Cast<ABasePawn>(InPawn);
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
+	SkillComponentRef = BasePawn->GetComponentByClass<USkillComponent>();
 	BasePawn->OnMove.AddDynamic(this, &ThisClass::SetMovePoint);
 	// StatusComponentRef->OnHPChanged.AddDynamic(this, &ThisClass::OnDamaged);
 }
@@ -34,9 +28,6 @@ void ABaseAIController::Tick(float DeltaTime)
 
 	APawn* OwningPawn = GetPawn();
 	ABasePawn* BasePawn = Cast<ABasePawn>(OwningPawn);
-	float ABT = BasePawn->GetABT();
-	bool check = IsFollowingAPath();
-
 }
 
 void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)

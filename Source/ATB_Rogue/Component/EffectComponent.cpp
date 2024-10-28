@@ -50,7 +50,7 @@ void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UEffectComponent::ViewMoveRange(FVector PawnLocation,float MoveRange)
 {
 	float Scale = (MoveRange) / 100;
-	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(0.1f, Scale, Scale));
+	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(1.f, Scale, Scale));
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform,*EffectData);
 }
 
