@@ -1,0 +1,44 @@
+diff --git a/ATB_Rogue.uproject b/ATB_Rogue.uproject
+index 4b43562..496093d 100644
+--- a/ATB_Rogue.uproject
++++ b/ATB_Rogue.uproject
+@@ -1,6 +1,6 @@
+ {
+ 	"FileVersion": 3,
+-	"EngineAssociation": "{843C73DE-4667-97D3-A2AF-A3BA162866BF}",
++	"EngineAssociation": "{CCC1DDB3-4281-A3D4-B6D0-DB81C2CE421C}",
+ 	"Category": "",
+ 	"Description": "",
+ 	"Modules": [
+diff --git a/Source/ATB_Rogue/Data/PawnTableRow.h b/Source/ATB_Rogue/Data/PawnTableRow.h
+index ab9eb7c..f04f053 100644
+--- a/Source/ATB_Rogue/Data/PawnTableRow.h
++++ b/Source/ATB_Rogue/Data/PawnTableRow.h
+@@ -47,6 +47,9 @@ public:
+ 	float CollisionCapsuleHalfHeight = 44.f;
+ =======
+ 	FVector CollisionBoxExtent = FVector(32.0, 32.0, 32.0);
++<<<<<<< HEAD
++>>>>>>> origin/master
++=======
+ >>>>>>> origin/master
+ 
+ 	UPROPERTY(EditAnywhere, Category = "AI")
+diff --git a/Source/ATB_Rogue/Pawn/BasePawn.cpp b/Source/ATB_Rogue/Pawn/BasePawn.cpp
+index 2571711..9a40cab 100644
+--- a/Source/ATB_Rogue/Pawn/BasePawn.cpp
++++ b/Source/ATB_Rogue/Pawn/BasePawn.cpp
+@@ -75,9 +75,13 @@ void ABasePawn::SetData()
+ 	}
+ 
+ <<<<<<< HEAD
++<<<<<<< HEAD
+ 
+ =======
+ 	
++>>>>>>> origin/master
++=======
++	
+ >>>>>>> origin/master
+ 	{
+ 		if (PawnGroup == EPawnGroup::Enemy)

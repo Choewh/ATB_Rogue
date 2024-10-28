@@ -75,7 +75,11 @@ void ABasePawn::SetData()
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> origin/master
 =======
 	
 >>>>>>> origin/master

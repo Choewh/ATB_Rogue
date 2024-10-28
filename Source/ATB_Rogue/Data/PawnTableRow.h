@@ -47,6 +47,9 @@ public:
 	float CollisionCapsuleHalfHeight = 44.f;
 =======
 	FVector CollisionBoxExtent = FVector(32.0, 32.0, 32.0);
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 
 	UPROPERTY(EditAnywhere, Category = "AI")
