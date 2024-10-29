@@ -61,9 +61,8 @@ void ABasePawn::SetData()
 	TArray<FPawnTableRow*> PawnTable_Array;
 	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
 
-	
-	if (!PawnData || PawnData->Species != Species)
-	{
+	if(Species == ESpecies::None) {return;}
+
 		for (auto& PawnTable : PawnTable_Array)
 		{
 			if (PawnTable->Species == Species)
@@ -72,17 +71,8 @@ void ABasePawn::SetData()
 				break;
 			}
 		}
-	}
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
 	
->>>>>>> origin/master
-=======
-	
->>>>>>> origin/master
+
 	{
 		if (PawnGroup == EPawnGroup::Enemy)
 		{
@@ -93,14 +83,12 @@ void ABasePawn::SetData()
 		{
 			AIControllerClass = PawnData->FriendlyAIController;
 		}
-
-
 	}
 
 
 	if (PawnData)
 	{
-		if (!IsValid(CollisionComponent) || CollisionComponent->GetClass() != PawnData->CollisionClass)
+		if (!IsValid(CollisionComponent) || PawnData->CollisionClass)
 		{
 			EObjectFlags SubobjectFlags = GetMaskedFlags(RF_PropagateToSubObjects) | RF_DefaultSubObject;
 			CollisionComponent = NewObject<UShapeComponent>(this, PawnData->CollisionClass, TEXT("CollisionComponent"), SubobjectFlags);
@@ -113,6 +101,7 @@ void ABasePawn::SetData()
 			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
 			UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(CollisionComponent);
 			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
+
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
@@ -142,14 +131,6 @@ void ABasePawn::SetData()
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
 {
 	Super::PostDuplicate(DuplicateMode);
-
-	if (DuplicateMode == EDuplicateMode::Normal)
-	{
-		FTransform Backup = GetActorTransform();
-		CollisionComponent->DestroyComponent();
-		SetData();
-		SetActorTransform(Backup);
-	}
 }
 
 void ABasePawn::PostLoad()
@@ -170,8 +151,6 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	SetData();
-	SetActorTransform(Transform);
 }
 
 // Called every frame

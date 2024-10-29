@@ -103,6 +103,7 @@ void ALevelManager::SpawnPawn()
 		NewPawn->Species = RoundsPawns[Round][i-1].Species;
 		NewPawn->PawnGroup = RoundsPawns[Round][i-1].PawnGroup;
 		NewPawn->SetData();
+		NewPawn->SetActorTransform(RoundsTransform[Round][i - 1]);
 		CurRoundPawns.Add(NewPawn);
 		RoundsTransform[Round].RemoveAt(i-1);
 		RoundsPawns[Round].RemoveAt(i-1);

@@ -26,4 +26,5 @@ public:
 	TArray<ABasePawn*> FirstSkillRangePawns;
 	TArray<ABasePawn*> SecondSkillRangePawns;
 	TArray<ABasePawn*> ThirdSkillRangePawns;
+	ABasePawn* TargetPawn;
 };

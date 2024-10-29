@@ -91,6 +91,7 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
+		NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
 		CurHavePawns.Add(NewPawn);
 	}
 }

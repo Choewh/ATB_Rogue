@@ -38,19 +38,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<UAnimInstance> AnimClass;
+
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
 	TSubclassOf<UShapeComponent> CollisionClass = UBoxComponent::StaticClass();
+
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
-<<<<<<< HEAD
-	float CollisionCapsuleRadius = 40.f;
+	float CollisionCapsuleRadius = 150.f;
 	UPROPERTY(EditAnywhere, Category = "Pawn|Collision")
-	float CollisionCapsuleHalfHeight = 44.f;
-=======
-	FVector CollisionBoxExtent = FVector(32.0, 32.0, 32.0);
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
+	float CollisionCapsuleHalfHeight = 150.f;		
+
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TSubclassOf<ABaseAIController> EnemyAIController;

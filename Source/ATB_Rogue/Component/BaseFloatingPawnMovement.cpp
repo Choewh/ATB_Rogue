@@ -109,15 +109,157 @@ FRotator UBaseFloatingPawnMovement::ComputeOrientToMovementRotation(const FRotat
 	}
 }
 
+bool UBaseFloatingPawnMovement::CheckFalling(float DeltaTime)
+{
+	APawn* OwningPawn = Cast<APawn>(GetOwner());
+
+	const FVector OldLocation = GetActorFeetLocation();
+
+	FVector DesiredMove = Velocity;
+	DesiredMove.Z = 0.f;
+	const FVector DeltaMove = DesiredMove * DeltaTime;
+	FVector AdjustedDest = OldLocation + DeltaMove;
+
+	//const INavigationDataInterface* NavData = FNavigationSystem::GetNavDataForActor(*OwningPawn);
+	const FNavAgentProperties& AgentProps = OwningPawn->GetNavAgentPropertiesRef();
+	//const float SearchRadius = AgentProps.AgentRadius * 2.0f;
+	const float SearchHeight = AgentProps.AgentHeight * AgentProps.NavWalkingSearchHeightScale * 0.4f;
+	//FNavLocation DestNavLocation;
+	bool bFoundFloor = false;//NavData->ProjectPoint(AdjustedDest, DestNavLocation, FVector(SearchRadius, SearchRadius, SearchHeight));
+	//if (!bFoundFloor)
+	{
+		FHitResult HitResult;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(GetOwner());
+		FVector Start = OldLocation;
+		FVector End = Start - FVector(0.0f, 0.0f, SearchHeight);
+
+		bFoundFloor = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
+	}
+
+	if (bFoundFloor)
+	{
+		FallingDeltaTime = 0.f;
+	}
+	else
+	{
+		FallingDeltaTime += DeltaTime;
+	}
+
+	bFalling = !bFoundFloor;
+	return bFalling;
+}
+
+bool UBaseFloatingPawnMovement::IsFalling() const
+{
+	return bFalling;
+}
+
+bool UBaseFloatingPawnMovement::IsMovingOnGround() const
+{
+	return !bFalling;
+}
+
+FVector UBaseFloatingPawnMovement::NewFallVelocity(const FVector& InitialVelocity, const FVector& Gravity, float DeltaTime) const
+{
+	FVector Result = InitialVelocity;
+
+	if (DeltaTime > 0.f)
+	{
+		// Apply gravity.
+		Result += Gravity * DeltaTime;
+
+		// Don't exceed terminal velocity.
+		const float TerminalLimit = 4000.f;// FMath::Abs(GetPhysicsVolume()->TerminalVelocity);
+		if (Result.SizeSquared() > FMath::Square(TerminalLimit))
+		{
+			const FVector GravityDir = Gravity.GetSafeNormal();
+			if ((Result | GravityDir) > TerminalLimit)
+			{
+				Result = FVector::PointPlaneProject(Result, FVector::ZeroVector, GravityDir) + GravityDir * TerminalLimit;
+			}
+		}
+	}
+
+	return Result;
+}
+
 void UBaseFloatingPawnMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	if (ShouldSkipUpdate(DeltaTime))
+	{
+		return;
+	}
 
 	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// Super::TickComponent를 아래로 옮겨놔서 그 부모의 TickComponent를 호출
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	UPawnMovementComponent::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	AccelerationAdvance = Velocity.GetSafeNormal();
+	if (!PawnOwner || !UpdatedComponent)
+	{
+		return;
+	}
 
-	PhysicsRotation(DeltaTime);
+	{
+		const AController* Controller = PawnOwner->GetController();
+		if (Controller && Controller->IsLocalController())
+		{
+			// AI Move To 에서 Velocity가 커지는 이슈가 있어서 속도 제한
+			// See: UPathFollowingComponent::FollowPathSegment
+			if (IsExceedingMaxSpeed(MaxSpeed) == true)
+			{
+				Velocity = Velocity.GetUnsafeNormal() * MaxSpeed;
+			}
+
+			static const FVector GravityDirection = FVector::UpVector;
+			static const FVector Gravity = -GravityDirection * 980.0;
+			if (CheckFalling(DeltaTime))
+			{
+				Velocity = NewFallVelocity(Velocity, Gravity, FallingDeltaTime);
+			}
+			else if (!Velocity.IsNearlyZero())
+			{
+				// 통상의 경우 미세 중력을 적용해서 공중으로 뜨지 않도록 처리
+				Velocity = NewFallVelocity(Velocity, Gravity, DeltaTime * 5.f);
+			}
+
+			LimitWorldBounds();
+			bPositionCorrected = false;
+
+			// Move actor
+			FVector Delta = Velocity * DeltaTime;
+
+			if (!Delta.IsNearlyZero(1e-6f))
+			{
+				const FVector OldLocation = UpdatedComponent->GetComponentLocation();
+				const FQuat Rotation = UpdatedComponent->GetComponentQuat();
+
+				FHitResult Hit(1.f);
+				SafeMoveUpdatedComponent(Delta, Rotation, true, Hit);
+
+				if (Hit.IsValidBlockingHit())
+				{
+					HandleImpact(Hit, DeltaTime, Delta);
+					// Try to slide the remaining distance along the surface.
+					SlideAlongSurface(Delta, 1.f - Hit.Time, Hit.Normal, Hit, true);
+				}
+
+				// Update velocity
+				// We don't want position changes to vastly reverse our direction (which can happen due to penetration fixups etc)
+				if (!bPositionCorrected)
+				{
+					const FVector NewLocation = UpdatedComponent->GetComponentLocation();
+					Velocity = ((NewLocation - OldLocation) / DeltaTime);
+				}
+			}
+
+			AccelerationAdvance = Velocity.GetSafeNormal();
+
+			PhysicsRotation(DeltaTime);
+
+			// Finalize
+			UpdateComponentVelocity();
+		}
+	}
 
 }
