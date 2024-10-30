@@ -27,4 +27,5 @@ public:
 	TArray<ABasePawn*> SecondSkillRangePawns;
 	TArray<ABasePawn*> ThirdSkillRangePawns;
 	ABasePawn* TargetPawn;
+	ESkills UseSkill;
 };

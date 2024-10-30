@@ -106,6 +106,7 @@ public:
 
 public:
     TUniquePtr<FSpeciesInfo> GetSpeciesInfo();
+
 	void SetSpeciesInfo(TUniquePtr<FSpeciesInfo> NewSpeciesInfo) { check(!SpeciesInfo); SpeciesInfo = MoveTemp(NewSpeciesInfo); }
 protected:
 	void ReleaseContext() { check(SpeciesInfo); SpeciesInfo = nullptr; } //지울일이있나?

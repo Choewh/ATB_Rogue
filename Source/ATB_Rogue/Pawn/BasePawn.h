@@ -69,6 +69,7 @@ public:
 	void HideMoveRange();
 	void MoveTo(FVector NewDestination);
 	void SetActive(bool Active) { bActive = Active; }
+	void ActiveCollision(bool Active);
 
 
 public:

@@ -37,4 +37,7 @@ void AEnemyAIController::SetActiveTurn(bool ActiveTurn)
 	Blackboard->SetValueAsBool(TEXT("bAction"), ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bMove"), ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bAttack"), ActiveTurn);
+	Blackboard->SetValueAsBool(TEXT("bSkillAttackable1"), !ActiveTurn);
+	Blackboard->SetValueAsBool(TEXT("bSkillAttackable2"), !ActiveTurn);
+	Blackboard->SetValueAsBool(TEXT("bSkillAttackable3"), !ActiveTurn);
 }

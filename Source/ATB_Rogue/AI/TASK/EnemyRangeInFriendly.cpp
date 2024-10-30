@@ -22,6 +22,11 @@ EBTNodeResult::Type UEnemyRangeInFriendly::ExecuteTask(UBehaviorTreeComponent& O
 
 	SkillRangeCheck();
 
+	if (!FindPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+
 	return EBTNodeResult::Succeeded;
 }
 
@@ -32,6 +37,11 @@ void UEnemyRangeInFriendly::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 }
 
 
+
+void UEnemyRangeInFriendly::Init()
+{
+	FindPawn = false;
+}
 
 void UEnemyRangeInFriendly::SkillRangeCheck()
 {
@@ -60,7 +70,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
 		UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Enemy->GetActorLocation(), Enemy->GetActorLocation(),
-			MoveRange + Range[i], TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::None,
+			MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::None,
 			HitResults, true);
 		if (!HitResults.IsEmpty())
 		{
@@ -78,19 +88,25 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 		}
 		AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
 
-		switch (i)
+		if (!HitPawns.IsEmpty())
 		{
-		case 0:
-			EnemyAIController->FirstSkillRangePawns = HitPawns;
-			break;
-		case 1:
-			EnemyAIController->SecondSkillRangePawns = HitPawns;
-			break;
-		case 2:
-			EnemyAIController->ThirdSkillRangePawns = HitPawns;
-			break;
-		default:
-			break;
+			switch (i)
+			{
+			case 0:
+				EnemyAIController->FirstSkillRangePawns = HitPawns;
+				FindPawn = true;
+				break;
+			case 1:
+				EnemyAIController->SecondSkillRangePawns = HitPawns;
+				FindPawn = true;
+				break;
+			case 2:
+				EnemyAIController->ThirdSkillRangePawns = HitPawns;
+				FindPawn = true;
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	//(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);

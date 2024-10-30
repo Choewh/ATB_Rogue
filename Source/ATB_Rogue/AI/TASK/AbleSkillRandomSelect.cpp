@@ -5,53 +5,89 @@
 
 UAbleSkillRandomSelect::UAbleSkillRandomSelect()
 {
-    NodeName = "AbleSkillRandomSelect";
+	NodeName = "AbleSkillRandomSelect";
 }
 
 EBTNodeResult::Type UAbleSkillRandomSelect::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    BehaviorTreeComponent = &OwnerComp;
-    SetOwner(BehaviorTreeComponent->GetOwner());
-    BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	BehaviorTreeComponent = &OwnerComp;
+	SetOwner(BehaviorTreeComponent->GetOwner());
+	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 
-    EmptyCheck();
-    PickRandomSkill();
+	EmptyCheck();
+	if (FirstEmpty && SecondEmpty && ThirdEmpty) { return EBTNodeResult::Failed; }
+	PickRandomSkill();
 
 
-    return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Succeeded;
 }
 
 void UAbleSkillRandomSelect::EmptyCheck()
 {
-    AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
-    if (EnemyAIController->FirstSkillRangePawns.IsEmpty()) FirstEmpty = true;
-    if (EnemyAIController->SecondSkillRangePawns.IsEmpty()) SecondEmpty = true;
-    if (EnemyAIController->ThirdSkillRangePawns.IsEmpty()) ThirdEmpty = true;
+	AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
+	if (EnemyAIController->FirstSkillRangePawns.IsEmpty()) FirstEmpty = true;
+	if (EnemyAIController->SecondSkillRangePawns.IsEmpty()) SecondEmpty = true;
+	if (EnemyAIController->ThirdSkillRangePawns.IsEmpty()) ThirdEmpty = true;
 }
 
 void UAbleSkillRandomSelect::PickRandomSkill()
 {
-    uint8 RandomInt = FMath::RandRange(0, 2);
+	uint8 RandomInt = FMath::RandRange(0, 2);
 
-    
-    switch (RandomInt)
-    {
-    case 0:
-    {
-        if (FirstEmpty) { PickRandomSkill(); break; }
-        BlackboardComponent->SetValueAsBool(TEXT("bSkillAttackable1"), true);
-        break;
-    }
-    case 1:
-        if (SecondEmpty) { PickRandomSkill(); break; }
-        BlackboardComponent->SetValueAsBool(TEXT("bSkillAttackable2"), true);
-        break;
-    case 2:
-        if (ThirdEmpty) { PickRandomSkill(); break; }
-        BlackboardComponent->SetValueAsBool(TEXT("bSkillAttackable3"), true);
-        break;
 
-    default:
-        break;
-    }
+	switch (RandomInt)
+	{
+	case 0:
+	{
+		if (FirstEmpty) { PickRandomSkill(); break; }
+		SelectAttackRandomPawn(ESkills::FirstSkill);
+		break;
+	}
+	case 1:
+		if (SecondEmpty) { PickRandomSkill(); break; }
+		SelectAttackRandomPawn(ESkills::SecondSkill);
+		break;
+	case 2:
+		if (ThirdEmpty) { PickRandomSkill(); break; }
+		SelectAttackRandomPawn(ESkills::ThirdSkill);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void UAbleSkillRandomSelect::SelectAttackRandomPawn(ESkills Skill)
+{
+	AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
+	uint8 RandomInt;
+	BlackboardComponent->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(Skill));
+	switch (Skill)
+	{
+	case ESkills::FirstSkill:
+		RandomInt = FMath::RandRange(0, EnemyAIController->FirstSkillRangePawns.Num() - 1);
+		EnemyAIController->TargetPawn = EnemyAIController->FirstSkillRangePawns[RandomInt];
+
+		break;
+	case ESkills::SecondSkill:
+		RandomInt = FMath::RandRange(0, EnemyAIController->SecondSkillRangePawns.Num() - 1);
+		EnemyAIController->TargetPawn = EnemyAIController->SecondSkillRangePawns[RandomInt];
+		break;
+	case ESkills::ThirdSkill:
+		RandomInt = FMath::RandRange(0, EnemyAIController->ThirdSkillRangePawns.Num() - 1);
+		EnemyAIController->TargetPawn = EnemyAIController->ThirdSkillRangePawns[RandomInt];
+		break;
+	default:
+		break;
+	}
+	BlackboardComponent->SetValueAsObject(TEXT("TargetPawn"), EnemyAIController->TargetPawn);
+
+
+}
+
+void UAbleSkillRandomSelect::Init()
+{
+	FirstEmpty = false;
+	SecondEmpty = false;
+	ThirdEmpty = false;
 }

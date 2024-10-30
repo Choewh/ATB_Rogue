@@ -42,6 +42,7 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 
 	if (!StatData) { UE_LOG(LogTemp, Log, TEXT("StatusComponent is Not Find")); return; }
 
+	if(!SpeciesInfo)
 	{
 		TUniquePtr<FSpeciesInfo> NewSpeciesInfo = MakeUnique<FSpeciesInfo>();
 		NewSpeciesInfo.Get()->Stage = StatData->Stage;
@@ -55,7 +56,7 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 		NewSpeciesInfo.Get()->ACC = StatData->ACC;
 		NewSpeciesInfo.Get()->EVA = StatData->EVA;
 		NewSpeciesInfo.Get()->MoveRange = StatData->MoveRange;
-		SetSpeciesInfo(MoveTemp(NewSpeciesInfo));
+		SpeciesInfo = MoveTemp(NewSpeciesInfo);
 	}
 }
 

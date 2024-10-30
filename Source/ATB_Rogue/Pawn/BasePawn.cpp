@@ -85,7 +85,6 @@ void ABasePawn::SetData()
 		}
 	}
 
-
 	if (PawnData)
 	{
 		if (!IsValid(CollisionComponent) || PawnData->CollisionClass)
@@ -101,7 +100,6 @@ void ABasePawn::SetData()
 			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
 			UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(CollisionComponent);
 			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
-
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
@@ -126,6 +124,7 @@ void ABasePawn::SetData()
 	{
 		SkillComponent->SetData(Species);
 	}
+	ActiveCollision(true);
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
@@ -151,6 +150,7 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+	SetData();
 }
 
 // Called every frame
@@ -230,6 +230,12 @@ void ABasePawn::MoveTo(FVector NewDestination)
 	// AI 컨트롤러가 활성화되어 있습니다.
 //SetActorLocation(NewDestination);
 // 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
+}
+
+void ABasePawn::ActiveCollision(bool Active)
+{
+	CollisionComponent->SetCanEverAffectNavigation(Active);
+	SetCanAffectNavigationGeneration(Active);
 }
 
 UTexture2D* ABasePawn::GetPortrait()

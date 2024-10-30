@@ -127,7 +127,7 @@ bool UMainUserWidget::EnterGame()
 	if (SelectPawns.IsEmpty()) { return false; }
 
 	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
-	bool Result;
+	bool Result = false;
 
 	if (GameInstanceSubsystem)
 	{

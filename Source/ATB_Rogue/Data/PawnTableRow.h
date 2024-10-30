@@ -56,12 +56,5 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass = ABaseCameraSplineActor::StaticClass();
 
-//public:
-//	UPROPERTY(EditAnywhere, Category = "Effect" , meta = (RowType = "/Script/ATB_ROGUE.EffectTableRow"))
-//	FDataTableRowHandle Effect;
-//public:
-//	UPROPERTY(EditAnywhere, Category = "Stat", meta = (RowType = "/Script/ATB_ROGUE.StatTableRow"))
-//	FDataTableRowHandle Stat; 
-
 
 };

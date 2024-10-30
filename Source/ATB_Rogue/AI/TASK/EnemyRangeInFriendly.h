@@ -21,9 +21,11 @@ protected:
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 private:
+	void Init();
 	void SkillRangeCheck();
 	void UnableSkill(uint8 SkillNum);
 public:
+	bool FindPawn = false;
 	class UBehaviorTreeComponent* BehaviorTreeComponent = nullptr;
 	class UBlackboardComponent* BlackboardComponent = nullptr;
 };

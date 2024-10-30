@@ -57,12 +57,12 @@ void ALevelManager::SetRoundPawns()
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Enemy);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy);
 			RoundsPawns.Add(RoundPawns);
 		}
 		else
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(3, EPawnGroup::Enemy, EBattleSpec::Boss);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, EBattleSpec::Boss);
 			RoundsPawns.Add(RoundPawns);
 		}
 	}
