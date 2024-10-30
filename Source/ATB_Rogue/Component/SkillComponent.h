@@ -7,6 +7,7 @@
 
 #include "Engine/DataTable.h"
 #include "Data/SkillTableRow.h"
+#include "Data/SpeciesSkillTableRow.h"
 #include "Enums/Skills.h"
 #include "SkillComponent.generated.h"
 
@@ -29,6 +30,9 @@ public:
 	float GetSkillRange(ESkills InSkill);
 
 public:
-	UDataTable* SkillDataTable;
-	FSkillTableRow* SkillData;
+	UDataTable* SpeciesSkillDataTable;
+	FSpeciesSkillTableRow* SpeciesSkillData;
+	FSkillTableRow* FirstSkillData;
+	FSkillTableRow* SecondSkillData;
+	FSkillTableRow* ThirdSkillData;
 };

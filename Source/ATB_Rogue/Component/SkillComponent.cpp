@@ -10,11 +10,11 @@ USkillComponent::USkillComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> SkillDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'"));
-	if (SkillDataObject.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UDataTable> SpeciesSkillDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'"));
+	if (SpeciesSkillDataObject.Succeeded())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
-		SkillDataTable = SkillDataObject.Object;
+		SpeciesSkillDataTable = SpeciesSkillDataObject.Object;
 	}
 }
 
@@ -32,30 +32,40 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void USkillComponent::SetData(ESpecies InSpecies)
 {
-	TArray<FSkillTableRow*> SkillTable_Array;
-	SkillDataTable->GetAllRows<FSkillTableRow>("", SkillTable_Array);
+	TArray<FSpeciesSkillTableRow*> SpeciesSkillTableRow_Array;
+	SpeciesSkillDataTable->GetAllRows<FSpeciesSkillTableRow>("", SpeciesSkillTableRow_Array);
 
-	for (auto& SkillTable : SkillTable_Array)
+	for (auto& SpeciesSkillTable : SpeciesSkillTableRow_Array)
 	{
-		if (SkillTable->Species == InSpecies)
+		if (SpeciesSkillTable->Species == InSpecies)
 		{
-			SkillData = SkillTable;
+			SpeciesSkillData = SpeciesSkillTable;
 		}
 	}
+	FSkillTableRow* FirstData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("FirstSkill"));
+	if(!FirstData) { ensure(false); return; }
+	FirstSkillData = FirstData;
+	FSkillTableRow* SecondData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("SecondSkill"));
+	if (!SecondData) { ensure(false); return; }
+	SecondSkillData = SecondData;
+	FSkillTableRow* ThirdData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("ThirdSkill"));
+	if (!ThirdData) { ensure(false); return; }
+	ThirdSkillData = ThirdData;
 }
 
 float USkillComponent::GetSkillRange(ESkills InSkill)
 {
-	if (SkillData) { return -1.f; }
-	
 	switch (InSkill)
 	{
 	case ESkills::FirstSkill:
-		return SkillData->Skill1_Range;
+		if(!FirstSkillData) { ensure(false); return-1.f;}
+		return FirstSkillData->Skill_Range;
 	case ESkills::SecondSkill:
-		return SkillData->Skill2_Range;
+		if(!SecondSkillData) { ensure(false); return-1.f;}
+		return SecondSkillData->Skill_Range;
 	case ESkills::ThirdSkill:
-		return SkillData->Skill3_Range;
+		if (!ThirdSkillData) { ensure(false); return-1.f; }
+		return ThirdSkillData->Skill_Range;
 	default:
 		return -1.f;
 	}

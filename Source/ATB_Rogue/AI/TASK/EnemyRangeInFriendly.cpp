@@ -52,16 +52,16 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 
 	TArray<float> Range;
 	bool Has3 = false;
-	if (!SkillComponent->SkillData->Skill_3) // 3스킬 유무
+	if (!SkillComponent->SpeciesSkillData->Skill_3) // 3스킬 유무
 	{
-		Range.Add(SkillComponent->SkillData->Skill1_Range);
-		Range.Add(SkillComponent->SkillData->Skill2_Range);
+		Range.Add(SkillComponent->GetSkillRange(ESkills::FirstSkill));
+		Range.Add(SkillComponent->GetSkillRange(ESkills::SecondSkill));
 	}
 	else
 	{
-		Range.Add(SkillComponent->SkillData->Skill1_Range);
-		Range.Add(SkillComponent->SkillData->Skill2_Range);
-		Range.Add(SkillComponent->SkillData->Skill3_Range);
+		Range.Add(SkillComponent->GetSkillRange(ESkills::FirstSkill));
+		Range.Add(SkillComponent->GetSkillRange(ESkills::SecondSkill));
+		Range.Add(SkillComponent->GetSkillRange(ESkills::ThirdSkill));
 		Has3 = true;
 	}
 

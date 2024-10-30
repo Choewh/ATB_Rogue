@@ -7,10 +7,11 @@
  *
  */
 UENUM(BlueprintType)
-enum class EMoves: uint8
+enum class EHitTargetType: uint8
 {
 	None UMETA(DisplayName = "None"),
-	TestMagic UMETA(DisplayName = "TestMagic"),
-	TestMelee UMETA(DisplayName = "TestMelee"),
+	Enemy UMETA(DisplayName = "Enemy"),
+	Friendly UMETA(DisplayName = "Friendly"),
+	Self  UMETA(DisplayName = "Self")
 };
 	
