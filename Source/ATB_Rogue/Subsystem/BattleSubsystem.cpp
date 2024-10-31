@@ -86,7 +86,6 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		InPawn->ActiveTurn.Broadcast(true);
 		break;
 	case EPawnGroup::Friendly:
-		FinishTurn();
 		SelectActionView();
 		break;
 	default:
@@ -137,6 +136,11 @@ void UBattleSubsystem::SelectMoveCancle()
 	PlayerController->SetBattleState(EBattleState::Defalut);
 	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
 	PlayerController->PawnAroundView(ActionPawn);
+}
+
+void UBattleSubsystem::Evolution()
+{
+	ActionPawn->Evolution();
 }
 
 void UBattleSubsystem::MoveActionView() //필요없는거같은데 일단 보류

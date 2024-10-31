@@ -78,6 +78,9 @@ public :
 	UFUNCTION(BlueprintCallable)
 	void SelectMoveCancle();
 
+	UFUNCTION(BlueprintCallable)
+	void Evolution(); // Temp
+
 	UFUNCTION()
 	void MoveActionView();
 

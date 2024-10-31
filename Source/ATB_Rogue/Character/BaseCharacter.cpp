@@ -98,7 +98,7 @@ void ABaseCharacter::SpawnPawn()
 
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
-	if (CurRound % 10 == 1) //@TODO 
+	if (CurRound % 10 == 1)
 	{
 		SpawnPawn();
 		CurRound++;

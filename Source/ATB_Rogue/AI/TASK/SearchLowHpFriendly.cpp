@@ -15,7 +15,7 @@ EBTNodeResult::Type USearchLowHpFriendly::ExecuteTask(UBehaviorTreeComponent& Ow
 	BehaviorTreeComponent = &OwnerComp;
 	SetOwner(BehaviorTreeComponent->GetOwner());
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
-
+	LowHpPawn = nullptr;
 	AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
 
 	if (BlackboardComponent->GetValueAsBool(TEXT("bSkillAttackable3"))) FindLowHpPawn(EnemyAIController->ThirdSkillRangePawns, ESkills::ThirdSkill);
@@ -35,10 +35,10 @@ void USearchLowHpFriendly::FindLowHpPawn(TArray<ABasePawn*> InPawns , ESkills Sk
 {
 	for (ABasePawn* Pawn : InPawns)
 	{	//임시
-		float PawnHP = Pawn->StatusComponent->GetStat(EStat::HP);
+		float PawnHP = Pawn->StatusComponent->GetSpeciesInfo()->HP;
 		if (LowHpPawn != nullptr)
 		{
-			float LowPawnHP = LowHpPawn->StatusComponent->GetStat(EStat::HP);
+			float LowPawnHP = LowHpPawn->StatusComponent->GetSpeciesInfo()->HP;
 			if (PawnHP < LowPawnHP)
 			{
 				LowHpPawn = Pawn;

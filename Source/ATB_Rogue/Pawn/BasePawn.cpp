@@ -7,6 +7,7 @@
 #include "Misc/Utils.h"
 #include "Widget/ABTBarUserWidget.h"
 #include "Subsystem/BattleSubsystem.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "AI/BaseAIController.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
@@ -35,12 +36,14 @@ ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
 		SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 		SkeletalMeshComponent->SetupAttachment(RootComponent);
 		SkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SkeletalMeshComponent->bReceivesDecals = false;
 	}
 	{
 		MovementComponent = CreateDefaultSubobject<UBaseFloatingPawnMovement>(TEXT("BaseFloatingPawnMovement"));
 		StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 		EffectComponent = CreateDefaultSubobject<UEffectComponent>(TEXT("EffectComponent"));
 		SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
+		AnimComponent = CreateDefaultSubobject<UAnimComponent>(TEXT("AnimComponent"));
 	}
 	{
 		CameraSplineClass = CreateDefaultSubobject<USplineCameraChildActorComponent>(TEXT("CameraSpline"));
@@ -100,6 +103,7 @@ void ABasePawn::SetData()
 			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
 			UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(CollisionComponent);
 			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
+			CapsuleComponent->bReceivesDecals = false;
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
@@ -112,7 +116,7 @@ void ABasePawn::SetData()
 	{
 		StatusComponent->SetData(Species);
 
-		ABT_Speed = StatusComponent->GetStat(EStat::SPD);
+		ABT_Speed = StatusComponent->GetSpeciesInfo()->SPD;
 	}
 
 	if (EffectComponent)
@@ -123,6 +127,11 @@ void ABasePawn::SetData()
 	if (SkillComponent)
 	{
 		SkillComponent->SetData(Species);
+	}
+
+	if (AnimComponent)
+	{
+		AnimComponent->SetData(Species);
 	}
 	ActiveCollision(true);
 }
@@ -162,6 +171,17 @@ void ABasePawn::Tick(float DeltaTime)
 
 }
 
+float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	AnimInstance->Montage_Play(AnimComponent->AnimData->HitReactMontage);
+
+	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), DamageCauser->GetActorLocation());
+	this->SetActorRotation(LookAtRotator);
+
+	return 0.0f;
+}
+
 void ABasePawn::TurnEnd()
 {
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
@@ -194,7 +214,7 @@ bool ABasePawn::Movealbe(FVector NewDestination)
 	float Distance;
 	Distance = FVector::Dist(CenterPoint, NewDestination);
 
-	if (Distance <= StatusComponent->GetMoveRange()) {
+	if (Distance <= StatusComponent->GetSpeciesInfo()->MoveRange) {
 		// 범위 내에 있는 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
 		return true;
@@ -210,7 +230,7 @@ void ABasePawn::MakeViewMoveRange()
 	//이동사거리 표시
 	if (!EffectComponent) { ensure(false); return; }
 
-	EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetMoveRange());
+	EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetSpeciesInfo()->MoveRange);
 
 }
 void ABasePawn::HideMoveRange()
@@ -227,6 +247,8 @@ void ABasePawn::MoveTo(FVector NewDestination)
 
 	HideMoveRange();
 	OnMove.Broadcast(NewDestination);
+	TurnEnd(); // Temp 어택 구현시 제거하기
+
 	// AI 컨트롤러가 활성화되어 있습니다.
 //SetActorLocation(NewDestination);
 // 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
@@ -236,6 +258,44 @@ void ABasePawn::ActiveCollision(bool Active)
 {
 	CollisionComponent->SetCanEverAffectNavigation(Active);
 	SetCanAffectNavigationGeneration(Active);
+}
+
+void ABasePawn::PlaySkillAnimation(ESkills UseSkill)
+{
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	switch (UseSkill)
+	{
+	case ESkills::None:
+		return;
+	case ESkills::FirstSkill:
+		AnimInstance->Montage_Play(SkillComponent->FirstSkillData->SkillReactMontage);
+		break;
+	case ESkills::SecondSkill:
+		AnimInstance->Montage_Play(SkillComponent->SecondSkillData->SkillReactMontage);
+		break;
+	case ESkills::ThirdSkill:
+		AnimInstance->Montage_Play(SkillComponent->ThirdSkillData->SkillReactMontage);
+		break;
+	default:
+		break;
+	}
+}
+
+void ABasePawn::Evolution()
+{
+	FVector OriginVec = GetActorLocation();
+	Species = PawnData->NextSpecies;
+	SetData();
+	SetActorLocation(OriginVec);
+	//이펙트 효과
+	//다음단계로 Species 바꾸고 SetData 호출
+}
+
+void ABasePawn::OnDie()
+{
+	//죽으면 데이터 삭제 ? 할지 살릴수 있게 할지 정하기 못살리면 포획이나 그런거 구현 해야 흠...
+	// 
+	//애니메이션 몽타쥬 재생.
 }
 
 UTexture2D* ABasePawn::GetPortrait()

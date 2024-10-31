@@ -23,7 +23,7 @@ struct FSpeciesInfo
     GENERATED_BODY()
 public:
     FSpeciesInfo()
-       :Level(0),
+       :Level(1),
         Species(ESpecies::None),
         Stage(EStage::None),
         Attribute(EAttribute::None),
@@ -99,13 +99,11 @@ public:
 
 public:
 
-	EStage GetStage() { return SpeciesInfo.Get()->Stage; }
-	EAttribute GetAttribute() { return SpeciesInfo.Get()->Attribute; }
-	float GetStat(EStat StatName);
-	float GetMoveRange() { return SpeciesInfo.Get()->MoveRange; }
+    float CalculateHP(float BaseHP);
+    float CalculateStat(float BaseStat);
 
 public:
-    TUniquePtr<FSpeciesInfo> GetSpeciesInfo();
+    const FSpeciesInfo* GetSpeciesInfo() { return SpeciesInfo.Get(); }
 
 	void SetSpeciesInfo(TUniquePtr<FSpeciesInfo> NewSpeciesInfo) { check(!SpeciesInfo); SpeciesInfo = MoveTemp(NewSpeciesInfo); }
 protected:

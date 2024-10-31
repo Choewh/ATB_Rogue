@@ -12,6 +12,7 @@
 #include "Component/StatusComponent.h"
 #include "Component/EffectComponent.h"
 #include "Component/SkillComponent.h"
+#include "Component/AnimComponent.h"
 #include "Component/SplineCameraChildActorComponent.h"
 #include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
@@ -60,6 +61,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
 public:
 	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
@@ -71,6 +74,9 @@ public:
 	void SetActive(bool Active) { bActive = Active; }
 	void ActiveCollision(bool Active);
 
+	void PlaySkillAnimation(ESkills UseSkill);
+	void Evolution();
+	void OnDie();
 
 public:
 
@@ -115,6 +121,8 @@ public:
 	TObjectPtr<UEffectComponent> EffectComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkillComponent> SkillComponent;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAnimComponent> AnimComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 

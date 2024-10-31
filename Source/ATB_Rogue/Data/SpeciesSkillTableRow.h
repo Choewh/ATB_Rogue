@@ -24,14 +24,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "SKills")		bool Skill_3 = true;
 
 	///////////////////////////////////////////////////////////////////
-	UPROPERTY(EditAnywhere, Category = "FirstSkill", meta = (RowType = "/Script/KDT3D.WeaponTableRow"))
+	UPROPERTY(EditAnywhere , meta = (RowType = "/Script/ATB_Rogue.SkillTableRow"))
 	FDataTableRowHandle FirstSkill;
 
 	///////////////////////////////////////////////////////////////////
-	UPROPERTY(EditAnywhere, Category = "SecondSkill", meta = (RowType = "/Script/KDT3D.WeaponTableRow"))
+	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_Rogue.SkillTableRow"))
 	FDataTableRowHandle SecondSkill;
 
 	///////////////////////////////////////////////////////////////////
-	UPROPERTY(EditAnywhere, Category = "ThirdSkill", meta = (RowType = "/Script/KDT3D.WeaponTableRow"))
+	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_Rogue.SkillTableRow"))
 	FDataTableRowHandle ThirdSkill;
 };

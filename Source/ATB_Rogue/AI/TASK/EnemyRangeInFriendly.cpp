@@ -19,6 +19,8 @@ EBTNodeResult::Type UEnemyRangeInFriendly::ExecuteTask(UBehaviorTreeComponent& O
 	BehaviorTreeComponent = &OwnerComp;
 	SetOwner(BehaviorTreeComponent->GetOwner());
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	
+	Init();
 
 	SkillRangeCheck();
 
@@ -45,10 +47,11 @@ void UEnemyRangeInFriendly::Init()
 
 void UEnemyRangeInFriendly::SkillRangeCheck()
 {
-	ABasePawn* Enemy = Cast<AEnemyPawn>(AIOwner->GetPawn());
-	USkillComponent* SkillComponent = Enemy->SkillComponent;
-	UStatusComponent* StatusComponent = Enemy->StatusComponent;
-	float MoveRange = StatusComponent->GetMoveRange();
+	ABasePawn* Pawn = Cast<ABasePawn>(AIOwner->GetPawn());
+	Pawn->GetController();
+	USkillComponent* SkillComponent = Pawn->SkillComponent;
+	UStatusComponent* StatusComponent = Pawn->StatusComponent;
+	float MoveRange = StatusComponent->GetSpeciesInfo()->MoveRange;
 
 	TArray<float> Range;
 	bool Has3 = false;
@@ -69,7 +72,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 	{
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
-		UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Enemy->GetActorLocation(), Enemy->GetActorLocation(),
+		UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
 			MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::None,
 			HitResults, true);
 		if (!HitResults.IsEmpty())

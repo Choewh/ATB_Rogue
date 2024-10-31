@@ -9,6 +9,7 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpe
 	if (InPawnsNum > 5) // 7개인적은 없었으니 대충 하나만 줄이기
 	{
 		InPlayerSpecies.Pop();
+		InPawnsNum = InPlayerSpecies.Num();
 	}
 	PlayerSpecies = InPlayerSpecies;
 	
@@ -31,8 +32,11 @@ bool UATBGameInstanceSubsystem::SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns
 	if (InPawnsNum > 5) // 7개인적은 없었으니 대충 하나만 줄이기
 	{
 		InPlayerPawns.Pop();
+		InPawnsNum = InPlayerPawns.Num();
 	}
+
 	PlayerPawns = InPlayerPawns;
+
 	if (InPawnsNum != PlayerPawns.Num())
 	{
 		return false;

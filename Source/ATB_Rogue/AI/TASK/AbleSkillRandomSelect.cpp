@@ -14,6 +14,7 @@ EBTNodeResult::Type UAbleSkillRandomSelect::ExecuteTask(UBehaviorTreeComponent& 
 	SetOwner(BehaviorTreeComponent->GetOwner());
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 
+	Init();
 	EmptyCheck();
 	if (FirstEmpty && SecondEmpty && ThirdEmpty) { return EBTNodeResult::Failed; }
 	PickRandomSkill();

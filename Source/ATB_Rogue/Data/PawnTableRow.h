@@ -26,6 +26,10 @@ struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 public:
 	UPROPERTY(BlueprintReadOnly,EditAnywhere, Category = "Species")
 	ESpecies Species;
+
+	UPROPERTY(BlueprintReadOnly,EditAnywhere, Category = "Species")
+	ESpecies NextSpecies; // 지금은 단일 루트인데 여러개로 늘어나면 테이블로 관리
+
 	UPROPERTY(BlueprintReadOnly,EditAnywhere, Category = "Portrait")
 	UTexture2D* Portraits;
 public:

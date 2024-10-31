@@ -10,10 +10,10 @@ USkillComponent::USkillComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> SpeciesSkillDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> SpeciesSkillDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/SpeciesSkillTable.SpeciesSkillTable'"));
 	if (SpeciesSkillDataObject.Succeeded())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
+		UE_LOG(LogTemp, Warning, TEXT("SkillData Succeeded"));
 		SpeciesSkillDataTable = SpeciesSkillDataObject.Object;
 	}
 }
@@ -35,6 +35,8 @@ void USkillComponent::SetData(ESpecies InSpecies)
 	TArray<FSpeciesSkillTableRow*> SpeciesSkillTableRow_Array;
 	SpeciesSkillDataTable->GetAllRows<FSpeciesSkillTableRow>("", SpeciesSkillTableRow_Array);
 
+	if (InSpecies == ESpecies::None) { return; }
+
 	for (auto& SpeciesSkillTable : SpeciesSkillTableRow_Array)
 	{
 		if (SpeciesSkillTable->Species == InSpecies)
@@ -42,15 +44,23 @@ void USkillComponent::SetData(ESpecies InSpecies)
 			SpeciesSkillData = SpeciesSkillTable;
 		}
 	}
+	
+	if(!SpeciesSkillData) { ensure(false); return; }
+
 	FSkillTableRow* FirstData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("FirstSkill"));
 	if(!FirstData) { ensure(false); return; }
 	FirstSkillData = FirstData;
-	FSkillTableRow* SecondData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("SecondSkill"));
+
+	FSkillTableRow* SecondData = SpeciesSkillData->SecondSkill.GetRow<FSkillTableRow>(TEXT("SecondSkill"));
 	if (!SecondData) { ensure(false); return; }
 	SecondSkillData = SecondData;
-	FSkillTableRow* ThirdData = SpeciesSkillData->FirstSkill.GetRow<FSkillTableRow>(TEXT("ThirdSkill"));
-	if (!ThirdData) { ensure(false); return; }
-	ThirdSkillData = ThirdData;
+
+	if (SpeciesSkillData->Skill_3)
+	{
+		FSkillTableRow* ThirdData = SpeciesSkillData->ThirdSkill.GetRow<FSkillTableRow>(TEXT("ThirdSkill"));
+		if (!ThirdData) { ensure(false); return; }
+		ThirdSkillData = ThirdData;
+	}
 }
 
 float USkillComponent::GetSkillRange(ESkills InSkill)

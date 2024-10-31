@@ -18,6 +18,12 @@ EBTNodeResult::Type ULookAt::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint
 
     FVector StartPoint = AIOwner->GetPawn()->GetActorLocation();
     FVector TargetPoint = BlackboardComponent->GetValueAsVector(TEXT("TargetPoint"));
+    AActor* TargetPawn = Cast<AActor>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
+
+    if (TargetPawn)
+    {
+        TargetPoint = TargetPawn->GetActorLocation();
+    }
 
     FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartPoint, TargetPoint);
     AIOwner->GetPawn()->SetActorRotation(LookAtRotator);
