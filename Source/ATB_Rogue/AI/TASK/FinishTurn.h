@@ -17,6 +17,7 @@ class ATB_ROGUE_API UFinishTurn : public UBaseBTTaskNode
 	UFinishTurn();
 private:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 protected:
 

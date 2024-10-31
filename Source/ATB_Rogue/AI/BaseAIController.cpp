@@ -2,7 +2,6 @@
 
 
 #include "AI/BaseAIController.h"
-#include "Pawn/BasePawn.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void ABaseAIController::BeginPlay()
@@ -25,9 +24,12 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	APawn* OwningPawn = GetPawn();
-	ABasePawn* BasePawn = Cast<ABasePawn>(OwningPawn);
+
+	const bool bMontagePlaying = OwningPawn->GetComponentByClass<USkeletalMeshComponent>()->GetAnimInstance()->IsAnyMontagePlaying();
+
+	Blackboard->SetValueAsBool(TEXT("MontagePlaying"), bMontagePlaying);
+
 }
 
 void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
@@ -35,7 +37,7 @@ void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
 }
 
 //컨트롤러 -> 폰 -> 배틀
-void ABaseAIController::SetMovePoint(FVector MovePoint)	
+void ABaseAIController::SetMovePoint(FVector MovePoint)
 {
 	Blackboard->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 	Blackboard->SetValueAsBool(TEXT("bMove"), true);

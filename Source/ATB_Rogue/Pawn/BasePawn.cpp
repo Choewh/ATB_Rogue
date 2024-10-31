@@ -6,11 +6,12 @@
 
 #include "Misc/Utils.h"
 #include "Widget/ABTBarUserWidget.h"
-#include "Subsystem/BattleSubsystem.h"
+//#include "Subsystem/BattleSubsystem.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "AI/BaseAIController.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
+
+class UBattleSubsystem;
 
 // Sets default values
 ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
@@ -171,16 +172,6 @@ void ABasePawn::Tick(float DeltaTime)
 
 }
 
-float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
-	AnimInstance->Montage_Play(AnimComponent->AnimData->HitReactMontage);
-
-	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), DamageCauser->GetActorLocation());
-	this->SetActorRotation(LookAtRotator);
-
-	return 0.0f;
-}
 
 void ABasePawn::TurnEnd()
 {
@@ -279,6 +270,21 @@ void ABasePawn::PlaySkillAnimation(ESkills UseSkill)
 	default:
 		break;
 	}
+}
+
+void ABasePawn::HitAnim()
+{
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	AnimInstance->Montage_Play(AnimComponent->AnimData->HitReactMontage);
+}
+
+float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	//스탯컴포넌트 에 TakeDamage 넣어서 계산하기
+	//여기선 데미지 계산만 ㅇ
+	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), DamageCauser->GetActorLocation());
+	this->SetActorRotation(LookAtRotator);
+	return 0.0f;
 }
 
 void ABasePawn::Evolution()

@@ -10,14 +10,14 @@
 #include "Enums/Species.h"
 #include "Components/BoxComponent.h"
 
-#include "AI/BaseAIController.h"
-
+#include "AIController.h"
 #include "Actor/BaseCameraSplineActor.h"
 
 #include "PawnTableRow.generated.h"
 /**
  * 
  */
+
 USTRUCT()
 struct ATB_ROGUE_API FPawnTableRow : public FTableRowBase
 {
@@ -53,9 +53,9 @@ public:
 
 
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<ABaseAIController> EnemyAIController;
+	TSubclassOf<AAIController> EnemyAIController;
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<ABaseAIController> FriendlyAIController;
+	TSubclassOf<AAIController> FriendlyAIController;
 		
 	UPROPERTY(EditAnywhere, Category = "Pawn")
 	TSubclassOf<ABaseCameraSplineActor> CameraSplineClass = ABaseCameraSplineActor::StaticClass();

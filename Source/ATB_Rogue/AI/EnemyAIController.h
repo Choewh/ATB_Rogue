@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AI/BaseAIController.h"
-#include "Pawn/BasePawn.h"
 #include "EnemyAIController.generated.h"
 
 /**
@@ -26,6 +25,6 @@ public:
 	TArray<ABasePawn*> FirstSkillRangePawns;
 	TArray<ABasePawn*> SecondSkillRangePawns;
 	TArray<ABasePawn*> ThirdSkillRangePawns;
-	ABasePawn* TargetPawn;
+
 	ESkills UseSkill;
 };

@@ -86,6 +86,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		InPawn->ActiveTurn.Broadcast(true);
 		break;
 	case EPawnGroup::Friendly:
+		FinishTurn(); // Temp
 		SelectActionView();
 		break;
 	default:

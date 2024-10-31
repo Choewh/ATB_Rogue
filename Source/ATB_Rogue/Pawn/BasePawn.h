@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Engine/DataTable.h"
-#include "Data/PawnTableRow.h"
 #include "Enums/Species.h"
 #include "Enums/PawnGroup.h"
 
@@ -17,6 +15,8 @@
 #include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DataTable.h"
+#include "Data/PawnTableRow.h"
 
 #include "BasePawn.generated.h"
 
@@ -75,6 +75,7 @@ public:
 	void ActiveCollision(bool Active);
 
 	void PlaySkillAnimation(ESkills UseSkill);
+	void HitAnim();
 	void Evolution();
 	void OnDie();
 

@@ -45,13 +45,14 @@ void UUseSkill::UseSkillSet(ESkills SkillNum)
 
 	case ESkills::SecondSkill:
 		SkilDamage = DamageCalculation(SkillComponent->SecondSkillData);
-		UGameplayStatics::ApplyDamage(TargetPawn, 10.f, AIOwner, Pawn, nullptr);
 
+		UGameplayStatics::ApplyDamage(TargetPawn, 10.f, AIOwner, Pawn, nullptr);
 		// 타수 만큼 반복하는건 따로 생각해보기 ~ 
 		break;
 
 	case ESkills::ThirdSkill:
 		SkilDamage = DamageCalculation(SkillComponent->ThirdSkillData);
+
 		UGameplayStatics::ApplyDamage(TargetPawn, 10.f, AIOwner, Pawn, nullptr);
 		break;
 	default:
