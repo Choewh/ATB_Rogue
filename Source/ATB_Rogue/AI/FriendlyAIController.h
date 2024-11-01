@@ -18,5 +18,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
-
+public:
+	UFUNCTION()
+	void SetMovePoint(FVector MovePoint);
 };

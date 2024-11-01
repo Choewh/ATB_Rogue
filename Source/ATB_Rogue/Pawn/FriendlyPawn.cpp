@@ -43,3 +43,36 @@ void AFriendlyPawn::SetData()
 	}
 	// AIControllerClass = Cast<AFriendlyAIController>(PawnData->FriendlyAIController)->GetClass();
 }
+bool AFriendlyPawn::Movealbe(FVector NewDestination)
+{
+	//폰과 목표 사이거리 계산
+	FVector CenterPoint = GetActorLocation();
+	float Distance;
+	Distance = FVector::Dist(CenterPoint, NewDestination);
+
+	if (Distance <= StatusComponent->GetSpeciesInfo()->MoveRange) {
+		// 범위 내에 있는 경우
+		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
+		return true;
+	}
+	else {
+		// 범위 밖인 경우
+		UE_LOG(LogTemp, Warning, TEXT("Target is out of range."));
+		return false;
+	}
+}
+
+// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+void AFriendlyPawn::MoveTo(FVector NewDestination)
+{
+
+	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
+	//if (GetController() && GetController()->IsValidLowLevel())
+
+	OnMove.Broadcast(NewDestination);
+	// TurnEnd(); // Temp 어택 구현시 제거하기
+
+	// AI 컨트롤러가 활성화되어 있습니다.
+//SetActorLocation(NewDestination);
+// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
+}

@@ -171,7 +171,7 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 		{
 			SelectableCell->Species = Species;
 			SelectableCell->Image = Image;
-			SelectableCell->OnPressed.AddDynamic(this, &ThisClass::OnButtonClicked);
+			SelectableCell->OnClicked.AddDynamic(this, &ThisClass::OnButtonClicked);
 			SelectableCell->AddPawn.AddDynamic(this, &ThisClass::SelectPawn);
 		}
 		{

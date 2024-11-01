@@ -63,22 +63,20 @@ void USkillComponent::SetData(ESpecies InSpecies)
 	}
 }
 
-float USkillComponent::GetSkillRange(ESkills InSkill)
+FSkillTableRow* USkillComponent::GetSkillData(ESkills InSkill)
 {
 	switch (InSkill)
 	{
 	case ESkills::FirstSkill:
-		if(!FirstSkillData) { ensure(false); return-1.f;}
-		return FirstSkillData->Skill_Range;
+		if(!FirstSkillData) { ensure(false); return nullptr ;}
+		return FirstSkillData;
 	case ESkills::SecondSkill:
-		if(!SecondSkillData) { ensure(false); return-1.f;}
-		return SecondSkillData->Skill_Range;
+		if(!SecondSkillData) { ensure(false); return nullptr;}
+		return SecondSkillData;
 	case ESkills::ThirdSkill:
-		if (!ThirdSkillData) { ensure(false); return-1.f; }
-		return ThirdSkillData->Skill_Range;
+		if (!ThirdSkillData) { ensure(false); return nullptr; }
+		return ThirdSkillData;
 	default:
-		return -1.f;
+		return nullptr;
 	}
-	
 }
-

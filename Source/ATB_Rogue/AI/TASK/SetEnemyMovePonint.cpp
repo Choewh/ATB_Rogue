@@ -23,7 +23,7 @@ EBTNodeResult::Type USetEnemyMovePonint::ExecuteTask(UBehaviorTreeComponent& Own
 	UStatusComponent* StatusComponent = TargetPawn->StatusComponent;
 	float MoveRange = StatusComponent->GetSpeciesInfo()->MoveRange;
 	ESkills Skill = static_cast<ESkills>(BlackboardComponent->GetValueAsEnum(TEXT("usableSkill")));
-	float SkillRange = SkillComponent->GetSkillRange(Skill);
+	float SkillRange = SkillComponent->GetSkillData(Skill)->Skill_Range;
 	FVector EnemyVec = AIOwner->GetPawn()->GetActorLocation();
 	FVector TargetPawnVec = TargetPawn->GetActorLocation();
 

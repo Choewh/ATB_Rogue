@@ -23,6 +23,8 @@ public:
 		/** Vertical alignment */
 		SLATE_ARGUMENT(EVerticalAlignment, VAlign)
 
+		SLATE_EVENT(FSimpleDelegate, OnClickedArg)
+
 		SLATE_EVENT(FSimpleDelegate, OnPressedArg)
 
 		SLATE_EVENT(FSimpleDelegate, OnReleasedArg)
@@ -43,6 +45,8 @@ public:
 private:
 	EHorizontalAlignment HAlign;
 	EVerticalAlignment VAlign;
+	/** The delegate to execute when the button is pressed */
+	FSimpleDelegate OnClicked;
 	/** The delegate to execute when the button is pressed */
 	FSimpleDelegate OnPressed;
 

@@ -11,4 +11,8 @@ enum class ECameraViewMode : uint8
 {
 	DefaultView UMETA(DisplayName = "DefaultView"),
 	PawnView UMETA(DisplayName = "PawnView"),
+	Attack UMETA(DisplayName = "Attack"),
+	Move UMETA(DisplayName = "Move"),
+	Follow UMETA(DisplayName = "Follow"),
+
 };

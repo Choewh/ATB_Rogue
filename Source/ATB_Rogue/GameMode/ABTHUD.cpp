@@ -15,14 +15,14 @@ void AABTHUD::BeginPlay()
 	Super::BeginPlay();
 	{
 		UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_Bar.ABT_Bar_C'"));
+			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar'
 		check(WidgetClass);
 		ATBWidget = CreateWidget<UABTBarUserWidget>(GetWorld(), WidgetClass);
 
 	}
 	{
 		UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/ABT_User_UI.ABT_User_UI_C'"));
+			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_User_UI.ABT_User_UI_C'"));
 		check(WidgetClass);
 		Widget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
 	}

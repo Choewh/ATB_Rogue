@@ -51,10 +51,10 @@ public:
 public:
 
 	void Init(); // 관련함수 초기화
+	
+	void CameraViewUpdate();
 
-	bool PawnAroundView(ABasePawn* ViewEnemy);
-
-	bool SetViewCameraMode(ECameraViewMode Cameramode);
+	void SetViewCameraMode(ECameraViewMode Cameramode) { CameraViewMode = Cameramode; }
 
 	bool SetBattleState(EBattleState NewState);
 
@@ -102,12 +102,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bMove;
 	UPROPERTY(BlueprintReadOnly)
-	bool isMove;
-
-	UPROPERTY(BlueprintReadOnly)
 	bool bAttack;
-	UPROPERTY(BlueprintReadOnly)
-	bool isAttack;
 
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);

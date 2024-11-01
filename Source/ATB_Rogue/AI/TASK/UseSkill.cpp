@@ -38,8 +38,6 @@ void UUseSkill::UseSkillSet(ESkills SkillNum)
 	case ESkills::FirstSkill:
 		SkilDamage = DamageCalculation(SkillComponent->FirstSkillData);
 		
-		//이펙트 재생 -> 이펙트에 닿으면 
-		//공격 몽타쥬에 애님노티파이 넣어서 콜리전 껏다 켯다 흠 @TODO
 		UGameplayStatics::ApplyDamage(TargetPawn, 10.f, AIOwner, Pawn, nullptr);
 		break;
 

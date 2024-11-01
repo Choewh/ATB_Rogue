@@ -36,9 +36,6 @@ void ABasePlayerController::BeginPlay()
 		BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->SetPlayerController(this);
 	}
-	//
-
-	//
 	CameraSet();
 	Init();
 }
@@ -97,43 +94,40 @@ void ABasePlayerController::Init()
 	BattleState = EBattleState::Defalut;
 }
 
-bool ABasePlayerController::PawnAroundView(ABasePawn* ViewEnemy)
+void ABasePlayerController::CameraViewUpdate()
 {
-	if (CameraViewMode != ECameraViewMode::PawnView)
+	switch (CameraViewMode)
 	{
-		SetViewCameraMode(ECameraViewMode::PawnView);
-		PawnViewCamera->OnPawnViewCamera(ViewEnemy);
-		return true;
-	}
-	else if(CameraViewMode == ECameraViewMode::PawnView)
-	{
-		PawnViewCamera->OnPawnViewCamera(ViewEnemy);
-		return true;
-	}
-	return false;
-}
+	case ECameraViewMode::DefaultView:
+		break;
 
-bool ABasePlayerController::SetViewCameraMode(ECameraViewMode Cameramode)
-{
-	if (Cameramode == ECameraViewMode::DefaultView)
-	{
-		CameraViewMode = Cameramode;
-		PawnViewCamera->SetView(false);
-		PawnViewCamera->SetActive(false);
-		DefaultCamera->SetActive(true);
-		return true;
-	}
-	if (Cameramode == ECameraViewMode::PawnView)
-	{
-		CameraViewMode = Cameramode;
+	case ECameraViewMode::PawnView:
 		DefaultCamera->SetActive(false);
 		PawnViewCamera->SetView(true);
 		PawnViewCamera->SetActive(true);
-		return true;
-	}
-	return false;
-}
+		PawnViewCamera->OnPawnViewCamera(BattleSubsystem->GetActionPawn());
+		break;
 
+	case ECameraViewMode::Attack:
+		DefaultCamera->SetActive(true);
+		PawnViewCamera->SetView(false);
+		PawnViewCamera->SetActive(false);
+		break;
+
+	case ECameraViewMode::Move:
+		DefaultCamera->SetActive(true);
+		PawnViewCamera->SetView(false);
+		PawnViewCamera->SetActive(false);
+		break;
+
+	case ECameraViewMode::Follow:
+
+		break;
+
+	default:
+		break;
+	}
+}
 bool ABasePlayerController::SetBattleState(EBattleState NewState)
 {
 	if (BattleState != NewState)
@@ -146,7 +140,6 @@ bool ABasePlayerController::SetBattleState(EBattleState NewState)
 
 void ABasePlayerController::MoveCancle()
 {
-	isMove = false;
 	ABasePawn* ActionPawn = BattleSubsystem->GetActionPawn();
 	if (ActionPawn)
 	{
@@ -175,6 +168,28 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 			DrawDebugPoint(GetWorld(), HitResult.Location, 20, FColor::Red, false, 1.f);
 		}
 	}
+	else if (BattleState == EBattleState::Attack) // 폰 감지
+	{
+		FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
+		FHitResult CursorHitResult;
+		GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, CursorHitResult);
+		FVector EndPoint = CursorHitResult.ImpactPoint;
+		FHitResult HitResult;
+		FCollisionQueryParams CollisionParams;
+		GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_GameTraceChannel5, CollisionParams);
+		//UKismetSystemLibrary::LineTraceSingleByProfile(CameraLocation, EndPoint )
+		MovePoint = HitResult.ImpactPoint;
+		AActor* HitActor = HitResult.GetActor();
+		ABasePawn* HitPawn = Cast<ABasePawn>(HitActor);
+		//로그
+		if(HitPawn)
+		{
+			UE_LOG(LogTemp, Log, TEXT("%s"), *HitPawn->GetName());
+
+			DrawDebugPoint(GetWorld(), HitPawn->GetActorLocation(), 20, FColor::Red, false, 1.f);
+			DrawDebugLine(GetWorld(), CameraLocation, HitPawn->GetActorLocation(), FColor::Red, false, 5.f);
+		}
+	}
 }
 
 void ABasePlayerController::OnRightPress(const FInputActionValue& InputActionValue)
@@ -196,7 +211,7 @@ void ABasePlayerController::OnRightPress(const FInputActionValue& InputActionVal
 void ABasePlayerController::OnViewCameraMove(const FInputActionValue& InputActionValue)
 {
 	FVector2D InputValue = InputActionValue.Get<FVector2D>();
-	if (BattleState == EBattleState::Move && ControllerInput == EControllerInput::MouseRight)
+	if ((BattleState == EBattleState::Attack|| BattleState == EBattleState::Move )&& ControllerInput == EControllerInput::MouseRight)
 	{
 		FRotator CurRotator = DefaultCamera->GetRelativeRotation();
 		DefaultCamera->SetRelativeRotation(FRotator((CurRotator.Pitch - InputValue.Y), (CurRotator.Yaw - InputValue.X), 0));
@@ -207,16 +222,9 @@ void ABasePlayerController::OnViewAroundMove(const FInputActionValue& InputActio
 {
 	float InputValue = InputActionValue.Get<float>();
 
-	if (BattleState == EBattleState::Move)
+	if (BattleState == EBattleState::Move||BattleState == EBattleState::Attack)
 	{
 		AddYawInput(InputValue * 2.f);
-			//float TargetYaw = BasePlayer->GetActorRotation().Yaw + (InputValue * 5.f);
-			//float CurrentYaw = GetControlRotation().Yaw;
-			//float SmoothYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, GetWorld()->GetDeltaSeconds(), 5.f);
-
-			//// Yaw 값 업데이트
-			//FRotator NewRotation = FRotator(0, SmoothYaw, 0);
-			//BasePlayer->SetActorRotation(NewRotation);
 	}
 }
 

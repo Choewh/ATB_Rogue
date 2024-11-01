@@ -44,10 +44,6 @@ public:
 	void SetFriendlyPawns(TArray<ABasePawn*> InPawn) { FriendlyPawns = InPawn; }
 	/*
 	
-	//Attack (타격자 , 피격자 , 스킬정보 데이터 테이블 , 스킬 이름 )?
-	//EntryEnemy () // Tarray에 등록
-	// ActiveTurn  ABT게이지 100시 호출 -> Tarray bActive False 로 변경 -> 턴 시작 (행동) / Todo -> 지금은 간단하게 마우스 좌표로 이동 -> 턴 종료 알림
-	// 
 
 	*/
 
@@ -55,6 +51,7 @@ public :
 	//컨트롤러 에너미 추가
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
+	void PawnLookAt();
 	//액션
 	void PawnAction();
 	//에너미 컨트롤 
@@ -72,11 +69,31 @@ public :
 	UFUNCTION(BlueprintCallable)
 	void SelectMoveAction();
 
+	void ShowMoveRange();
+	void HideMoveRange();
 	UFUNCTION(BlueprintCallable)
 	bool SelectMoveAccept();
 
 	UFUNCTION(BlueprintCallable)
 	void SelectMoveCancle();
+
+	UFUNCTION(BlueprintCallable)
+	void SelectAttackAction();
+
+	UFUNCTION(BlueprintCallable)
+	void SelectAbleFirstSkill();
+	UFUNCTION(BlueprintCallable)
+	void SelectAbleSecondSkill();
+	UFUNCTION(BlueprintCallable)
+	void SelectAbleThirdSkill();
+	
+	void SelectTargetPawn();
+
+	UFUNCTION(BlueprintCallable)
+	void SelectAttackAccept();
+
+	UFUNCTION(BlueprintCallable)
+	void SelectAttackCancle();
 
 	UFUNCTION(BlueprintCallable)
 	void Evolution(); // Temp

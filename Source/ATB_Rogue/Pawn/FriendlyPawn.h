@@ -18,5 +18,7 @@ public:
 	AFriendlyPawn(const FObjectInitializer& ObjectInitializer);
 	
 	virtual void SetData() override;
-	
+
+	bool Movealbe(FVector NewDestination);
+	void MoveTo(FVector NewDestination);
 };

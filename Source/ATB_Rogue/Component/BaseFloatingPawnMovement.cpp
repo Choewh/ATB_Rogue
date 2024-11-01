@@ -28,7 +28,8 @@ void UBaseFloatingPawnMovement::PhysicsRotation(float DeltaTime)
 {
 	if (!bOrientRotationToMovement) { return; }
 
-	FRotator CurrentRotation = UpdatedComponent->GetComponentRotation(); // Normalized
+	//FRotator CurrentRotation = UpdatedComponent->GetComponentRotation(); // Normalized
+	FRotator CurrentRotation = GetOwner()->GetActorRotation();
 	CurrentRotation.DiagnosticCheckNaN(TEXT("UAdvenceFloatingPawnMovement::PhysicsRotation(): CurrentRotation"));
 
 	FRotator DeltaRot = GetDeltaRotation(DeltaTime);

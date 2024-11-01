@@ -132,7 +132,8 @@ TArray<FTransform> AFriendlySpawnLocation::GetSpawnTransform()
 		//보유한 트랜스폼 1~10번까지
 		if (FriendlySpawnLocation.IsValidIndex(i))
 		{
-			ReturnTransform.Add(FriendlySpawnLocation[i]->GetTransform());
+			FTransform NewTransform = FTransform(this->GetActorRotation(), FriendlySpawnLocation[i]->GetActorLocation(), FVector(1.f, 1.f, 1.f));
+			ReturnTransform.Add(NewTransform);
 		}
 	}
 

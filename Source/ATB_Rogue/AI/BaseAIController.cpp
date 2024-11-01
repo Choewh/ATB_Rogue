@@ -17,7 +17,6 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
 	SkillComponentRef = BasePawn->GetComponentByClass<USkillComponent>();
-	BasePawn->OnMove.AddDynamic(this, &ThisClass::SetMovePoint);
 	// StatusComponentRef->OnHPChanged.AddDynamic(this, &ThisClass::OnDamaged);
 }
 
@@ -36,13 +35,6 @@ void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
 {
 }
 
-//컨트롤러 -> 폰 -> 배틀
-void ABaseAIController::SetMovePoint(FVector MovePoint)
-{
-	Blackboard->SetValueAsVector(TEXT("MovePoint"), MovePoint);
-	Blackboard->SetValueAsBool(TEXT("bMove"), true);
-	//Task 호출
-}
 
 void ABaseAIController::ResetValue()
 {

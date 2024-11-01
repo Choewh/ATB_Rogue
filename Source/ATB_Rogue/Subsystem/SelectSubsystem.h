@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Enums/Species.h"
-//셀렉터블Species 새로 만들까 고민중
 #include "SelectSubsystem.generated.h"
 
 /**

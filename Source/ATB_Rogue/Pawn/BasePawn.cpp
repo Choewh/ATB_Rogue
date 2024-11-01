@@ -57,7 +57,7 @@ ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음	
+	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
@@ -104,6 +104,7 @@ void ABasePawn::SetData()
 			DefaultSceneRoot->AttachToComponent(CollisionComponent, FAttachmentTransformRules::KeepRelativeTransform);
 			UCapsuleComponent* CapsuleComponent = Cast<UCapsuleComponent>(CollisionComponent);
 			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
+			CapsuleComponent->SetWorldRotation(FQuat::Identity);
 			CapsuleComponent->bReceivesDecals = false;
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
@@ -160,7 +161,6 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	SetData();
 }
 
 // Called every frame
@@ -198,52 +198,7 @@ void ABasePawn::ABTFeeling()
 	}
 	OnATBChanged.Broadcast(ABT_Cur, ABT_MAX);
 }
-bool ABasePawn::Movealbe(FVector NewDestination)
-{
-	//폰과 목표 사이거리 계산
-	FVector CenterPoint = GetActorLocation();
-	float Distance;
-	Distance = FVector::Dist(CenterPoint, NewDestination);
 
-	if (Distance <= StatusComponent->GetSpeciesInfo()->MoveRange) {
-		// 범위 내에 있는 경우
-		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
-		return true;
-	}
-	else {
-		// 범위 밖인 경우
-		UE_LOG(LogTemp, Warning, TEXT("Target is out of range."));
-		return false;
-	}
-}
-void ABasePawn::MakeViewMoveRange()
-{
-	//이동사거리 표시
-	if (!EffectComponent) { ensure(false); return; }
-
-	EffectComponent->ViewMoveRange(GetActorLocation(), StatusComponent->GetSpeciesInfo()->MoveRange);
-
-}
-void ABasePawn::HideMoveRange()
-{
-	if (!EffectComponent) { ensure(false); return; }
-	EffectComponent->DeViewMoveRange();
-}
-// ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-void ABasePawn::MoveTo(FVector NewDestination)
-{
-
-	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
-	//if (GetController() && GetController()->IsValidLowLevel())
-
-	HideMoveRange();
-	OnMove.Broadcast(NewDestination);
-	TurnEnd(); // Temp 어택 구현시 제거하기
-
-	// AI 컨트롤러가 활성화되어 있습니다.
-//SetActorLocation(NewDestination);
-// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
-}
 
 void ABasePawn::ActiveCollision(bool Active)
 {
@@ -289,10 +244,10 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 void ABasePawn::Evolution()
 {
-	FVector OriginVec = GetActorLocation();
+	FTransform OriginTransform = GetActorTransform();
 	Species = PawnData->NextSpecies;
 	SetData();
-	SetActorLocation(OriginVec);
+	SetActorTransform(OriginTransform);
 	//이펙트 효과
 	//다음단계로 Species 바꾸고 SetData 호출
 }

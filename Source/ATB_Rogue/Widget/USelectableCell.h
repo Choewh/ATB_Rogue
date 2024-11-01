@@ -51,6 +51,7 @@ public:
 	UImage* Image;
 
 protected:
+	void SlateHandleClicked();
 	void SlateHandlePressed();
 	void SlateHandleReleased();
 	void SlateHandleHovered();

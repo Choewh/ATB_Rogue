@@ -3,14 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "GameFramework/Character.h"
-
 #include "Pawn/FriendlyPawn.h"
-
 #include "Subsystem/EnemyCreateSubsystem.h"
-
 #include "Camera/PawnViewCameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 #include "BaseCharacter.generated.h"
 
@@ -43,11 +40,16 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* SpringArmComponent;
+	
+	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
-	TArray<FBasePawnInfo> PlayerPawnsInfo;
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnViewCameraComponent* PawnViewCameraComponent;
+
+
+	TArray<FBasePawnInfo> PlayerPawnsInfo;
 protected:
 	TArray<ABasePawn*> CurHavePawns;
 	TArray<TArray<FTransform>> RoundsTransform; 

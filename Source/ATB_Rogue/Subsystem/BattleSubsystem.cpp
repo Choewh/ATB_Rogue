@@ -3,6 +3,7 @@
 
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/ActorpoolSubsystem.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 UBattleSubsystem::UBattleSubsystem()
@@ -12,6 +13,7 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 {
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
+	PawnLookAt();
 	PawnsActive();
 
 	/// ABTBar 보여주기 Pawn들 소환과 ABTbar 세팅
@@ -31,16 +33,29 @@ void UBattleSubsystem::BattleEnd()
 	}
 }
 
+void UBattleSubsystem::PawnLookAt()
+{
+	for (auto& Pawn : EnemyPawns)
+	{
+		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(Pawn->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation());
+		Pawn->CollisionComponent->SetWorldRotation(LookAtRotator);
+	}
+	for (auto& Pawn : FriendlyPawns)
+	{
+		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(Pawn->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation());
+		Pawn->CollisionComponent->SetWorldRotation(LookAtRotator);
+	}
+
+}
+
 void UBattleSubsystem::PawnAction()
 {
 	if (ActionPawn->PawnGroup == EPawnGroup::Friendly)
 	{	//플레이어 폰일때 할 행동들
 		if (PlayerController) { PlayerController->Init(); }
 
-		if (!PlayerController->SetViewCameraMode(ECameraViewMode::PawnView))
-		{
-			return;//전환실패시 종료 턴종료 에러임 ㅇㅇ
-		}
+		PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
+		PlayerController->CameraViewUpdate();
 		SelectActionView();
 	}
 	// Ex.Move // Player Controller/Camera Move ->  
@@ -51,7 +66,7 @@ void UBattleSubsystem::PawnAction()
 void UBattleSubsystem::PawnsDeactive()
 {
 	//인스턴스에서 전부 받아와서 설정
-	for(auto& Pawn : EnemyPawns)
+	for (auto& Pawn : EnemyPawns)
 	{
 		Pawn->SetActive(false);
 	}
@@ -61,7 +76,7 @@ void UBattleSubsystem::PawnsDeactive()
 	}
 }
 
-	
+
 void UBattleSubsystem::PawnsActive()
 {
 	//인스턴스에서 전부 받아와서 설정
@@ -86,7 +101,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		InPawn->ActiveTurn.Broadcast(true);
 		break;
 	case EPawnGroup::Friendly:
-		FinishTurn(); // Temp
+		//FinishTurn(); // Temp
 		SelectActionView();
 		break;
 	default:
@@ -97,7 +112,8 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 void UBattleSubsystem::SelectActionView()
 {
 	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
-	PlayerController->PawnAroundView(ActionPawn);
+	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);	//카메라 뷰 디폴트로 변경 // TODO 카메라 무브 어택 등 여러개로 분류하기
+	PlayerController->CameraViewUpdate();
 	//그럴일없겠지만 있으면 삭제 ㅇㅇ
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	//폰에서 사거리 그려주기 어떻게?
@@ -106,26 +122,46 @@ void UBattleSubsystem::SelectActionView()
 void UBattleSubsystem::SelectMoveAction()
 {
 	PlayerController->SetBattleState(EBattleState::Move);				//이동상태로 변경
-	PlayerController->SetViewCameraMode(ECameraViewMode::DefaultView);	//카메라 뷰 디폴트로 변경
-	ActionPawn->MakeViewMoveRange();
+	PlayerController->SetViewCameraMode(ECameraViewMode::Move);
+	PlayerController->CameraViewUpdate();
+	ShowMoveRange();
 }
+void UBattleSubsystem::ShowMoveRange()
+{
+	ActionPawn->EffectComponent->ShowRange(ActionPawn->GetActorLocation(), ActionPawn->StatusComponent->GetSpeciesInfo()->MoveRange);
+}
+
+void UBattleSubsystem::HideMoveRange()
+{
+	ActionPawn->EffectComponent->HideRange();
+}
+
+//void UEffectComponent::ViewMoveRange(FVector PawnLocation, float MoveRange)
+//{
+//	float Scale = (MoveRange) / 100;
+//	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(Scale, Scale, Scale));
+//	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, *EffectData);
+//}
 bool UBattleSubsystem::SelectMoveAccept()
 {
 	FVector NewDestination = PlayerController->GetMovePoint();
 	//클릭없었으면 작동 X
 	if (NewDestination == FVector::Zero()) { return false; }
 	//액션폰에 자기 이동거리 확인 만들기
-	if (!ActionPawn->Movealbe(NewDestination))
+	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(ActionPawn);
+	if (!FriendlyPawn->Movealbe(NewDestination))
 	{
 		return false;
 	}
 	//이동 가능시 무브
 	//폰이 따로 신호주면 턴 종료 ㄱ
-	ActionPawn->MoveTo(NewDestination);
+	HideMoveRange();
+	FriendlyPawn->MoveTo(NewDestination);
+	PlayerController->SetBattleState(EBattleState::Defalut);
 	//{
 	//	FinishTurn();
 
-		return true;
+	return true;
 	//}
 //	return false;
 	//실패시 에러 띄움
@@ -135,8 +171,47 @@ void UBattleSubsystem::SelectMoveCancle()
 {
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
 	PlayerController->SetBattleState(EBattleState::Defalut);
-	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
-	PlayerController->PawnAroundView(ActionPawn);
+	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView); // 폰뷰 ?
+	PlayerController->CameraViewUpdate();
+}
+
+void UBattleSubsystem::SelectAttackAction()
+{
+	PlayerController->SetBattleState(EBattleState::Attack);
+	PlayerController->SetViewCameraMode(ECameraViewMode::Attack); // 어택뷰
+	PlayerController->CameraViewUpdate();
+	//사용할 수 있는 스킬 UI에 띄워주기. 사용할 수 있는 스킬 체크하고 사용 못하면 숨김
+}
+
+void UBattleSubsystem::SelectAbleFirstSkill()
+{
+	//FriendlyPawn로 사용할 스킬 전달
+}
+
+void UBattleSubsystem::SelectAbleSecondSkill()
+{
+
+}
+
+void UBattleSubsystem::SelectAbleThirdSkill()
+{
+
+}
+
+void UBattleSubsystem::SelectTargetPawn()//폰 데이터 전달
+{
+}
+
+void UBattleSubsystem::SelectAttackAccept()
+{
+	//사용할 스킬 , 타겟 둘 다 있으면 실행 // 선택시 사거리 표시 -> 폰 선택시 해당 폰 공격
+}
+
+void UBattleSubsystem::SelectAttackCancle()
+{
+	PlayerController->SetBattleState(EBattleState::Defalut);
+	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView); // 무브뷰 ?
+	PlayerController->CameraViewUpdate();
 }
 
 void UBattleSubsystem::Evolution()
@@ -168,7 +243,7 @@ void UBattleSubsystem::FinishTurn()
 
 		ActionPawn = nullptr;
 		BattleFinish.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
-		PlayerController->SetBattleState(EBattleState::Move);
+		PlayerController->SetBattleState(EBattleState::Defalut);
 		PawnsActive();
 	}
 }

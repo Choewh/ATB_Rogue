@@ -138,7 +138,8 @@ TArray<FTransform> AEnemySpawnTransform::GetSpawnTransform()
 		//보유한 트랜스폼 1~10번까지
 		if (EnemySpawnTransform.IsValidIndex(i))
 		{
-			ReturnTransform.Add(EnemySpawnTransform[i]->GetTransform());
+			FTransform NewTransform = FTransform(this->GetActorRotation(), EnemySpawnTransform[i]->GetActorLocation(), FVector(1.f,1.f,1.f));
+			ReturnTransform.Add(NewTransform);
 		}
 	}
 

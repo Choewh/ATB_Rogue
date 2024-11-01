@@ -27,8 +27,8 @@ protected:
 
 public:
 	virtual void SetData(ESpecies InSpecies);
-	float GetSkillRange(ESkills InSkill);
 
+	FSkillTableRow* GetSkillData(ESkills InSkill);
 public:
 	UDataTable* SpeciesSkillDataTable;
 	FSpeciesSkillTableRow* SpeciesSkillData;

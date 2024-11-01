@@ -57,14 +57,14 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 	bool Has3 = false;
 	if (!SkillComponent->SpeciesSkillData->Skill_3) // 3스킬 유무
 	{
-		Range.Add(SkillComponent->GetSkillRange(ESkills::FirstSkill));
-		Range.Add(SkillComponent->GetSkillRange(ESkills::SecondSkill));
+		Range.Add(SkillComponent->GetSkillData(ESkills::FirstSkill)->Skill_Range);
+		Range.Add(SkillComponent->GetSkillData(ESkills::SecondSkill)->Skill_Range);
 	}
 	else
 	{
-		Range.Add(SkillComponent->GetSkillRange(ESkills::FirstSkill));
-		Range.Add(SkillComponent->GetSkillRange(ESkills::SecondSkill));
-		Range.Add(SkillComponent->GetSkillRange(ESkills::ThirdSkill));
+		Range.Add(SkillComponent->GetSkillData(ESkills::FirstSkill)->Skill_Range);
+		Range.Add(SkillComponent->GetSkillData(ESkills::SecondSkill)->Skill_Range);
+		Range.Add(SkillComponent->GetSkillData(ESkills::ThirdSkill)->Skill_Range);
 		Has3 = true;
 	}
 

@@ -34,8 +34,6 @@ protected:
 	UFUNCTION()
 	void OnDamaged(float CurrentHP, float MaxHP);	
 
-	UFUNCTION()
-	void SetMovePoint(FVector MovePoint);
 
 	UFUNCTION()
 	void ResetValue();

@@ -67,10 +67,7 @@ public:
 	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
 	void ABTFeeling();	
-	bool Movealbe(FVector NewDestination);
-	void MakeViewMoveRange();
-	void HideMoveRange();
-	void MoveTo(FVector NewDestination);
+
 	void SetActive(bool Active) { bActive = Active; }
 	void ActiveCollision(bool Active);
 

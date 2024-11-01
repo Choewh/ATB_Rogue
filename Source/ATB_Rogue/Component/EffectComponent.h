@@ -38,7 +38,7 @@ public:
 	FEffectTableRow* EffectData;
 	
 public:
-	void ViewMoveRange(FVector PawnLocation,float MoveRange);
-	void DeViewMoveRange();
+	void ShowRange(FVector PawnLocation,float MoveRange);
+	void HideRange();
 
 };

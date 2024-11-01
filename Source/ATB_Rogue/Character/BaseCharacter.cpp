@@ -2,7 +2,7 @@
 
 
 #include "Character/BaseCharacter.h"
-#include "GameFrameWork/SpringArmComponent.h"
+
 
 #include "Misc/Utils.h"
 
@@ -11,22 +11,31 @@
 
 #include "Kismet/GameplayStatics.h"
 
+class ABasePlayerController;
+
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	USpringArmComponent* SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(GetMesh());
 
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	PawnViewCameraComponent = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
 	{
-		CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-		CameraComponent->SetupAttachment(SpringArm);
-		FTransform NewTransform = FTransform(FRotator(-10.f, 0.f, 0.f), FVector3d(-2000.f, 0.f, 1000.f)); // 음 맵? 
+		SpringArmComponent->SetupAttachment(GetMesh());
+		SpringArmComponent->TargetArmLength = 1500.f;
+		SpringArmComponent->ProbeSize = 5.0;
+		SpringArmComponent->bUsePawnControlRotation = true;
+		SpringArmComponent->bInheritRoll = false;
+		SpringArmComponent->bDoCollisionTest = false;
+	}
+	{
+		CameraComponent->SetupAttachment(SpringArmComponent);
+		FTransform NewTransform = FTransform(FRotator(-30.f, 0.f, 0.f), FVector3d(0.f, 0.f, 800.f)); // 음 맵? 
 		CameraComponent->SetRelativeTransform(NewTransform);
 	}
 	{
-		PawnViewCameraComponent = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
 		PawnViewCameraComponent->SetupAttachment(RootComponent);
 	}
 }
@@ -36,12 +45,19 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn());
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
+	if (FriendlyPawn)
+	{
+		SetActorLocationAndRotation(FriendlyPawn->GetActorLocation(), FriendlyPawn->GetActorRotation());
+	}
 }
 
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	//레벨 시작시 Instance 에서 폰정보를 받아옴
 	{
 		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
@@ -87,11 +103,13 @@ void ABaseCharacter::SpawnPawn()
 		if (RoundsTransform[(CurRound - 1) % 10].IsEmpty()) { break; }
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		AFriendlyPawn* NewPawn = GetWorld()->SpawnActor<AFriendlyPawn>(AFriendlyPawn::StaticClass(), RoundsTransform[(CurRound-1)%10][i], ActorSpawnParameters);
+		AFriendlyPawn* NewPawn = GetWorld()->SpawnActor<AFriendlyPawn>(AFriendlyPawn::StaticClass(), FTransform::Identity, ActorSpawnParameters);
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
-		NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
+		NewPawn->SetActorLocation(RoundsTransform[(CurRound - 1) % 10][i].GetLocation());
+		//NewPawn->SetActorRotation(RoundsTransform[(CurRound - 1) % 10][i].GetRotation());
+		//NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
 		CurHavePawns.Add(NewPawn);
 	}
 }

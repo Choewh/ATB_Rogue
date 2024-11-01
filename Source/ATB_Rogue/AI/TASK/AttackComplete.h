@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "AI/TASK/BaseBTTaskNode.h"
-#include "FinishTurn.generated.h"
+#include "AttackComplete.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API UFinishTurn : public UBaseBTTaskNode
+class ATB_ROGUE_API UAttackComplete : public UBaseBTTaskNode
 {
 	GENERATED_BODY()
-
-	UFinishTurn();
+	UAttackComplete();
 private:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 protected:
 

@@ -11,6 +11,7 @@ void SSelectableCell::Construct(const FArguments& InArgs)
 {
 	HAlign = InArgs._HAlign;
 	VAlign = InArgs._VAlign;
+	OnClicked = InArgs._OnClickedArg;
 	OnPressed = InArgs._OnPressedArg;
 	OnReleased = InArgs._OnReleasedArg;
 	OnHovered = InArgs._OnHoveredArg;
@@ -20,6 +21,7 @@ END_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 FReply SSelectableCell::OnMouseButtonDown(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
 {
+	OnClicked.ExecuteIfBound();
 	OnPressed.ExecuteIfBound();
 	return FReply::Handled();
 }
