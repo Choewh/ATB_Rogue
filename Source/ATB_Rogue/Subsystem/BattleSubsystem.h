@@ -87,7 +87,7 @@ public :
 	UFUNCTION(BlueprintCallable)
 	void SelectAbleThirdSkill();
 	
-	void SelectTargetPawn();
+	void SelectTargetPawn(AActor* TargetPawn);
 
 	UFUNCTION(BlueprintCallable)
 	void SelectAttackAccept();

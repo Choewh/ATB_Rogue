@@ -9,6 +9,7 @@
 #include "Character/BaseCharacter.h"
 #include "Camera/PawnViewCameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
+#include "AI/BaseAIController.h"
 #include "Enums/CameraViewMode.h"
 #include "Enums/BattleState.h"
 #include "Enums/ControllerInput.h"

@@ -19,8 +19,6 @@ public:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void SetActiveTurn(bool ActiveTurn);
 
 	TArray<ABasePawn*> FirstSkillRangePawns;
 	TArray<ABasePawn*> SecondSkillRangePawns;

@@ -65,14 +65,7 @@ bool AFriendlyPawn::Movealbe(FVector NewDestination)
 // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 void AFriendlyPawn::MoveTo(FVector NewDestination)
 {
-
-	//지금은 그냥 셋로케이션으로 로직 확인만 ㅇ
-	//if (GetController() && GetController()->IsValidLowLevel())
-
-	OnMove.Broadcast(NewDestination);
-	// TurnEnd(); // Temp 어택 구현시 제거하기
-
-	// AI 컨트롤러가 활성화되어 있습니다.
-//SetActorLocation(NewDestination);
-// 알아서 체크 일정거리 이상 가까워지면 멈추고 트루 반환
+	AFriendlyAIController* AIController = Cast<AFriendlyAIController>(GetController());
+	AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bMove"), true);
+	AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("MovePoint"), NewDestination);
 }

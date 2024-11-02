@@ -8,18 +8,19 @@
 
 #include "Subsystem/BattleSubsystem.h"
 #include "Pawn/FriendlySpawnLocation.h"
-
+#include "Component/RotatorCharMoveComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 class ABasePlayerController;
 
 // Sets default values
-ABaseCharacter::ABaseCharacter()
+ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<URotatorCharMoveComponent>(Super::CharacterMovementComponentName))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	//bOrientRotationToMovement = true;
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	PawnViewCameraComponent = CreateDefaultSubobject<UPawnViewCameraComponent>(TEXT("PawnViewCamera"));
@@ -60,10 +61,15 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 		FVector StartVec = CameraComponent->GetComponentLocation();
 		FVector TargetVec = ActionPawn->GetActorLocation();
+		FVector NearlyVec = TargetVec - StartVec;
 
+		if (FMath::IsNearlyZero(NearlyVec.Size(), 0.1f)) { return; }
+		
 		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
 		SpringArmComponent->SetWorldRotation(LookAtRotator);
 		SetActorLocationAndRotation(NewLocation, NewRotation);
+		
+
 	}
 }
 

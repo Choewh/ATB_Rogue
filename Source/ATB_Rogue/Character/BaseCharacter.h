@@ -18,7 +18,7 @@ class ATB_ROGUE_API ABaseCharacter : public ACharacter
 
 public:
 	// Sets default values for this actor's properties
-	ABaseCharacter();
+	ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned

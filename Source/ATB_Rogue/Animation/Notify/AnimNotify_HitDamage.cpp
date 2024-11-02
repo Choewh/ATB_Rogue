@@ -4,6 +4,7 @@
 #include "Animation/Notify/AnimNotify_HitDamage.h"
 #include "Pawn/BasePawn.h"
 #include "AI/BaseAIController.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "AnimNotify_HitDamage.h"
 
 UAnimNotify_HitDamage::UAnimNotify_HitDamage()
@@ -27,6 +28,8 @@ void UAnimNotify_HitDamage::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	ABaseAIController* OwningController = Cast<ABaseAIController>(Pawn->GetController());
 
 	ABasePawn* TargetPawn = OwningController->TargetPawn;
+	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(TargetPawn->GetActorLocation(), OwningActor->GetActorLocation()); //회전도 노티파이 ㄱ
+	TargetPawn->SetActorRotation(LookAtRotator);
 
 
 	TargetPawn->HitAnim();

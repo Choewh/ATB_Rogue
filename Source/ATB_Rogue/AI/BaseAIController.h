@@ -37,7 +37,8 @@ protected:
 
 	UFUNCTION()
 	void ResetValue();
-
+	UFUNCTION()
+	void SetActiveTurn(bool ActiveTurn);
 
 public:
 	UPROPERTY()

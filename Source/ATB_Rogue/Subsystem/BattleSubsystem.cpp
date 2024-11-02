@@ -6,6 +6,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
+
 UBattleSubsystem::UBattleSubsystem()
 {
 }
@@ -101,7 +102,6 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		InPawn->ActiveTurn.Broadcast(true);
 		break;
 	case EPawnGroup::Friendly:
-		//FinishTurn(); // Temp
 		SelectActionView();
 		break;
 	default:
@@ -185,30 +185,41 @@ void UBattleSubsystem::SelectAttackAction()
 
 void UBattleSubsystem::SelectAbleFirstSkill()
 {
-	//FriendlyPawn로 사용할 스킬 전달
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::FirstSkill));
 }
 
 void UBattleSubsystem::SelectAbleSecondSkill()
 {
-
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::SecondSkill));
 }
 
 void UBattleSubsystem::SelectAbleThirdSkill()
 {
-
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::ThirdSkill));
 }
 
-void UBattleSubsystem::SelectTargetPawn()//폰 데이터 전달
+void UBattleSubsystem::SelectTargetPawn(AActor* TargetPawn)//폰 데이터 전달
 {
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->TargetPawn = Cast<ABasePawn>(TargetPawn);
+	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true);
+	UE_LOG(LogTemp, Log, TEXT("TargetPawn Name : %s"), *TargetPawn->GetName());
+	//거리체크하는 태스크
 }
 
 void UBattleSubsystem::SelectAttackAccept()
 {
 	//사용할 스킬 , 타겟 둘 다 있으면 실행 // 선택시 사거리 표시 -> 폰 선택시 해당 폰 공격
+	//이거 없애고 그냥 거리체크해서 사거리내에 있으면 바로 사용하기
 }
 
 void UBattleSubsystem::SelectAttackCancle()
 {
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), false);
 	PlayerController->SetBattleState(EBattleState::Defalut);
 	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView); // 무브뷰 ?
 	PlayerController->CameraViewUpdate();

@@ -17,6 +17,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
 	SkillComponentRef = BasePawn->GetComponentByClass<USkillComponent>();
+	BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn);
 	// StatusComponentRef->OnHPChanged.AddDynamic(this, &ThisClass::OnDamaged);
 }
 
@@ -28,7 +29,6 @@ void ABaseAIController::Tick(float DeltaTime)
 	const bool bMontagePlaying = OwningPawn->GetComponentByClass<USkeletalMeshComponent>()->GetAnimInstance()->IsAnyMontagePlaying();
 
 	Blackboard->SetValueAsBool(TEXT("MontagePlaying"), bMontagePlaying);
-
 }
 
 void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
@@ -39,4 +39,14 @@ void ABaseAIController::OnDamaged(float CurrentHP, float MaxHP)
 void ABaseAIController::ResetValue()
 {
 
+}
+
+void ABaseAIController::SetActiveTurn(bool ActiveTurn)
+{
+		Blackboard->SetValueAsBool(TEXT("bAction"), ActiveTurn);
+		Blackboard->SetValueAsBool(TEXT("bMove"), ActiveTurn);
+		Blackboard->SetValueAsBool(TEXT("bAttack"), ActiveTurn);
+		Blackboard->SetValueAsBool(TEXT("bSkillAttackable1"), !ActiveTurn);
+		Blackboard->SetValueAsBool(TEXT("bSkillAttackable2"), !ActiveTurn);
+		Blackboard->SetValueAsBool(TEXT("bSkillAttackable3"), !ActiveTurn);
 }

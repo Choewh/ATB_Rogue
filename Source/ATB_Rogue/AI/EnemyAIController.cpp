@@ -21,7 +21,6 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 
 	ABasePawn* BasePawn = Cast<ABasePawn>(InPawn);
 	if (!BasePawn) { return; }
-	BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn);
 
 }
 
@@ -30,14 +29,3 @@ void AEnemyAIController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-
-
-void AEnemyAIController::SetActiveTurn(bool ActiveTurn)
-{
-	Blackboard->SetValueAsBool(TEXT("bAction"), ActiveTurn);
-	Blackboard->SetValueAsBool(TEXT("bMove"), ActiveTurn);
-	Blackboard->SetValueAsBool(TEXT("bAttack"), ActiveTurn);
-	Blackboard->SetValueAsBool(TEXT("bSkillAttackable1"), !ActiveTurn);
-	Blackboard->SetValueAsBool(TEXT("bSkillAttackable2"), !ActiveTurn);
-	Blackboard->SetValueAsBool(TEXT("bSkillAttackable3"), !ActiveTurn);
-}

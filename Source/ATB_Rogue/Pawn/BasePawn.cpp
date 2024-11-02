@@ -237,8 +237,6 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 {
 	//스탯컴포넌트 에 TakeDamage 넣어서 계산하기
 	//여기선 데미지 계산만 ㅇ
-	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), DamageCauser->GetActorLocation());
-	this->SetActorRotation(LookAtRotator);
 	return 0.0f;
 }
 

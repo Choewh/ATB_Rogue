@@ -21,16 +21,9 @@ void AFriendlyAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 	ABasePawn* BasePawn = Cast<ABasePawn>(InPawn);
 	if (!BasePawn) { return; }
-	BasePawn->OnMove.AddDynamic(this, &ThisClass::SetMovePoint);
 }
 
 void AFriendlyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void AFriendlyAIController::SetMovePoint(FVector MovePoint)
-{
-	Blackboard->SetValueAsBool(TEXT("bMove"), true);
-	Blackboard->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 }
