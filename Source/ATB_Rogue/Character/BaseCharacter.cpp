@@ -10,6 +10,7 @@
 #include "Pawn/FriendlySpawnLocation.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 class ABasePlayerController;
 
@@ -29,6 +30,9 @@ ABaseCharacter::ABaseCharacter()
 		SpringArmComponent->bUsePawnControlRotation = true;
 		SpringArmComponent->bInheritRoll = false;
 		SpringArmComponent->bDoCollisionTest = false;
+		SpringArmComponent->bEnableCameraRotationLag = true;
+		SpringArmComponent->CameraRotationLagSpeed = 1.f;
+		SpringArmComponent->SetUsingAbsoluteRotation(false);
 	}
 	{
 		CameraComponent->SetupAttachment(SpringArmComponent);
@@ -45,11 +49,21 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn());
+	ABasePawn* ActionPawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
 	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
-	if (FriendlyPawn)
+	if (ActionPawn)
 	{
-		SetActorLocationAndRotation(FriendlyPawn->GetActorLocation(), FriendlyPawn->GetActorRotation());
+		float LerpSpeed = 5.0f;
+		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+
+
+		FVector StartVec = CameraComponent->GetComponentLocation();
+		FVector TargetVec = ActionPawn->GetActorLocation();
+
+		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
+		SpringArmComponent->SetWorldRotation(LookAtRotator);
+		SetActorLocationAndRotation(NewLocation, NewRotation);
 	}
 }
 

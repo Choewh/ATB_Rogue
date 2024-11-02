@@ -33,21 +33,6 @@ void UPawnViewCameraComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (bView && GetWorld()->GetSubsystem<UBattleSubsystem>()->IsValidActionPawn())
-	{
-		//{
-		//	FVector StartVec = GetRelativeLocation();
-		//	ABasePawn* Temp = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
-		//	FVector TargetVec = Temp->GetNavAgentLocation();
-		//	
-
-		//	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-		//	SetWorldRotation(LookAtRotator);
-		//}
-		//{
-		//	CameraSplineTimelineComponent->TickComponent(DeltaTime, TickType, ThisTickFunction);
-		//}
-	}
 }
 
 void UPawnViewCameraComponent::OnPawnViewCamera(ABasePawn* ViewEnemy)
@@ -55,8 +40,7 @@ void UPawnViewCameraComponent::OnPawnViewCamera(ABasePawn* ViewEnemy)
 	if (ViewEnemy)
 	{
 		FVector StartVec = GetComponentLocation();
-		ABasePawn* Temp = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
-		FVector TargetVec = Temp->GetNavAgentLocation();
+		FVector TargetVec = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn()->GetActorLocation();
 
 
 		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
@@ -70,28 +54,30 @@ void UPawnViewCameraComponent::StartSplineMoving(float InDissolve)
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	if (bView && BattleSubsystem->IsValidActionPawn())
 	{
-		ABasePawn* ActionPawn = BattleSubsystem->GetActionPawn();
-		AActor* tmepSpline = ActionPawn->GetCameraSpline()->GetChildActor();
-		ABaseCameraSplineActor* CameraSplineActor = Cast<ABaseCameraSplineActor>(tmepSpline);
-		USplineComponent* CameraSpline = CameraSplineActor->GetPaths();
 
+			ABasePawn* ActionPawn = BattleSubsystem->GetActionPawn();
+			AActor* tmepSpline = ActionPawn->GetCameraSpline()->GetChildActor();
+			ABaseCameraSplineActor* CameraSplineActor = Cast<ABaseCameraSplineActor>(tmepSpline);
+			USplineComponent* CameraSpline = CameraSplineActor->GetPaths();
 
-		FVector Center = ActionPawn->GetActorLocation();
-		float SplineLength = CameraSpline->GetSplineLength();
+		{
+			//FVector Center = ActionPawn->GetActorLocation();
+			float SplineLength = CameraSpline->GetSplineLength();
 
-		float Distance = UKismetMathLibrary::Lerp(0.f, SplineLength, InDissolve);
+			float Distance = UKismetMathLibrary::Lerp(0.f, SplineLength, InDissolve);
 
-		FVector NewLocation = CameraSpline->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
-		FRotator NewRotation = CameraSpline->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::Local);
+			FVector SplineLocation = CameraSpline->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
+			FRotator SplineRotation = CameraSpline->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::Local);
 
-		SetWorldTransform(FTransform(NewRotation, NewLocation));
+			SetWorldTransform(FTransform(SplineRotation, SplineLocation));
+		}
 		{
 			FVector StartVec = GetComponentLocation();
 			FVector TargetVec = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn()->GetActorLocation();
 
-
 			FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-			SetRelativeRotation(LookAtRotator);
+			SetWorldRotation(LookAtRotator);
 		}
 	}
 }
+

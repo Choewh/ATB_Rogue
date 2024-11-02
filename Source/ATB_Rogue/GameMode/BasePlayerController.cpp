@@ -16,8 +16,8 @@ ABasePlayerController::ABasePlayerController()
 	}
 	{
 		PlayerCameraManagerClass = ABasePlayerCameraManager::StaticClass();
-		}
-		bShowMouseCursor = true;
+	}
+	bShowMouseCursor = true;
 
 }
 
@@ -173,22 +173,42 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
 		FHitResult CursorHitResult;
 		GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, CursorHitResult);
-		FVector EndPoint = CursorHitResult.ImpactPoint;
-		FHitResult HitResult;
-		FCollisionQueryParams CollisionParams;
-		GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_GameTraceChannel5, CollisionParams);
+		FVector CursorHitVector = CursorHitResult.ImpactPoint;
+		TArray<FHitResult> HitResults;
+		TArray<AActor*> IgnoreActors;
+		bool bHit = UKismetSystemLibrary::SphereTraceMultiByProfile(this, CursorHitVector, CursorHitVector,
+			50.f, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+			HitResults, true);
+		//FCollisionQueryParams CollisionParams;
+		//GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_GameTraceChannel5, CollisionParams);
 		//UKismetSystemLibrary::LineTraceSingleByProfile(CameraLocation, EndPoint )
-		MovePoint = HitResult.ImpactPoint;
-		AActor* HitActor = HitResult.GetActor();
-		ABasePawn* HitPawn = Cast<ABasePawn>(HitActor);
-		//로그
-		if(HitPawn)
+		if (bHit)
 		{
-			UE_LOG(LogTemp, Log, TEXT("%s"), *HitPawn->GetName());
+			FHitResult ClosestHit;
+			float ClosestDistance = FLT_MAX;
+			AActor* ClosestActor = nullptr;
 
-			DrawDebugPoint(GetWorld(), HitPawn->GetActorLocation(), 20, FColor::Red, false, 1.f);
-			DrawDebugLine(GetWorld(), CameraLocation, HitPawn->GetActorLocation(), FColor::Red, false, 5.f);
+			for (const FHitResult& Hit : HitResults)
+			{
+				float Distance = FVector::Dist(CursorHitVector, Hit.ImpactPoint);
+				if (Distance < ClosestDistance)
+				{
+					ClosestDistance = Distance;
+					ClosestHit = Hit;
+					ClosestActor = Hit.GetActor();
+				}
+			}
+			if (ClosestActor)
+			{
+				UE_LOG(LogTemp, Log, TEXT("%s"), *ClosestActor->GetName());
+
+				DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation(), 20.f,10, FColor::Red, false, 5.0f, 0, 1.0f);
+				DrawDebugLine(GetWorld(), CameraLocation, ClosestActor->GetActorLocation(), FColor::Red, false, 5.f);
+			}
 		}
+
+
+		//로그
 	}
 }
 
@@ -211,7 +231,7 @@ void ABasePlayerController::OnRightPress(const FInputActionValue& InputActionVal
 void ABasePlayerController::OnViewCameraMove(const FInputActionValue& InputActionValue)
 {
 	FVector2D InputValue = InputActionValue.Get<FVector2D>();
-	if ((BattleState == EBattleState::Attack|| BattleState == EBattleState::Move )&& ControllerInput == EControllerInput::MouseRight)
+	if ((BattleState == EBattleState::Attack || BattleState == EBattleState::Move) && ControllerInput == EControllerInput::MouseRight)
 	{
 		FRotator CurRotator = DefaultCamera->GetRelativeRotation();
 		DefaultCamera->SetRelativeRotation(FRotator((CurRotator.Pitch - InputValue.Y), (CurRotator.Yaw - InputValue.X), 0));
@@ -222,7 +242,7 @@ void ABasePlayerController::OnViewAroundMove(const FInputActionValue& InputActio
 {
 	float InputValue = InputActionValue.Get<float>();
 
-	if (BattleState == EBattleState::Move||BattleState == EBattleState::Attack)
+	if (BattleState == EBattleState::Move || BattleState == EBattleState::Attack)
 	{
 		AddYawInput(InputValue * 2.f);
 	}
