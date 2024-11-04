@@ -10,9 +10,6 @@ APawnRange::APawnRange()
 	RootComponent = DefaultSceneRoot;
 	DecalMeshComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalMeshComponent"));
 	DecalMeshComponent->SetupAttachment(RootComponent);
-	{
-		AActor* temp = GetOwner();
-	}
 }
 
 void APawnRange::SetData(FEffectTableRow& EffectData)

@@ -2,6 +2,7 @@
 
 
 #include "AI/TASK/AttackComplete.h"
+#include "Pawn/BasePawn.h"
 #include "AttackComplete.h"
 
 UAttackComplete::UAttackComplete()
@@ -39,6 +40,8 @@ void UAttackComplete::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 	{
 		UE_LOG(LogTemp, Log, TEXT("bMontagePlaying: %s"), bMontagePlaying ? TEXT("True") : TEXT("False"));
 		BlackboardComponent->SetValueAsBool(TEXT("bAttack"), false);
+		ABasePawn* TargetPawn = Cast<ABasePawn>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
+		TargetPawn->OnDieCheck();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

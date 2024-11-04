@@ -7,6 +7,7 @@
 #include "Pawn/BasePawn.h"
 #include "Misc/Actorpool.h"
 #include "Effect/PawnRange.h"
+#include "Effect/PawnGroupEffect.h"
 #include "ActorpoolSubsystem.generated.h"
 
 /**
@@ -25,6 +26,8 @@ public:
 	void SpawnRangeEffect(const FTransform SpawnTransform, FEffectTableRow& EffectTableRow);
 	void DeSpawnRangeEffect();
 	
+	APawnGroupEffect* SpawnGroupEffect(AActor* Owner,FEffectTableRow& EffectTableRow);
+	void DeSpawnGroupEffect();
 
 	void SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
@@ -33,4 +36,5 @@ protected:
 
 protected:
 	FCircularActorPool<APawnRange> PawnRange;
+	FCircularActorPool<APawnGroupEffect> PawnGroupEffect;
 };

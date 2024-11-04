@@ -7,6 +7,8 @@
 #include "PlayerCameraManager/BasePlayerCameraManager.h"
 #include "Subsystem/BattleSubsystem.h"
 
+class AEnemyPawn;
+
 ABasePlayerController::ABasePlayerController()
 {
 	{
@@ -92,6 +94,7 @@ void ABasePlayerController::Init()
 	DefaultCamera->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
 	CameraViewMode = ECameraViewMode::DefaultView;
 	BattleState = EBattleState::Defalut;
+	bMove = true;
 }
 
 void ABasePlayerController::CameraViewUpdate()
@@ -205,7 +208,11 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 				DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation(), 20.f,10, FColor::Red, false, 5.0f, 0, 1.0f);
 				DrawDebugLine(GetWorld(), CameraLocation, ClosestActor->GetActorLocation(), FColor::Red, false, 5.f);
 			}
+			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(ClosestActor);
+			if (EnemyPawn)
+			{
 			BattleSubsystem->SelectTargetPawn(ClosestActor);
+			}
 		}
 		// 배틀서브시스템의 Distance 체크 콜 셀렉한 스킬의 사거리 내에 있으면 사용할수 있다 하기 블랙보드 값 ESkill::~~
 		//로그

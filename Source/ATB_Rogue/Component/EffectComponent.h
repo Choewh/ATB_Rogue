@@ -9,6 +9,8 @@
 #include "Engine/DataTable.h"
 #include "Data/EffectTableRow.h"
 
+#include "Effect/PawnGroupEffect.h"
+
 #include "Enums/Species.h"
 
 #include "EffectComponent.generated.h"
@@ -26,6 +28,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	virtual void SetData(ESpecies InSpecies);
 public:	
@@ -36,9 +39,9 @@ public:
 	//������ ���̺�
 	UDataTable* EffectDataTable;
 	FEffectTableRow* EffectData;
-	
 public:
 	void ShowRange(FVector PawnLocation,float MoveRange);
 	void HideRange();
-
+private:
+	APawnGroupEffect* PawnGruopEffect;
 };

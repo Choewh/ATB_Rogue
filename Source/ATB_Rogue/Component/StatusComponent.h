@@ -92,6 +92,7 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void SetData(ESpecies InSpecies);
+    virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 public:
 	//������ ���̺�
 	UDataTable* StatDataTable;
@@ -101,7 +102,6 @@ public:
 
     float CalculateHP(float BaseHP);
     float CalculateStat(float BaseStat);
-
 public:
     const FSpeciesInfo* GetSpeciesInfo() { return SpeciesInfo.Get(); }
 
@@ -110,4 +110,5 @@ protected:
 	void ReleaseContext() { check(SpeciesInfo); SpeciesInfo = nullptr; } //지울일이있나?
 
 	TUniquePtr<FSpeciesInfo> SpeciesInfo;
+
 };

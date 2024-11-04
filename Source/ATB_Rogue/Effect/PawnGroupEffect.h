@@ -7,25 +7,29 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/DecalComponent.h"
 #include "Data/EffectTableRow.h"
-#include "PawnRange.generated.h"
+#include "PawnGroupEffect.generated.h"
+
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API APawnRange : public APooledActor
+class ATB_ROGUE_API APawnGroupEffect : public APooledActor
 {
 	GENERATED_BODY()
 	
 public:
-	APawnRange();
+	APawnGroupEffect();
 
 public:
 	void SetData(FEffectTableRow& EffectData);
+	void SetOwningPawn(AActor* InOwner);
 	void HideEffect();
+protected:
 
 protected:
 	virtual void BeginPlay() override;
-	
+	virtual void Tick(float DeltaTime)override;
+
 	//UFUNCTION()
 	//virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	//	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -34,11 +38,8 @@ protected:
 	USceneComponent* DefaultSceneRoot = nullptr;
 	UPROPERTY(VisibleAnywhere)
 	UDecalComponent* DecalMeshComponent;
-
-
-//protected:
-//	UPROPERTY(EditAnywhere, meta = (RowType = "/Script/ATB_ROGUE.PawnTableRow"))
-//	FDataTableRowHandle DataTableRowHandle;
-//
-//	FEffectTableRow* EffectData;
+	UPROPERTY(VisibleAnywhere)
+	AActor* OwningPawn;
+	
+	
 };

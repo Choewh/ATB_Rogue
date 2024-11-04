@@ -28,7 +28,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, f
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActiveTurn , bool , Active);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActiveTurn, bool, Active);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHideEffect);
 
@@ -57,7 +57,7 @@ public:
 	virtual void PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph) override;
 	virtual void PostInitializeComponents() override;
 	virtual void OnConstruction(const FTransform& Transform);
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -66,7 +66,7 @@ public:
 public:
 	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
-	void ABTFeeling();	
+	void ABTFeeling();
 
 	void SetActive(bool Active) { bActive = Active; }
 	void ActiveCollision(bool Active);
@@ -74,9 +74,11 @@ public:
 	void PlaySkillAnimation(ESkills UseSkill);
 	void HitAnim();
 	void Evolution();
+	void OnDieCheck();
 	void OnDie();
-
 public:
+	UFUNCTION(BlueprintCallable)
+	bool IsDie() { return bDie; }
 
 	bool IsActive() { return bActive; }
 
@@ -127,7 +129,7 @@ public:
 
 public:
 
-	void SetATBbar(USlider* InSlider) {ATBbar = InSlider;}
+	void SetATBbar(USlider* InSlider) { ATBbar = InSlider; }
 	USlider* GetABTbar() { return ATBbar; }
 	UPROPERTY()
 	USlider* ATBbar;
@@ -146,6 +148,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ABT_Speed = 1.f;
 
+	UPROPERTY(EditAnywhere)
+	float MaxHP = 100;
+	UPROPERTY(EditAnywhere)
+	float CurHP = MaxHP;
+	UPROPERTY(EditAnywhere)
+	bool bDie = false;
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;

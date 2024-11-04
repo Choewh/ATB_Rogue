@@ -63,6 +63,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
 
+	bool IsMove() { return bMove; }
+	void SetMoveActive(bool Active) { bMove = Active; }
+	
 	FVector GetMovePoint() { return MovePoint; }
 
 public:

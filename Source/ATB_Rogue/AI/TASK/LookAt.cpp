@@ -7,25 +7,24 @@
 
 ULookAt::ULookAt()
 {
-    NodeName = "LookAt";
+	NodeName = "LookAt";
 }
 
 EBTNodeResult::Type ULookAt::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    BehaviorTreeComponent = &OwnerComp;
-    SetOwner(BehaviorTreeComponent->GetOwner());
-    BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	BehaviorTreeComponent = &OwnerComp;
+	SetOwner(BehaviorTreeComponent->GetOwner());
+	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 
-    FVector StartPoint = AIOwner->GetPawn()->GetActorLocation();
-    FVector TargetPoint = BlackboardComponent->GetValueAsVector(TEXT("TargetPoint"));
-    AActor* TargetPawn = Cast<AActor>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
+	FVector StartPoint = AIOwner->GetPawn()->GetActorLocation();
+	FVector TargetPoint = BlackboardComponent->GetValueAsVector(TEXT("TargetPoint"));
+	AActor* TargetPawn = Cast<AActor>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
 
-    if (TargetPawn)
-    {
-        TargetPoint = TargetPawn->GetActorLocation();
-    }
+	if (!TargetPawn) { return EBTNodeResult::Failed; }
 
-    FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartPoint, TargetPoint);
-    AIOwner->GetPawn()->SetActorRotation(LookAtRotator);
-    return EBTNodeResult::Succeeded;
+	TargetPoint = TargetPawn->GetActorLocation();
+
+	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartPoint, TargetPoint);
+	AIOwner->GetPawn()->SetActorRotation(LookAtRotator);
+	return EBTNodeResult::Succeeded;
 }

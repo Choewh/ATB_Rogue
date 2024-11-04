@@ -8,11 +8,6 @@
 
 AABTHUD::AABTHUD()
 {
-}
-
-void AABTHUD::BeginPlay()
-{
-	Super::BeginPlay();
 	{
 		UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
 			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar'
@@ -26,13 +21,18 @@ void AABTHUD::BeginPlay()
 		check(WidgetClass);
 		Widget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
 	}
-	{
-		UClass* WidgetClass = LoadClass<UUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Test.Test_C'"));
-		check(WidgetClass);
-		UUserWidget* Test = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
-		Test->AddToViewport();
-	}
+	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
+	/*UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	check(BattleSubsystem);
+	BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowATBBar);
+
+	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	check(PlayerController);
+	PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);*/
+}
+void AABTHUD::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
@@ -41,6 +41,38 @@ void AABTHUD::BeginPlay()
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
 	PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);
+}
+void AABTHUD::BeginPlay()
+{
+	//Super::BeginPlay();
+	//{
+	//	UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
+	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar'
+	//	check(WidgetClass);
+	//	ATBWidget = CreateWidget<UABTBarUserWidget>(GetWorld(), WidgetClass);
+
+	//}
+	//{
+	//	UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
+	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_User_UI.ABT_User_UI_C'"));
+	//	check(WidgetClass);
+	//	Widget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
+	//}
+	//{  //Temp
+	//	UClass* WidgetClass = LoadClass<UUserWidget>(nullptr,
+	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Test.Test_C'"));
+	//	check(WidgetClass);
+	//	UUserWidget* Test = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
+	//	Test->AddToViewport();
+	//}
+	////배틀시스템에서 하기 오너는 폰으로 셋 해주기
+	//UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	//check(BattleSubsystem);
+	//BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowATBBar);
+
+	//PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	//check(PlayerController);
+	//PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);
 }
 
 

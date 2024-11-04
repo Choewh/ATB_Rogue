@@ -22,6 +22,8 @@ bool URangeDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerCo
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(BehaviorTreeComponent->GetOwner());
 	ABasePawn* OwnerPawn = Cast<ABasePawn>(BaseAIController->GetPawn());
 	ABasePawn* TargetPawn = BaseAIController->TargetPawn;
+	if (!TargetPawn) { return false; }
+
 	float Distance = FVector::Dist(OwnerPawn->GetActorLocation(), TargetPawn->GetActorLocation());
 	switch (UseSkill)
 	{

@@ -14,7 +14,6 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 {
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
-	PawnLookAt();
 	PawnsActive();
 
 	/// ABTBar 보여주기 Pawn들 소환과 ABTbar 세팅
@@ -24,6 +23,7 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 void UBattleSubsystem::BattleEnd()
 {
 	BattleFinish.Broadcast();
+
 	for (auto& Pawn : EnemyPawns)
 	{
 
@@ -34,20 +34,28 @@ void UBattleSubsystem::BattleEnd()
 	}
 }
 
-void UBattleSubsystem::PawnLookAt()
+void UBattleSubsystem::IsDieCheck()
 {
-	for (auto& Pawn : EnemyPawns)
+	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
-		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(Pawn->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation());
-		Pawn->CollisionComponent->SetWorldRotation(LookAtRotator);
+		ABasePawn* Pawn = EnemyPawns[i];
+		if (EnemyPawns[i]->IsDie())
+		{
+			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
+			Pawn->Destroy();
+		}
 	}
-	for (auto& Pawn : FriendlyPawns)
+	for (int32 i = FriendlyPawns.Num() - 1; i >= 0; --i)
 	{
-		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(Pawn->GetActorLocation(), PlayerController->GetPawn()->GetActorLocation());
-		Pawn->CollisionComponent->SetWorldRotation(LookAtRotator);
+		ABasePawn* Pawn = FriendlyPawns[i];
+		if (FriendlyPawns[i]->IsDie())
+		{
+			FriendlyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
+			Pawn->Destroy();
+		}
 	}
-
 }
+
 
 void UBattleSubsystem::PawnAction()
 {
@@ -102,6 +110,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		InPawn->ActiveTurn.Broadcast(true);
 		break;
 	case EPawnGroup::Friendly:
+		PlayerController->Init();
 		SelectActionView();
 		break;
 	default:
@@ -113,6 +122,7 @@ void UBattleSubsystem::SelectActionView()
 {
 	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
 	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);	//카메라 뷰 디폴트로 변경 // TODO 카메라 무브 어택 등 여러개로 분류하기
+	PlayerController->SetBattleState(EBattleState::Defalut);
 	PlayerController->CameraViewUpdate();
 	//그럴일없겠지만 있으면 삭제 ㅇㅇ
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
@@ -144,26 +154,27 @@ void UBattleSubsystem::HideMoveRange()
 //}
 bool UBattleSubsystem::SelectMoveAccept()
 {
-	FVector NewDestination = PlayerController->GetMovePoint();
-	//클릭없었으면 작동 X
-	if (NewDestination == FVector::Zero()) { return false; }
-	//액션폰에 자기 이동거리 확인 만들기
-	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(ActionPawn);
-	if (!FriendlyPawn->Movealbe(NewDestination))
+	if (PlayerController->IsMove())
 	{
-		return false;
-	}
-	//이동 가능시 무브
-	//폰이 따로 신호주면 턴 종료 ㄱ
-	HideMoveRange();
-	FriendlyPawn->MoveTo(NewDestination);
-	PlayerController->SetBattleState(EBattleState::Defalut);
-	//{
-	//	FinishTurn();
 
-	return true;
-	//}
-//	return false;
+		FVector NewDestination = PlayerController->GetMovePoint();
+		//클릭없었으면 작동 X
+		if (NewDestination == FVector::Zero()) { return false; }
+		//액션폰에 자기 이동거리 확인 만들기
+		AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(ActionPawn);
+		if (!FriendlyPawn->Movealbe(NewDestination))
+		{
+			return false;
+		}
+		//이동 가능시 무브
+		//폰이 따로 신호주면 턴 종료 ㄱ
+		HideMoveRange();
+		PlayerController->SetMoveActive(false);
+		FriendlyPawn->MoveTo(NewDestination);
+		SelectActionView();
+		return true;
+	}
+	return false;
 	//실패시 에러 띄움
 }
 
@@ -186,18 +197,21 @@ void UBattleSubsystem::SelectAttackAction()
 void UBattleSubsystem::SelectAbleFirstSkill()
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->TargetPawn = nullptr;
 	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::FirstSkill));
 }
 
 void UBattleSubsystem::SelectAbleSecondSkill()
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->TargetPawn = nullptr;
 	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::SecondSkill));
 }
 
 void UBattleSubsystem::SelectAbleThirdSkill()
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
+	BaseAIController->TargetPawn = nullptr;
 	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::ThirdSkill));
 }
 
@@ -205,6 +219,7 @@ void UBattleSubsystem::SelectTargetPawn(AActor* TargetPawn)//폰 데이터 전�
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
 	BaseAIController->TargetPawn = Cast<ABasePawn>(TargetPawn);
+	BaseAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetPawn"), BaseAIController->TargetPawn);
 	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true);
 	UE_LOG(LogTemp, Log, TEXT("TargetPawn Name : %s"), *TargetPawn->GetName());
 	//거리체크하는 태스크
@@ -251,7 +266,8 @@ void UBattleSubsystem::FinishTurn()
 		ActionPawn->ABTReset();
 		ActionPawn->ActiveCollision(true);
 		ActionPawn->ActiveTurn.Broadcast(false);
-
+		//죽은 폰이 있는지 확인하고 배열에서 제거
+		IsDieCheck();
 		ActionPawn = nullptr;
 		BattleFinish.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 		PlayerController->SetBattleState(EBattleState::Defalut);

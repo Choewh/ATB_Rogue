@@ -8,6 +8,7 @@
 #include "Widget/ABTBarUserWidget.h"
 //#include "Subsystem/BattleSubsystem.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 #include "Subsystem/ActorpoolSubsystem.h"
 
@@ -65,17 +66,17 @@ void ABasePawn::SetData()
 	TArray<FPawnTableRow*> PawnTable_Array;
 	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
 
-	if(Species == ESpecies::None) {return;}
+	if (Species == ESpecies::None) { return; }
 
-		for (auto& PawnTable : PawnTable_Array)
+	for (auto& PawnTable : PawnTable_Array)
+	{
+		if (PawnTable->Species == Species)
 		{
-			if (PawnTable->Species == Species)
-			{
-				PawnData = PawnTable;
-				break;
-			}
+			PawnData = PawnTable;
+			break;
 		}
-	
+	}
+
 
 	{
 		if (PawnGroup == EPawnGroup::Enemy)
@@ -235,8 +236,21 @@ void ABasePawn::HitAnim()
 
 float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	//스탯컴포넌트 에 TakeDamage 넣어서 계산하기
-	//여기선 데미지 계산만 ㅇ
+	if (IsDie()) { return 0.f; }
+
+	//아래에서 최종데미지 계산
+	float DamageResult = StatusComponent->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	if (FMath::IsNearlyZero(DamageResult)) { return 0.0; }
+
+	CurHP -= DamageResult;
+	CurHP = FMath::Clamp(CurHP, 0.f, CurHP);
+
+	if (CurHP == 0.f)
+	{	//플래그 변경
+		bDie = true;
+	}
+	//체력바 깍이는 연출 ㄱ
+
 	return 0.0f;
 }
 
@@ -250,13 +264,21 @@ void ABasePawn::Evolution()
 	//다음단계로 Species 바꾸고 SetData 호출
 }
 
+void ABasePawn::OnDieCheck()
+{
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	if (bDie)
+	{
+		GetMovementComponent()->DestroyComponent();
+		SetActorEnableCollision(false);
+		AnimInstance->Montage_Play(AnimComponent->AnimData->DieReactMontage);
+		UKismetSystemLibrary::K2_SetTimer(this, TEXT("OnDie"),2.f, false);
+	}
+}
 void ABasePawn::OnDie()
 {
-	//죽으면 데이터 삭제 ? 할지 살릴수 있게 할지 정하기 못살리면 포획이나 그런거 구현 해야 흠...
-	// 
-	//애니메이션 몽타쥬 재생.
+	Destroy();
 }
-
 UTexture2D* ABasePawn::GetPortrait()
 {
 	if (PawnData) return PawnData->Portraits;

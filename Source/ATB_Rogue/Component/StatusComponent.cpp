@@ -29,6 +29,14 @@ void UStatusComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+float UStatusComponent::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	//여기서 방어력 받아서 최종 데미지 계산 
+	float NewDamage = Damage;
+	//HP바 변환
+	return NewDamage;
+}
+
 void UStatusComponent::SetData(ESpecies InSpecies)
 {
 	TArray<FStatTableRow*> StatTable_Array;

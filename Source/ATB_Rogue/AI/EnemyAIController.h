@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AI/BaseAIController.h"
+#include "Enums/Skills.h"
 #include "EnemyAIController.generated.h"
 
 /**

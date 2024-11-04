@@ -43,6 +43,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	{
 		PawnViewCameraComponent->SetupAttachment(RootComponent);
 	}
+	bUseControllerRotationYaw = false;
 }
 
 // Called every frame
@@ -51,7 +52,6 @@ void ABaseCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	ABasePawn* ActionPawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
-	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
 	if (ActionPawn)
 	{
 		float LerpSpeed = 5.0f;
@@ -77,18 +77,24 @@ void ABaseCharacter::Tick(float DeltaTime)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (Controller == nullptr)
+	{
+		Controller = GetWorld()->SpawnActor<ABasePlayerController>(ABasePlayerController::StaticClass());
+		Controller->Possess(this);
+	}
+
 	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	//레벨 시작시 Instance 에서 폰정보를 받아옴
 	{
 		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
 		PlayerPawnsInfo = GameInstanceSubsystem->GetPlayerPawnsInfo();
 	}
-	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
-	}
 	Init();
+	BattleSubsystem->BattleStart((CurRound - 1) % 10);
 }
 
 void ABaseCharacter::Init()

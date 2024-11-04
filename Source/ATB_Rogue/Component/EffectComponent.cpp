@@ -23,8 +23,12 @@ UEffectComponent::UEffectComponent()
 void UEffectComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	
+void UEffectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	PawnGruopEffect->HideEffect();
 }
 
 void UEffectComponent::SetData(ESpecies InSpecies)
@@ -39,6 +43,7 @@ void UEffectComponent::SetData(ESpecies InSpecies)
 			EffectData = EffectTable;
 		}
 	}
+	PawnGruopEffect = GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnGroupEffect(GetOwner(), *EffectData);
 }
 
 void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

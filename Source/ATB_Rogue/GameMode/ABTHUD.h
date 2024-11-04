@@ -17,7 +17,9 @@ class ATB_ROGUE_API AABTHUD : public AHUD
 public:
 	AABTHUD();
 
+
 public:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 public:

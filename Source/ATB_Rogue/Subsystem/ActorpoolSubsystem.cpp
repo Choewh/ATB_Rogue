@@ -19,7 +19,20 @@ void UActorpoolSubsystem::DeSpawnRangeEffect()
 {
 	APawnRange* DeSpawnPawnRange = PawnRange.GetPoolingPopActor();
 	if (!DeSpawnPawnRange) { return; }
-	DeSpawnPawnRange->ReturnToPool();
+	DeSpawnPawnRange->HideEffect();
+}
+APawnGroupEffect* UActorpoolSubsystem::SpawnGroupEffect(AActor* Owner, FEffectTableRow& EffectTableRow)
+{
+	APawnGroupEffect* NewPawnGroup = PawnGroupEffect.GetActorFromPool();
+	NewPawnGroup->SetOwningPawn(Owner);
+	NewPawnGroup->SetData(EffectTableRow);
+	return NewPawnGroup;
+}
+void UActorpoolSubsystem::DeSpawnGroupEffect()
+{
+	APawnGroupEffect* DeNewPawnGroup = PawnGroupEffect.GetPoolingPopActor();
+	if (!DeNewPawnGroup) { return; }
+	DeNewPawnGroup->HideEffect();
 }
 //
 //void UActorpoolSubsystem::DeSpawnRangeEffect(APooledActor* DeSpawnActor)
@@ -36,4 +49,5 @@ void UActorpoolSubsystem::SpawnViewUI(const FTransform& SpawnTransform, const FD
 void UActorpoolSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	PawnRange.InitializePool(&InWorld, 1);
+	PawnGroupEffect.InitializePool(&InWorld, 10);
 }

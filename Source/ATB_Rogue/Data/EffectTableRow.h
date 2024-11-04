@@ -16,5 +16,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Effect|RangeDecal")
 	UMaterial* RangeDecalMaterial;
 	UPROPERTY(EditAnywhere, Category = "Effect|RangeDecal")
-	FTransform RangeDecalTransform;
+	FTransform RangeDecalTransform = FTransform(FRotator(-90.f,180.f,180.f));
+	UPROPERTY(EditAnywhere, Category = "Effect|GroupDecal")
+	UMaterial* GroupDecalMaterial;
+	UPROPERTY(EditAnywhere, Category = "Effect|GroupDecal")
+	FTransform GroupDecalTransform = FTransform(FRotator(-90.f, 180.f, 180.f));
 };

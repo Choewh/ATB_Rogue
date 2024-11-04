@@ -39,6 +39,8 @@ public:
 	void BattleEnd();
 
 	UFUNCTION()
+	void IsDieCheck();
+	UFUNCTION()
 	void SetEnemyPawns(TArray<ABasePawn*> InPawn) { EnemyPawns = InPawn; }
 	UFUNCTION()
 	void SetFriendlyPawns(TArray<ABasePawn*> InPawn) { FriendlyPawns = InPawn; }
@@ -51,7 +53,6 @@ public :
 	//컨트롤러 에너미 추가
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
-	void PawnLookAt();
 	//액션
 	void PawnAction();
 	//에너미 컨트롤 
@@ -104,7 +105,7 @@ public :
 	UFUNCTION()
 	void AttackActionView();
 	//턴종료
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void FinishTurn();
 	
 private:
