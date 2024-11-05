@@ -41,7 +41,9 @@ bool URangeDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerCo
 			return true;
 		}
 		return false;
-	case ESkills::ThirdSkill:
+	case ESkills::ThirdSkill: //3 스킬이 존재하는지 체크
+		if (!OwnerPawn->SkillComponent->SpeciesSkillData->Skill_3) { return false; }
+
 		if (Distance <= OwnerPawn->SkillComponent->ThirdSkillData->Skill_Range)
 		{
 			return true;

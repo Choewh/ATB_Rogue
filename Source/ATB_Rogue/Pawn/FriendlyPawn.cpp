@@ -50,7 +50,13 @@ bool AFriendlyPawn::Movealbe(FVector NewDestination)
 	float Distance;
 	Distance = FVector::Dist(CenterPoint, NewDestination);
 
-	if (Distance <= StatusComponent->GetSpeciesInfo()->MoveRange) {
+	if (Distance <= 100.f) //이동거리가 너무 작으면 패스
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Target is too close."));
+		return false;
+	}
+	else if(Distance <= StatusComponent->GetSpeciesInfo()->MoveRange)
+	{
 		// 범위 내에 있는 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
 		return true;

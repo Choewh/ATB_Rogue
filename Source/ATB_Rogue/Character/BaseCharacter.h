@@ -36,6 +36,10 @@ public:
 	virtual void SpawnPawn(); 
 
 	UFUNCTION()
+	virtual void OnStartTurn();
+	UFUNCTION()
+	virtual void OnFinishTurn();
+	UFUNCTION()
 	virtual void OnFirstSet(uint8 Round);
 
 private:
@@ -51,6 +55,8 @@ private:
 
 	TArray<FBasePawnInfo> PlayerPawnsInfo;
 protected:
+	ABasePawn* ActionPawn;
+
 	TArray<ABasePawn*> CurHavePawns;
 	TArray<TArray<FTransform>> RoundsTransform; 
 private:

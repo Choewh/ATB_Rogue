@@ -18,7 +18,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartFirst, uint8 , First);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartSecond, uint8 , First);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinish);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStartTurn);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
+
 
 UCLASS()
 class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
@@ -53,16 +56,15 @@ public :
 	//컨트롤러 에너미 추가
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
-	//액션
-	void PawnAction();
+	//턴 시작
+	UFUNCTION(BlueprintCallable)
+	void EnterActiveTurn(ABasePawn* Enemy);
 	//에너미 컨트롤 
 	UFUNCTION()
 	void PawnsDeactive();
 	UFUNCTION()
 	void PawnsActive();
 	//턴시작
-	UFUNCTION(BlueprintCallable)
-	void EnterActiveTurn(ABasePawn* Enemy);
 	//액션창
 	UFUNCTION()
 	void SelectActionView();
@@ -111,7 +113,14 @@ public :
 private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
 public:
+	UFUNCTION()
+	void SetViewCameraMode(ECameraViewMode InViewMode);
+	UFUNCTION()
+	void SetBattleState(EBattleState InBattleState);
+
+
 	ABasePawn* GetActionPawn() { return ActionPawn; }
+
 	bool IsValidActionPawn() { return ActionPawn ? true : false; }
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -121,7 +130,10 @@ public:
 	FBattleStartSecond BattleStartSecond;
 
 	UPROPERTY(BlueprintAssignable)
-	FBattleFinish BattleFinish;
+	FBattleFinishTurn BattleFinishTurn;
+
+	UPROPERTY(BlueprintAssignable)
+	FBattleStartTurn BattleStartTurn;
 public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ABasePawn*> EnemyPawns;

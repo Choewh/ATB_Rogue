@@ -20,7 +20,6 @@ ABasePlayerController::ABasePlayerController()
 		PlayerCameraManagerClass = ABasePlayerCameraManager::StaticClass();
 	}
 	bShowMouseCursor = true;
-
 }
 
 void ABasePlayerController::BeginPlay()
@@ -37,6 +36,8 @@ void ABasePlayerController::BeginPlay()
 	{
 		BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->SetPlayerController(this);
+		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::StartTurn);
+		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::FinishTurn);
 	}
 	CameraSet();
 	Init();
@@ -131,14 +132,23 @@ void ABasePlayerController::CameraViewUpdate()
 		break;
 	}
 }
-bool ABasePlayerController::SetBattleState(EBattleState NewState)
+void ABasePlayerController::BattleStateUpdate()
 {
-	if (BattleState != NewState)
+	switch (BattleState)
 	{
-		BattleState = NewState;
-		return true;
+	case EBattleState::Defalut:
+		break;
+	case EBattleState::Move:
+		break;
+	case EBattleState::Attack:
+		break;
+	case EBattleState::Wait:
+		break;
+	case EBattleState::Finish:
+		break;
+	default:
+		break;
 	}
-	return false;
 }
 
 void ABasePlayerController::MoveCancle()
@@ -148,6 +158,15 @@ void ABasePlayerController::MoveCancle()
 	{
 		MovePoint = ActionPawn->GetTargetLocation();
 	}
+}
+
+void ABasePlayerController::StartTurn()
+{
+	Init();
+}
+
+void ABasePlayerController::FinishTurn()
+{
 }
 
 

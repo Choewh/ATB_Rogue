@@ -50,22 +50,28 @@ public:
 	void CameraSet();
 
 public:
-
+	UFUNCTION()
 	void Init(); // 관련함수 초기화
-	
+
 	void CameraViewUpdate();
 
 	void SetViewCameraMode(ECameraViewMode Cameramode) { CameraViewMode = Cameramode; }
 
-	bool SetBattleState(EBattleState NewState);
+	ECameraViewMode GetViewCameraMode() { return CameraViewMode; }
+
+	void BattleStateUpdate();
+
+	void SetBattleState(EBattleState NewState) { BattleState = NewState; }
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
 
+	UFUNCTION(BlueprintCallable, Category = "Move")
 	bool IsMove() { return bMove; }
+
 	void SetMoveActive(bool Active) { bMove = Active; }
-	
+
 	FVector GetMovePoint() { return MovePoint; }
 
 public:
@@ -73,6 +79,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FShowWidget ShowWidget;
 
+	UFUNCTION()
+	void StartTurn();
+	UFUNCTION()
+	void FinishTurn();
 public:
 	UPROPERTY()
 	UInputMappingContext* IMC;

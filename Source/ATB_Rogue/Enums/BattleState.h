@@ -13,4 +13,5 @@ enum class EBattleState : uint8
 	Move UMETA(DisplayName = "Move"),
 	Attack UMETA(DisplayName = "Attack"),
 	Wait UMETA(DisplayName = "Wait"),
+	Finish UMETA(DisplayName = "Finish"),
 };

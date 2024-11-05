@@ -43,11 +43,11 @@ void UABTUserAttackWidget::ShowSkillRange(ESkills UseSkill)
 		BasePawn->EffectComponent->ShowRange(BasePawn->GetActorLocation(), BasePawn->SkillComponent->SecondSkillData->Skill_Range);
 		break;
 	case ESkills::ThirdSkill:
-		if (BasePawn->SkillComponent->SpeciesSkillData->Skill_3) 
-		{
+		if (!BasePawn->SkillComponent->SpeciesSkillData->Skill_3) { return; }
+		
 		BasePawn->EffectComponent->HideRange();
 		BasePawn->EffectComponent->ShowRange(BasePawn->GetActorLocation(), BasePawn->SkillComponent->ThirdSkillData->Skill_Range);
-		}
+		
 		break;
 	default:
 		BasePawn->EffectComponent->HideRange();

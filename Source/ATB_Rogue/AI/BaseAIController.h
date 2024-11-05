@@ -37,6 +37,8 @@ protected:
 
 	UFUNCTION()
 	void ResetValue();
+
+public:
 	UFUNCTION()
 	void SetActiveTurn(bool ActiveTurn);
 

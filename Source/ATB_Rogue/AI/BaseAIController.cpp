@@ -17,7 +17,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
 	SkillComponentRef = BasePawn->GetComponentByClass<USkillComponent>();
-	BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn);
+	//BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn); //베이스 폰의 턴시작 턴엔드 델리게이트 추가해서 호출해주기 
 	// StatusComponentRef->OnHPChanged.AddDynamic(this, &ThisClass::OnDamaged);
 }
 

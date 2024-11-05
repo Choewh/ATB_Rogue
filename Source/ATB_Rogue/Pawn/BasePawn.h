@@ -26,11 +26,9 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FVector, MovePoint);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStartTurn);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FActiveTurn, bool, Active);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHideEffect);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFinishTurn);
 
 UCLASS()
 class ATB_ROGUE_API ABasePawn : public APawn
@@ -57,6 +55,8 @@ public:
 	virtual void PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph) override;
 	virtual void PostInitializeComponents() override;
 	virtual void OnConstruction(const FTransform& Transform);
+
+	virtual void ControllerInit();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -158,11 +158,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;
 	UPROPERTY(BlueprintAssignable)
-	FActiveTurn ActiveTurn;
+	FStartTurn StartTurn;
 	UPROPERTY(BlueprintAssignable)
-	FOnMove OnMove;
-	UPROPERTY(BlueprintAssignable)
-	FHideEffect HideEffect;
+	FFinishTurn FinishTurn;
+	UFUNCTION()
+	virtual void OnStartTurn();
+	UFUNCTION()
+	virtual void OnFinishTurn();
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

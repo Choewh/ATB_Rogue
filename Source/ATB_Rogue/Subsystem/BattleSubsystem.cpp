@@ -22,7 +22,7 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 }
 void UBattleSubsystem::BattleEnd()
 {
-	BattleFinish.Broadcast();
+	BattleFinishTurn.Broadcast();
 
 	for (auto& Pawn : EnemyPawns)
 	{
@@ -56,22 +56,6 @@ void UBattleSubsystem::IsDieCheck()
 	}
 }
 
-
-void UBattleSubsystem::PawnAction()
-{
-	if (ActionPawn->PawnGroup == EPawnGroup::Friendly)
-	{	//플레이어 폰일때 할 행동들
-		if (PlayerController) { PlayerController->Init(); }
-
-		PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);
-		PlayerController->CameraViewUpdate();
-		SelectActionView();
-	}
-	// Ex.Move // Player Controller/Camera Move ->  
-	// PlayerController/TargetPosition -> BattleSystem/Move To 
-	// -> Pawn이동 -> 현재는 턴 종료 로 마무리 하기 
-}
-
 void UBattleSubsystem::PawnsDeactive()
 {
 	//인스턴스에서 전부 받아와서 설정
@@ -103,14 +87,14 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
 	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
 	SetActionPawn(InPawn); // 액션폰 설정
+	BattleStartTurn.Broadcast();
 	InPawn->ActiveCollision(false);
 	switch (InPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
-		InPawn->ActiveTurn.Broadcast(true);
+		InPawn->ControllerInit();
 		break;
 	case EPawnGroup::Friendly:
-		PlayerController->Init();
 		SelectActionView();
 		break;
 	default:
@@ -121,19 +105,16 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 void UBattleSubsystem::SelectActionView()
 {
 	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
-	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView);	//카메라 뷰 디폴트로 변경 // TODO 카메라 무브 어택 등 여러개로 분류하기
-	PlayerController->SetBattleState(EBattleState::Defalut);
-	PlayerController->CameraViewUpdate();
+	SetViewCameraMode(ECameraViewMode::PawnView);
+	SetBattleState(EBattleState::Defalut);
 	//그럴일없겠지만 있으면 삭제 ㅇㅇ
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
-	//폰에서 사거리 그려주기 어떻게?
 }
 
 void UBattleSubsystem::SelectMoveAction()
 {
-	PlayerController->SetBattleState(EBattleState::Move);				//이동상태로 변경
-	PlayerController->SetViewCameraMode(ECameraViewMode::Move);
-	PlayerController->CameraViewUpdate();
+	SetBattleState(EBattleState::Move);			//이동상태로 변경
+	SetViewCameraMode(ECameraViewMode::Move);
 	ShowMoveRange();
 }
 void UBattleSubsystem::ShowMoveRange()
@@ -181,16 +162,14 @@ bool UBattleSubsystem::SelectMoveAccept()
 void UBattleSubsystem::SelectMoveCancle()
 {
 	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->DeSpawnRangeEffect();
-	PlayerController->SetBattleState(EBattleState::Defalut);
-	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView); // 폰뷰 ?
-	PlayerController->CameraViewUpdate();
+	SetBattleState(EBattleState::Defalut);
+	SetViewCameraMode(ECameraViewMode::PawnView);
 }
 
 void UBattleSubsystem::SelectAttackAction()
 {
-	PlayerController->SetBattleState(EBattleState::Attack);
-	PlayerController->SetViewCameraMode(ECameraViewMode::Attack); // 어택뷰
-	PlayerController->CameraViewUpdate();
+	SetBattleState(EBattleState::Attack);
+	SetViewCameraMode(ECameraViewMode::Attack);
 	//사용할 수 있는 스킬 UI에 띄워주기. 사용할 수 있는 스킬 체크하고 사용 못하면 숨김
 }
 
@@ -235,9 +214,8 @@ void UBattleSubsystem::SelectAttackCancle()
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
 	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), false);
-	PlayerController->SetBattleState(EBattleState::Defalut);
-	PlayerController->SetViewCameraMode(ECameraViewMode::PawnView); // 무브뷰 ?
-	PlayerController->CameraViewUpdate();
+	SetBattleState(EBattleState::Defalut);
+	SetViewCameraMode(ECameraViewMode::PawnView);
 }
 
 void UBattleSubsystem::Evolution()
@@ -257,6 +235,7 @@ void UBattleSubsystem::AttackActionView()
 
 void UBattleSubsystem::FinishTurn()
 {
+	//액션폰이 에너미였는지 프렌들리 였는지 구분하기
 	if (ActionPawn)
 	{
 		//턴종료시 해야할것
@@ -265,12 +244,23 @@ void UBattleSubsystem::FinishTurn()
 		//액션폰은 null로 초기화
 		ActionPawn->ABTReset();
 		ActionPawn->ActiveCollision(true);
-		ActionPawn->ActiveTurn.Broadcast(false);
+		ActionPawn = nullptr;
 		//죽은 폰이 있는지 확인하고 배열에서 제거
 		IsDieCheck();
-		ActionPawn = nullptr;
-		BattleFinish.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
-		PlayerController->SetBattleState(EBattleState::Defalut);
+
+		BattleFinishTurn.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 		PawnsActive();
 	}
+}
+
+void UBattleSubsystem::SetViewCameraMode(ECameraViewMode InViewMode)
+{
+	PlayerController->SetViewCameraMode(InViewMode);
+	PlayerController->CameraViewUpdate();
+}
+
+void UBattleSubsystem::SetBattleState(EBattleState InBattleState)
+{
+	PlayerController->SetBattleState(InBattleState);
+	PlayerController->BattleStateUpdate();
 }

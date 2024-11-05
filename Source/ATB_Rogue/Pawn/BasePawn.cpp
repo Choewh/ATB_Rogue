@@ -58,6 +58,11 @@ ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
+		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
+	}
 	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
@@ -164,6 +169,12 @@ void ABasePawn::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 }
 
+void ABasePawn::ControllerInit()
+{
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
+	BaseAIController->SetActiveTurn(true);
+}
+
 // Called every frame
 void ABasePawn::Tick(float DeltaTime)
 {
@@ -260,6 +271,7 @@ void ABasePawn::Evolution()
 	Species = PawnData->NextSpecies;
 	SetData();
 	SetActorTransform(OriginTransform);
+	ActiveCollision(false);
 	//이펙트 효과
 	//다음단계로 Species 바꾸고 SetData 호출
 }
@@ -283,6 +295,18 @@ UTexture2D* ABasePawn::GetPortrait()
 {
 	if (PawnData) return PawnData->Portraits;
 	return nullptr;
+}
+
+void ABasePawn::OnStartTurn()
+{
+	bActive = false;
+}
+
+void ABasePawn::OnFinishTurn()
+{
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
+	BaseAIController->SetActiveTurn(false);
+	bActive = true;
 }
 
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)

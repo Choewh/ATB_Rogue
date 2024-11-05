@@ -43,7 +43,10 @@ void UEffectComponent::SetData(ESpecies InSpecies)
 			EffectData = EffectTable;
 		}
 	}
-	PawnGruopEffect = GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnGroupEffect(GetOwner(), *EffectData);
+	if (!PawnGruopEffect)
+	{
+		PawnGruopEffect = GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnGroupEffect(GetOwner(), *EffectData);
+	}
 }
 
 void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

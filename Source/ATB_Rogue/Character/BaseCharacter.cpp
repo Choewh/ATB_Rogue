@@ -51,25 +51,42 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ABasePawn* ActionPawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
+	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
+	//CameraViewMode
 	if (ActionPawn)
 	{
-		float LerpSpeed = 5.0f;
-		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
-		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+		ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
+		float LerpSpeed = 3.0f;
+		if (ActionPawnController->TargetPawn && BasePlayerController->GetViewCameraMode() == ECameraViewMode::Attack)
+		{
+			FVector StartVec = ActionPawn->GetActorLocation();
+			FVector TargetVec = ActionPawnController->TargetPawn->GetActorLocation();
+			FVector MiddleVec = (StartVec + TargetVec) * 0.5f;
 
+			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), MiddleVec, DeltaTime, LerpSpeed);
 
+			SetActorLocation(NewLocation);
+		}
+		else
+		{
+			//카메라 위치와 회전 보간
+			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
+			FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+
+			SetActorLocationAndRotation(NewLocation, NewRotation);
+
+		}
+		//카메라의 회전 액션폰이 바라보는 방향 뒤에 서게 함
 		FVector StartVec = CameraComponent->GetComponentLocation();
 		FVector TargetVec = ActionPawn->GetActorLocation();
 		FVector NearlyVec = TargetVec - StartVec;
 
-		if (FMath::IsNearlyZero(NearlyVec.Size(), 0.1f)) { return; }
-		
 		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-		SpringArmComponent->SetWorldRotation(LookAtRotator);
-		SetActorLocationAndRotation(NewLocation, NewRotation);
-		
 
+		LookAtRotator.Yaw += 30.0f;
+
+		// 최종 회전 적용
+		SetActorRotation(LookAtRotator);
 	}
 }
 
@@ -90,11 +107,15 @@ void ABaseCharacter::BeginPlay()
 		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
 		PlayerPawnsInfo = GameInstanceSubsystem->GetPlayerPawnsInfo();
 	}
+	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+
+		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
+		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
+	}
 	Init();
-	BattleSubsystem->BattleStart((CurRound - 1) % 10);
 }
 
 void ABaseCharacter::Init()
@@ -140,6 +161,23 @@ void ABaseCharacter::SpawnPawn()
 	}
 }
 
+void ABaseCharacter::OnStartTurn()
+{
+	ABasePawn* Pawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
+	if (Pawn)
+	{
+		ActionPawn = Pawn;
+	}
+}
+
+void ABaseCharacter::OnFinishTurn()
+{
+	if (ActionPawn)
+	{
+		ActionPawn = nullptr;
+	}
+}
+
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
 	if (CurRound % 10 == 1)
@@ -156,6 +194,28 @@ void ABaseCharacter::OnFirstSet(uint8 Round)
 void ABaseCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	//if (Controller == nullptr)
+	//{
+	//	Controller = GetWorld()->SpawnActor<ABasePlayerController>(ABasePlayerController::StaticClass());
+	//	Controller->Possess(this);
+	//}
+
+	//CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	////레벨 시작시 Instance 에서 폰정보를 받아옴
+	//{
+	//	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+	//	PlayerPawnsInfo = GameInstanceSubsystem->GetPlayerPawnsInfo();
+	//}
+	//{
+	//	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	//	check(BattleSubsystem);
+	//	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+
+	//	BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
+	//	BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
+	//}
+	//Init();
 }
 
 void ABaseCharacter::OnConstruction(const FTransform& Transform)

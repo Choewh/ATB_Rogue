@@ -31,6 +31,7 @@ void ALevelManager::BeginPlay()
 	check(BattleSubsystem);
 	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
 	Init();
+	//BattleSubsystem->BattleStart(CurRound);
 }
 
 void ALevelManager::Init()
@@ -129,6 +130,8 @@ void ALevelManager::NextLevel()
 	}
 	else
 	{
+		//다음라운드 시작하기
+		//BattleStart(CurRound++);
 		CurRound++;
 	}
 }
