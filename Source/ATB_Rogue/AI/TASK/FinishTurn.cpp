@@ -59,8 +59,8 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 void UFinishTurn::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
-	ABasePawn* Pawn = Cast<ABasePawn>(AIOwner->GetPawn());
-	if (Pawn->IsDestroy())
+	ABasePawn* Target = Cast<ABasePawn>(TargetPawn);
+	if (Target->IsDestroy())
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->FinishTurn();

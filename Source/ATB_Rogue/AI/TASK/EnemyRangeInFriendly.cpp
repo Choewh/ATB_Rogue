@@ -73,7 +73,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
 		UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
-			MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::None,
+			MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 			HitResults, true);
 		if (!HitResults.IsEmpty())
 		{

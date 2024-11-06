@@ -3,6 +3,7 @@
 
 #include "AI/Env/EnvQueryTest_SkillRange.h"
 #include "Pawn/BasePawn.h"
+#include "AI/BaseAIController.h"
 #include "EnvironmentQuery/Items/EnvQueryItemType_VectorBase.h"
 #include "EnvironmentQuery/Contexts/EnvQueryContext_Querier.h"
 
@@ -47,8 +48,6 @@ UEnvQueryTest_SkillRange::UEnvQueryTest_SkillRange(const FObjectInitializer& Obj
 
 void UEnvQueryTest_SkillRange::RunTest(FEnvQueryInstance& QueryInstance) const
 {
-	Super::RunTest(QueryInstance);
-
 	UObject* QueryOwner = QueryInstance.Owner.Get();
 
 	if (QueryOwner == nullptr)
@@ -57,12 +56,13 @@ void UEnvQueryTest_SkillRange::RunTest(FEnvQueryInstance& QueryInstance) const
 	}
 
 	ABasePawn* QueryPawn = Cast<ABasePawn>(QueryOwner);
-
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(QueryPawn->GetController());
+	ABasePawn* TargetPawn = BaseAIController->TargetPawn;
 	if (QueryPawn == nullptr)
 	{
 		return;
 	}
-
+	
 	FloatValueMin.BindData(QueryOwner, QueryInstance.QueryID);
 	float MinThresholdValue = FloatValueMin.GetValue();
 
