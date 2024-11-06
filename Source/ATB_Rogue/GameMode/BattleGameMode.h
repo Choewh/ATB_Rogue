@@ -19,6 +19,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void StartStage(); // ½ºÅ×ÀÌÁö ½ÃÀÛ ÇÔ¼ö
+	void StartStage(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 	
 };

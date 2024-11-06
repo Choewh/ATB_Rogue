@@ -9,7 +9,7 @@
 //#include "Subsystem/BattleSubsystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "Engine/SkinnedAssetCommon.h"
 #include "Subsystem/ActorpoolSubsystem.h"
 
 class UBattleSubsystem;
@@ -30,6 +30,34 @@ ABasePawn::ABasePawn(const FObjectInitializer& ObjectInitializer)
 			UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
 			PawnDataTable = PawnDataObject.Object;
 		}
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_02Curve.CV_02Curve'"));
+		check(CurveAsset.Object);
+
+		DestroyEffectTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("OnDestroyEffectTimelineComponent"));
+
+		FOnTimelineFloat Delegate;
+		Delegate.BindDynamic(this, &ThisClass::OnDestroyEffect);
+		DestroyEffectTimelineComponent->AddInterpFloat(CurveAsset.Object, Delegate);
+
+		FOnTimelineEvent EndDelegate;
+		EndDelegate.BindDynamic(this, &ThisClass::OnDestroyEffectEnd);
+		DestroyEffectTimelineComponent->SetTimelineFinishedFunc(EndDelegate);
+	}
+	{
+		static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_20Curve.CV_20Curve'"));
+		check(CurveAsset.Object);
+
+		SpawnEffectTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("SpawnEffectTimelineComponent"));
+
+		FOnTimelineFloat Delegate;
+		Delegate.BindDynamic(this, &ThisClass::OnSpawnEffect);
+		SpawnEffectTimelineComponent->AddInterpFloat(CurveAsset.Object, Delegate);
+
+		FOnTimelineEvent EndDelegate;
+		EndDelegate.BindDynamic(this, &ThisClass::OnSpawnEffectEnd);
+		SpawnEffectTimelineComponent->SetTimelineFinishedFunc(EndDelegate);
 	}
 	{
 		DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
@@ -81,7 +109,6 @@ void ABasePawn::SetData()
 			break;
 		}
 	}
-
 
 	{
 		if (PawnGroup == EPawnGroup::Enemy)
@@ -142,6 +169,7 @@ void ABasePawn::SetData()
 		AnimComponent->SetData(Species);
 	}
 	ActiveCollision(true);
+	MaterialInit();
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
@@ -182,13 +210,6 @@ void ABasePawn::Tick(float DeltaTime)
 
 	ABTFeeling();
 
-}
-
-
-void ABasePawn::TurnEnd()
-{
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	BattleSubsystem->FinishTurn();
 }
 
 void ABasePawn::ABTFeeling()
@@ -267,36 +288,43 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 void ABasePawn::Evolution()
 {
+	
 	FTransform OriginTransform = GetActorTransform();
 	Species = PawnData->NextSpecies;
-	SetData();
-	SetActorTransform(OriginTransform);
-	ActiveCollision(false);
+	if (Species != ESpecies::End)
+	{
+		SetData();
+		SetActorTransform(OriginTransform);
+		ActiveCollision(false);
+		OnSpawn(); 
+	}
+	//Roar 애니메이션 재생 ㄱㅊ은듯
 	//이펙트 효과
 	//다음단계로 Species 바꾸고 SetData 호출
 }
 
-void ABasePawn::OnDieCheck()
+bool ABasePawn::OnDieCheck()
 {
 	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
 	if (bDie)
 	{
-		GetMovementComponent()->DestroyComponent();
-		SetActorEnableCollision(false);
 		AnimInstance->Montage_Play(AnimComponent->AnimData->DieReactMontage);
-		UKismetSystemLibrary::K2_SetTimer(this, TEXT("OnDie"),2.f, false);
+		UKismetSystemLibrary::K2_SetTimer(this, TEXT("OnDie"), 1.f, false);
+		return true;
 	}
+	return false;
 }
-void ABasePawn::OnDie()
-{
-	Destroy();
-}
+/// <summary>
+/// GetInfo
+/// </summary>
 UTexture2D* ABasePawn::GetPortrait()
 {
 	if (PawnData) return PawnData->Portraits;
 	return nullptr;
 }
-
+/// <summary>
+/// Delegate
+/// </summary>
 void ABasePawn::OnStartTurn()
 {
 	bActive = false;
@@ -308,7 +336,72 @@ void ABasePawn::OnFinishTurn()
 	BaseAIController->SetActiveTurn(false);
 	bActive = true;
 }
+/// <summary>
+/// EffectTimeLine
+/// </summary>
+void ABasePawn::MaterialInit()
+{
+	MaterialInstanceDynamics.Empty();
+	const int32 MaterialNum = SkeletalMeshComponent->GetSkinnedAsset()->GetMaterials().Num();
+	MaterialInstanceDynamics.Reserve(MaterialNum);
+	const TArray<FSkeletalMaterial> SkeletalMaterials = SkeletalMeshComponent->GetSkinnedAsset()->GetMaterials();
 
+	for (int32 i = 0; i < MaterialNum; ++i)
+	{
+		UMaterialInterface* OriginalMaterial = SkeletalMaterials[i].MaterialInterface;
+		if (OriginalMaterial)
+		{
+			UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(OriginalMaterial, this);
+			MaterialInstanceDynamics.Add(DynamicMaterial);
+
+			SkeletalMeshComponent->SetMaterial(i, DynamicMaterial);
+		}
+	}
+}	
+/// <summary>
+/// Die
+/// </summary>
+void ABasePawn::OnDie()
+{
+	DestroyEffectTimelineComponent->Play();
+}
+void ABasePawn::OnDestroyEffect(float InDissolve)
+{
+	const int32 MaterialNum = MaterialInstanceDynamics.Num();
+	for (int32 i = 0; i < MaterialNum; ++i)
+	{
+		MaterialInstanceDynamics[i]->SetScalarParameterValue(TEXT("Amount"), InDissolve);
+	}
+}
+
+void ABasePawn::OnDestroyEffectEnd()
+{
+	//bDie
+	bDestroy = true;
+}
+/// <summary>
+/// Spawn
+/// </summary>
+void ABasePawn::OnSpawn()
+{
+	SpawnEffectTimelineComponent->PlayFromStart();
+}
+
+void ABasePawn::OnSpawnEffect(float InDissolve)
+{
+	const int32 MaterialNum = MaterialInstanceDynamics.Num();
+	for (int32 i = 0; i < MaterialNum; ++i)
+	{
+		MaterialInstanceDynamics[i]->SetScalarParameterValue(TEXT("Amount"), InDissolve);
+	}
+}
+void ABasePawn::OnSpawnEffectEnd()
+{
+	//로어 애니메이션 재생 TODO
+}
+/// <summary>
+/// Debug
+/// </summary>
 void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)
 {
 	// 범위의 색상과 선 두께 설정

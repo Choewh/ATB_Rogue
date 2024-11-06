@@ -38,9 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BattleStart(uint8 Round);
 
-	UFUNCTION(BlueprintCallable)
-	void BattleEnd();
-
 	UFUNCTION()
 	void IsDieCheck();
 	UFUNCTION()
@@ -59,12 +56,6 @@ public :
 	//턴 시작
 	UFUNCTION(BlueprintCallable)
 	void EnterActiveTurn(ABasePawn* Enemy);
-	//에너미 컨트롤 
-	UFUNCTION()
-	void PawnsDeactive();
-	UFUNCTION()
-	void PawnsActive();
-	//턴시작
 	//액션창
 	UFUNCTION()
 	void SelectActionView();

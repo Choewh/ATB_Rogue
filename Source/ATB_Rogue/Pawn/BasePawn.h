@@ -14,6 +14,7 @@
 #include "Component/SplineCameraChildActorComponent.h"
 #include "Component/BaseFloatingPawnMovement.h"
 #include "Components/Slider.h"
+#include "Components/TimelineComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DataTable.h"
 #include "Data/PawnTableRow.h"
@@ -64,7 +65,6 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
-	virtual void TurnEnd();
 	void ABTReset() { ABT_Cur = 0; }
 	void ABTFeeling();
 
@@ -74,11 +74,27 @@ public:
 	void PlaySkillAnimation(ESkills UseSkill);
 	void HitAnim();
 	void Evolution();
-	void OnDieCheck();
+	bool OnDieCheck();
+
+	void MaterialInit();
+	UFUNCTION()
 	void OnDie();
+	UFUNCTION()
+	void OnSpawn();
+	UFUNCTION()
+	void OnDestroyEffect(float InDissolve);
+	UFUNCTION()
+	void OnDestroyEffectEnd();
+	UFUNCTION()
+	void OnSpawnEffect(float InDissolve);
+	UFUNCTION()
+	void OnSpawnEffectEnd();
+
 public:
 	UFUNCTION(BlueprintCallable)
 	bool IsDie() { return bDie; }
+	UFUNCTION(BlueprintCallable)
+	bool IsDestroy() { return bDestroy; }
 
 	bool IsActive() { return bActive; }
 
@@ -126,6 +142,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineCameraChildActorComponent> CameraSplineClass;
 
+protected:
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* DestroyEffectTimelineComponent;
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* SpawnEffectTimelineComponent;
+	TArray<UMaterialInstanceDynamic*> MaterialInstanceDynamics;
+
+
 
 public:
 
@@ -154,6 +178,8 @@ private:
 	float CurHP = MaxHP;
 	UPROPERTY(EditAnywhere)
 	bool bDie = false;
+	UPROPERTY(EditAnywhere)
+	bool bDestroy = false;
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;

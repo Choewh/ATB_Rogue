@@ -107,6 +107,7 @@ void ALevelManager::SpawnPawn()
 		NewPawn->SetActorLocation(RoundsTransform[Round][i - 1].GetLocation());
 		FRotator NewRotator = RoundsTransform[Round][i - 1].GetRotation().Rotator();
 		NewPawn->SetActorRotation(NewRotator);
+		NewPawn->OnSpawn();
 		CurRoundPawns.Add(NewPawn);
 		RoundsTransform[Round].RemoveAt(i-1);
 		RoundsPawns[Round].RemoveAt(i-1);
@@ -116,8 +117,8 @@ void ALevelManager::SpawnPawn()
 void ALevelManager::OnFirstSet(uint8 Round)
 {
 	SpawnPawn();
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	BattleSubsystem->SetEnemyPawns(CurRoundPawns);
 }
 

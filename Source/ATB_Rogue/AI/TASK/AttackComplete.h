@@ -17,7 +17,6 @@ class ATB_ROGUE_API UAttackComplete : public UBaseBTTaskNode
 private:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-
 protected:
 
 	class UBehaviorTreeComponent* BehaviorTreeComponent = nullptr;

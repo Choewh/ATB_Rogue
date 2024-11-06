@@ -3,6 +3,7 @@
 
 #include "AI/TASK/LookAt.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Subsystem/BattleSubsystem.h"
 #include "LookAt.h"
 
 ULookAt::ULookAt()
@@ -22,6 +23,11 @@ EBTNodeResult::Type ULookAt::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint
 
 	if (!TargetPawn) { return EBTNodeResult::Failed; }
 
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		BattleSubsystem->SetViewCameraMode(ECameraViewMode::Attack);
+	}
 	TargetPoint = TargetPawn->GetActorLocation();
 
 	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartPoint, TargetPoint);

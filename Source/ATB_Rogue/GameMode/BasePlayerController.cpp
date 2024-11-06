@@ -6,8 +6,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PlayerCameraManager/BasePlayerCameraManager.h"
 #include "Subsystem/BattleSubsystem.h"
+#include "Pawn/EnemyPawn.h"
 
-class AEnemyPawn;
+//class AEnemyPawn;
 
 ABasePlayerController::ABasePlayerController()
 {
@@ -94,7 +95,9 @@ void ABasePlayerController::Init()
 {
 	DefaultCamera->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
 	CameraViewMode = ECameraViewMode::DefaultView;
+	CameraViewUpdate();
 	BattleState = EBattleState::Defalut;
+	BattleStateUpdate();
 	bMove = true;
 }
 
@@ -109,7 +112,7 @@ void ABasePlayerController::CameraViewUpdate()
 		DefaultCamera->SetActive(false);
 		PawnViewCamera->SetView(true);
 		PawnViewCamera->SetActive(true);
-		PawnViewCamera->OnPawnViewCamera(BattleSubsystem->GetActionPawn());
+		PawnViewCamera	->OnPawnViewCamera(BattleSubsystem->GetActionPawn());
 		break;
 
 	case ECameraViewMode::Attack:
@@ -162,11 +165,11 @@ void ABasePlayerController::MoveCancle()
 
 void ABasePlayerController::StartTurn()
 {
-	Init();
 }
 
 void ABasePlayerController::FinishTurn()
 {
+	Init();
 }
 
 

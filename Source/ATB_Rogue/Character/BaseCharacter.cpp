@@ -30,6 +30,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 		SpringArmComponent->ProbeSize = 5.0;
 		SpringArmComponent->bUsePawnControlRotation = true;
 		SpringArmComponent->bInheritRoll = false;
+		SpringArmComponent->bInheritPitch = false;
 		SpringArmComponent->bDoCollisionTest = false;
 		SpringArmComponent->bEnableCameraRotationLag = true;
 		SpringArmComponent->CameraRotationLagSpeed = 1.f;
@@ -53,6 +54,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
 	//CameraViewMode
+	if (BasePlayerController->GetViewCameraMode() == ECameraViewMode::PawnView) { return; }
+
 	if (ActionPawn)
 	{
 		ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
@@ -72,18 +75,14 @@ void ABaseCharacter::Tick(float DeltaTime)
 			//카메라 위치와 회전 보간
 			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
 			FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
-
+			NewRotation.Pitch = 0.f;
 			SetActorLocationAndRotation(NewLocation, NewRotation);
-
 		}
 		//카메라의 회전 액션폰이 바라보는 방향 뒤에 서게 함
-		FVector StartVec = CameraComponent->GetComponentLocation();
-		FVector TargetVec = ActionPawn->GetActorLocation();
-		FVector NearlyVec = TargetVec - StartVec;
+		FVector StartVec = GetActorLocation();
+		FVector TargetVec = ActionPawn->GetActorForwardVector();
 
 		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-
-		LookAtRotator.Yaw += 30.0f;
 
 		// 최종 회전 적용
 		SetActorRotation(LookAtRotator);
@@ -155,6 +154,7 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
 		NewPawn->SetActorLocation(RoundsTransform[(CurRound - 1) % 10][i].GetLocation());
+		NewPawn->OnSpawn();
 		//NewPawn->SetActorRotation(RoundsTransform[(CurRound - 1) % 10][i].GetRotation());
 		//NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
 		CurHavePawns.Add(NewPawn);
@@ -169,7 +169,6 @@ void ABaseCharacter::OnStartTurn()
 		ActionPawn = Pawn;
 	}
 }
-
 void ABaseCharacter::OnFinishTurn()
 {
 	if (ActionPawn)

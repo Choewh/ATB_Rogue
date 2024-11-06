@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Enums/Species.h"
 
+
 namespace CollisionProfileName
 {
 	static inline FName PawnTrigger = TEXT("Round_1");
@@ -32,13 +33,13 @@ public:
 		}
 		return nullptr;
 	}
-	static const FName Round(uint8 Round) 
+	static const FName Round(uint8 Round)
 	{
-		FString RoundString	= FString::Printf(TEXT("Round%d"), Round);
+		FString RoundString = FString::Printf(TEXT("Round%d"), Round);
 		FName RoundName(*RoundString);
 		return RoundName;
 	}
-	static const FName GetTextPlusInt(FString InString , uint8 Inint)
+	static const FName GetTextPlusInt(FString InString, uint8 Inint)
 	{
 		FString StringAddInt = FString::Printf(TEXT("%s%d"), *InString, Inint);
 		FName Result(*StringAddInt);
@@ -47,12 +48,13 @@ public:
 	// ESpecies를 넣으면 Display 네임으로 바꿔주는거
 	static const FText  GetSpeciesName(ESpecies InSpecies)
 	{
-		UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ESpecies"), true);
+		// UEnum 객체를 가져옵니다.
+		UEnum* EnumPtr = StaticEnum<ESpecies>();
 		if (EnumPtr)
 		{
-			// Enum 값을 기반으로 DisplayName을 가져옴
-			return EnumPtr->GetDisplayNameTextByValue(static_cast<int32>(InSpecies));
+			// Enum 값에 해당하는 DisplayName을 FText로 반환
+			return EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(InSpecies));
 		}
-		return FText(); // 유효하지 않을 경우 빈 FText 반환
+		return FText::FromString("Invalid");
 	}
 };

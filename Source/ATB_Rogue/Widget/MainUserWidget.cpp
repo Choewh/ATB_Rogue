@@ -61,14 +61,14 @@ void UMainUserWidget::Init()
 		for (auto& BoxSlot : BoxSlots)
 		{
 			UScrollBoxSlot* ScrollBoxSlot = Cast<UScrollBoxSlot>(BoxSlot);
-			ScrollBoxSlot->HorizontalAlignment = EHorizontalAlignment::HAlign_Left;
+			ScrollBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Left);
 			ScrollBoxSlot->SynchronizeProperties();
 		}
 	}
 }
 UTexture2D* UMainUserWidget::GetTexture2DFromImage(UImage* InImage)
 {
-	UObject* Texture = InImage->Brush.GetResourceObject();
+	UObject* Texture = InImage->GetBrush().GetResourceObject();
 	return Cast<UTexture2D>(Texture);
 }
 void UMainUserWidget::SelectPawnsUpdata(UImage* PortraitImage)
@@ -163,7 +163,7 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 
 		UImage* Image = NewObject<UImage>(Overlay);
 		USelectableCell* SelectableCell = NewObject<USelectableCell>(Overlay);
-		Image->SetBrushSize(FVector2D(200.f, 200.f));
+		Image->SetDesiredSizeOverride(FVector2D(200.f, 200.f));
 		{
 			SetSpeciesPortrait.Broadcast(Image, SpeciesName);
 
@@ -184,8 +184,9 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 		for (auto& OverlaySlots : Slots)
 		{
 			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
-			OverlaySlot->HorizontalAlignment = EHorizontalAlignment::HAlign_Fill;
-			OverlaySlot->VerticalAlignment = EVerticalAlignment::VAlign_Fill;
+
+			OverlaySlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+			OverlaySlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
 			OverlaySlot->SynchronizeProperties();
 		}
 

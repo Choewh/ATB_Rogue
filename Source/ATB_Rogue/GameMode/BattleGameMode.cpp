@@ -18,13 +18,13 @@ void ABattleGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABattleGameMode::StartStage, 1.f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABattleGameMode::StartStage, 0.3f, false);
 }
 
 void ABattleGameMode::StartStage()
 {
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	if (!ensure(BattleSubsystem)) // ensure¸¦ »ç¿ëÇÏ¿© ·±Å¸ÀÓ¿¡¼­µµ ¿À·ù¸¦ È®ÀÎ
+	if (!ensure(BattleSubsystem)) // ensureï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½Å¸ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 	{
 		UE_LOG(LogTemp, Error, TEXT("BattleSubsystem is nullptr in StartStage."));
 		return;

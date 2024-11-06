@@ -8,7 +8,8 @@
 UFinishTurn::UFinishTurn()
 {
 	NodeName = "FinishTurn";
-
+	bTickIntervals = true;
+	bNotifyTick = true;
 }
 
 EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -19,15 +20,26 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 		BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	}
 
+	//조건을 추가해서 턴 종료 타이밍 조절 
+	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
+	ABasePawn* Target = Cast<ABasePawn>(TargetPawn);
+
+	if (Target->OnDieCheck())
+	{
+		return EBTNodeResult::InProgress;
+	}
+
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	BattleSubsystem->FinishTurn();
-
+	
+	//타겟폰이 없다면 그냥 성공 반환
+	
+	//타겟폰이 죽었다면 진행중 틱에서 타겟폰이 nullptr 이라면 성공 반환
+	
 	//아래는 그냥 디버그용
 
 // 범위의 색상과 선 두께 설정
 	FVector MovePoint = BlackboardComponent->GetValueAsVector(TEXT("MovePoint"));
-	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
-	ABasePawn* Target = Cast<ABasePawn>(TargetPawn);
 	ABasePawn* Pawn = Cast<ABasePawn>(AIOwner->GetPawn());
 	FColor TargetPawnColor = FColor::Green;
 	FColor MovePointColor = FColor::Red;
@@ -42,7 +54,16 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 		UE_LOG(LogTemp, Log, TEXT("Uint Value: %u, String Value: %s"), Skill, *Target->GetName());
 	}
 	return EBTNodeResult::Succeeded;
+}
 
-
-	return EBTNodeResult::Succeeded;
+void UFinishTurn::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
+	ABasePawn* Pawn = Cast<ABasePawn>(AIOwner->GetPawn());
+	if (Pawn->IsDestroy())
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		BattleSubsystem->FinishTurn();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 }

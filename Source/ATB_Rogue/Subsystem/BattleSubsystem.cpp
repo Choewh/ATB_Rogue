@@ -14,24 +14,8 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 {
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
-	PawnsActive();
-
-	/// ABTBar 보여주기 Pawn들 소환과 ABTbar 세팅
-	/// Pawns 정보 가져오기 배틀중 관리 ㅇㅇ
-	///
-}
-void UBattleSubsystem::BattleEnd()
-{
-	BattleFinishTurn.Broadcast();
-
-	for (auto& Pawn : EnemyPawns)
-	{
-
-	}
-	for (auto& Pawn : FriendlyPawns)
-	{
-
-	}
+	//배틀 끝날때마다 초기화 해주니 처음 시작시 한번싹 초기화 해주기
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 2.f, false);
 }
 
 void UBattleSubsystem::IsDieCheck()
@@ -42,7 +26,7 @@ void UBattleSubsystem::IsDieCheck()
 		if (EnemyPawns[i]->IsDie())
 		{
 			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
-			Pawn->Destroy();
+			EnemyPawns[i]->Destroy();
 		}
 	}
 	for (int32 i = FriendlyPawns.Num() - 1; i >= 0; --i)
@@ -51,41 +35,13 @@ void UBattleSubsystem::IsDieCheck()
 		if (FriendlyPawns[i]->IsDie())
 		{
 			FriendlyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
-			Pawn->Destroy();
+			FriendlyPawns[i]->Destroy();
 		}
-	}
-}
-
-void UBattleSubsystem::PawnsDeactive()
-{
-	//인스턴스에서 전부 받아와서 설정
-	for (auto& Pawn : EnemyPawns)
-	{
-		Pawn->SetActive(false);
-	}
-	for (auto& Pawn : FriendlyPawns)
-	{
-		Pawn->SetActive(false);
-	}
-}
-
-
-void UBattleSubsystem::PawnsActive()
-{
-	//인스턴스에서 전부 받아와서 설정
-	for (auto& Pawn : EnemyPawns)
-	{
-		Pawn->SetActive(true);
-	}
-	for (auto& Pawn : FriendlyPawns)
-	{
-		Pawn->SetActive(true);
 	}
 }
 
 void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
-	PawnsDeactive(); // 그외 에너미 ATB 게이지 회복 중단
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
 	InPawn->ActiveCollision(false);
@@ -249,7 +205,10 @@ void UBattleSubsystem::FinishTurn()
 		IsDieCheck();
 
 		BattleFinishTurn.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
-		PawnsActive();
+	}
+	else
+	{
+		BattleFinishTurn.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 	}
 }
 

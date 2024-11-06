@@ -4,7 +4,7 @@
 #include "AI/TASK/AttackComplete.h"
 #include "Pawn/BasePawn.h"
 #include "AttackComplete.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 UAttackComplete::UAttackComplete()
 {
 	NodeName = "AttackComplete";
@@ -40,8 +40,10 @@ void UAttackComplete::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 	{
 		UE_LOG(LogTemp, Log, TEXT("bMontagePlaying: %s"), bMontagePlaying ? TEXT("True") : TEXT("False"));
 		BlackboardComponent->SetValueAsBool(TEXT("bAttack"), false);
-		ABasePawn* TargetPawn = Cast<ABasePawn>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
-		TargetPawn->OnDieCheck();
+
+		//타겟폰이 죽었으면 죽는 모션까지 다 보고 끝날 수 있게하기 1.플래그 세우기 피니시턴에서
+		//ABasePawn* TargetPawn = Cast<ABasePawn>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
+		//bool bDie = TargetPawn->OnDieCheck();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }
