@@ -21,14 +21,14 @@ void UAnimNotify_HitDamage::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	AActor* OwningActor = MeshComp->GetOwner();
 
 #if WITH_EDITOR
-	if (GIsEditor && OwningActor && OwningActor->GetWorld() != GWorld) { return; } // ¿¡µðÅÍ ÇÁ¸®ºä
+	if (GIsEditor && OwningActor && OwningActor->GetWorld() != GWorld) { return; } // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #endif
 	
 	ABasePawn* Pawn = Cast<ABasePawn>(OwningActor);
 	ABaseAIController* OwningController = Cast<ABaseAIController>(Pawn->GetController());
 
 	ABasePawn* TargetPawn = OwningController->TargetPawn;
-	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(TargetPawn->GetActorLocation(), OwningActor->GetActorLocation()); //È¸Àüµµ ³ëÆ¼ÆÄÀÌ ¤¡
+	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(TargetPawn->GetActorLocation(), OwningActor->GetActorLocation()); //È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	TargetPawn->SetActorRotation(LookAtRotator);
 
 

@@ -16,6 +16,8 @@ class ATB_ROGUE_API AEnemyPawn : public ABasePawn
 	
 public:
 	AEnemyPawn(const FObjectInitializer& ObjectInitializer);
+
+	virtual void BeginPlay() override;
 	
 	virtual void SetData() override;
 };

@@ -24,8 +24,7 @@ EBTNodeResult::Type UBaseBTTask_MoveTo::ExecuteTask(UBehaviorTreeComponent& Owne
 	switch (NodeResult)
 	{
 	case EBTNodeResult::Succeeded:
-		BlackboardComponent->SetValueAsBool(TEXT("bMove"), false);
-		BattleSubsystem->FinishTurn();
+		BlackboardComponent->SetValueAsBool(TEXT("bSpawn"), false);
 		break;
 	default:
 		break;

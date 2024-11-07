@@ -51,7 +51,6 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	if (Target)
 	{
 		DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 12, TargetPawnColor, false, Duration);
-		UE_LOG(LogTemp, Log, TEXT("Uint Value: %u, String Value: %s"), Skill, *Target->GetName());
 	}
 	return EBTNodeResult::Succeeded;
 }

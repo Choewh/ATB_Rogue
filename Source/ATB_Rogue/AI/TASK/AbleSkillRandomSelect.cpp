@@ -52,15 +52,18 @@ void UAbleSkillRandomSelect::PickRandomSkill()
 	{
 		if (FirstEmpty) { PickRandomSkill(); break; }
 		SelectAttackRandomPawn(ESkills::FirstSkill);
+		UE_LOG(LogTemp, Log, TEXT("//////////////////////////////////////FirstSkill")); //Temp
 		break;
 	}
 	case 1:
 		if (SecondEmpty) { PickRandomSkill(); break; }
 		SelectAttackRandomPawn(ESkills::SecondSkill);
+		UE_LOG(LogTemp, Log, TEXT("//////////////////////////////////////SecondSkill")); //Temp
 		break;
 	case 2:
 		if (ThirdEmpty) { PickRandomSkill(); break; }
 		SelectAttackRandomPawn(ESkills::ThirdSkill);
+		UE_LOG(LogTemp, Log, TEXT("//////////////////////////////////////ThirdSkill")); //Temp
 		break;
 
 	default:
@@ -92,8 +95,7 @@ void UAbleSkillRandomSelect::SelectAttackRandomPawn(ESkills Skill)
 		break;
 	}
 	BlackboardComponent->SetValueAsObject(TEXT("TargetPawn"), EnemyAIController->TargetPawn);
-
-
+	UE_LOG(LogTemp, Log, TEXT("Target Pawn : %s"),	*EnemyAIController->TargetPawn->GetName()); //Temp
 }
 
 void UAbleSkillRandomSelect::Init()

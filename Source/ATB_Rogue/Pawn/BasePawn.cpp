@@ -92,6 +92,7 @@ void ABasePawn::BeginPlay()
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
 	}
 	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
+
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
@@ -168,8 +169,15 @@ void ABasePawn::SetData()
 	{
 		AnimComponent->SetData(Species);
 	}
-	ActiveCollision(true);
 	MaterialInit();
+}
+
+void ABasePawn::SetSpawnPos(FVector SpawnPos)
+{
+	FVector MovePoint = GetActorLocation() + SpawnPos * 100;
+
+	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
+	BaseAIController->GetBlackboardComponent()->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
@@ -332,6 +340,7 @@ void ABasePawn::OnStartTurn()
 
 void ABasePawn::OnFinishTurn()
 {
+	ActiveCollision(true);
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
 	BaseAIController->SetActiveTurn(false);
 	bActive = true;

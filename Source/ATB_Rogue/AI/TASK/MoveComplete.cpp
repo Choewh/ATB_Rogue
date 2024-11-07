@@ -20,7 +20,7 @@ EBTNodeResult::Type UMoveComplete::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
 	BlackboardComponent->SetValueAsBool(TEXT("bMove"), false);
 	
-	//µð¹ö±×¿ë Ãß°¡
+	//ï¿½ï¿½ï¿½ï¿½×¿ï¿½ ï¿½ß°ï¿½
 	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
 	if (TargetPawn)
 	{

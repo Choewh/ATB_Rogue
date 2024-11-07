@@ -26,6 +26,7 @@ class ATB_ROGUE_API UEnvQueryTest_SkillRange : public UEnvQueryTest
 
 	UPROPERTY(EditDefaultsOnly, Category = UseSkill)
 	ESkills UseSkill;
+public:
 
 	virtual void RunTest(FEnvQueryInstance& QueryInstance) const override;
 	virtual FText GetDescriptionDetails() const override;

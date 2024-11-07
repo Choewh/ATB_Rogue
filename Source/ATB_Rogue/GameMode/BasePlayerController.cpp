@@ -106,6 +106,9 @@ void ABasePlayerController::CameraViewUpdate()
 	switch (CameraViewMode)
 	{
 	case ECameraViewMode::DefaultView:
+		DefaultCamera->SetActive(true);
+		PawnViewCamera->SetView(false);
+		PawnViewCamera->SetActive(false);
 		break;
 
 	case ECameraViewMode::PawnView:

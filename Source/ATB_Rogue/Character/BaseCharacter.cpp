@@ -154,9 +154,8 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
 		NewPawn->SetActorLocation(RoundsTransform[(CurRound - 1) % 10][i].GetLocation());
+		NewPawn->SetSpawnPos(RoundsTransform[(CurRound - 1) % 10][i].GetRotation().GetForwardVector());
 		NewPawn->OnSpawn();
-		//NewPawn->SetActorRotation(RoundsTransform[(CurRound - 1) % 10][i].GetRotation());
-		//NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
 		CurHavePawns.Add(NewPawn);
 	}
 }

@@ -20,28 +20,32 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 
 void UBattleSubsystem::IsDieCheck()
 {
+	//EnemyPawns 배열이 비었다면 승리 -> 플래그 세워주기
 	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
 		ABasePawn* Pawn = EnemyPawns[i];
 		if (EnemyPawns[i]->IsDie())
 		{
-			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 			EnemyPawns[i]->Destroy();
+			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 		}
 	}
+	//FriendlyPawns 배열이 비었다면 게임오버 -> 플래그 ㄱ
 	for (int32 i = FriendlyPawns.Num() - 1; i >= 0; --i)
 	{
 		ABasePawn* Pawn = FriendlyPawns[i];
 		if (FriendlyPawns[i]->IsDie())
 		{
-			FriendlyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 			FriendlyPawns[i]->Destroy();
+			FriendlyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 		}
 	}
 }
 
 void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 {
+	UE_LOG(LogTemp, Log, TEXT("//////////////////////////////////////EnterActiveTurn")); //Temp
+
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
 	InPawn->ActiveCollision(false);
@@ -150,12 +154,16 @@ void UBattleSubsystem::SelectAbleThirdSkill()
 	BaseAIController->GetBlackboardComponent()->SetValueAsEnum(TEXT("Skill"), static_cast<uint8>(ESkills::ThirdSkill));
 }
 
-void UBattleSubsystem::SelectTargetPawn(AActor* TargetPawn)//폰 데이터 전달
+void UBattleSubsystem::SelectTargetPawn(AActor* InTargetPawn)//폰 데이터 전달
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
-	BaseAIController->TargetPawn = Cast<ABasePawn>(TargetPawn);
-	BaseAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetPawn"), BaseAIController->TargetPawn);
-	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true);
+	ABasePawn* TargetPawn = Cast<ABasePawn>(InTargetPawn);
+	if (TargetPawn)
+	{
+		BaseAIController->TargetPawn = Cast<ABasePawn>(TargetPawn);
+		BaseAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetPawn"), BaseAIController->TargetPawn);
+		BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true);
+	}
 	UE_LOG(LogTemp, Log, TEXT("TargetPawn Name : %s"), *TargetPawn->GetName());
 	//거리체크하는 태스크
 }
@@ -199,7 +207,6 @@ void UBattleSubsystem::FinishTurn()
 		//에너미들의 ABTFeeling On 
 		//액션폰은 null로 초기화
 		ActionPawn->ABTReset();
-		ActionPawn->ActiveCollision(true);
 		ActionPawn = nullptr;
 		//죽은 폰이 있는지 확인하고 배열에서 제거
 		IsDieCheck();
@@ -210,6 +217,7 @@ void UBattleSubsystem::FinishTurn()
 	{
 		BattleFinishTurn.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 	}
+	UE_LOG(LogTemp, Log, TEXT("//////////////////////////////////////FinishTurn")); //Temp
 }
 
 void UBattleSubsystem::SetViewCameraMode(ECameraViewMode InViewMode)

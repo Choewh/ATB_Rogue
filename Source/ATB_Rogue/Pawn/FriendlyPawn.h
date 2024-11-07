@@ -16,7 +16,7 @@ class ATB_ROGUE_API AFriendlyPawn : public ABasePawn
 	
 public:
 	AFriendlyPawn(const FObjectInitializer& ObjectInitializer);
-	
+	virtual void BeginPlay() override;
 	virtual void SetData() override;
 
 	bool Movealbe(FVector NewDestination);

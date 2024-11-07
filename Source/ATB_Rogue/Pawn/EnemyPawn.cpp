@@ -10,6 +10,11 @@ AEnemyPawn::AEnemyPawn(const FObjectInitializer& ObjectInitializer)
 
 }
 
+void AEnemyPawn::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void AEnemyPawn::SetData()
 {
 	Super::SetData();

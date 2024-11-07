@@ -17,7 +17,7 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (!BasePawn) { return; }
 	StatusComponentRef = BasePawn->GetComponentByClass<UStatusComponent>();
 	SkillComponentRef = BasePawn->GetComponentByClass<USkillComponent>();
-	//BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn); //º£ÀÌ½º ÆùÀÇ ÅÏ½ÃÀÛ ÅÏ¿£µå µ¨¸®°ÔÀÌÆ® Ãß°¡ÇØ¼­ È£ÃâÇØÁÖ±â 
+	//BasePawn->ActiveTurn.AddDynamic(this, &ThisClass::SetActiveTurn); //ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï½ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ß°ï¿½ï¿½Ø¼ï¿½ È£ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ 
 	// StatusComponentRef->OnHPChanged.AddDynamic(this, &ThisClass::OnDamaged);
 }
 
@@ -44,9 +44,13 @@ void ABaseAIController::ResetValue()
 void ABaseAIController::SetActiveTurn(bool ActiveTurn)
 {
 	TargetPawn = nullptr;
+	Blackboard->SetValueAsObject(TEXT("TargetPawn"), TargetPawn);
+	Blackboard->SetValueAsVector(TEXT("MovePoint"), GetPawn()->GetActorLocation());
+	Blackboard->SetValueAsEnum(TEXT("Skill"), 0);
 	Blackboard->SetValueAsBool(TEXT("bAction"), ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bMove"), ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bAttack"), ActiveTurn);
+	Blackboard->SetValueAsBool(TEXT("MontagePlaying"), !ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bSkillAttackable1"), !ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bSkillAttackable2"), !ActiveTurn);
 	Blackboard->SetValueAsBool(TEXT("bSkillAttackable3"), !ActiveTurn);

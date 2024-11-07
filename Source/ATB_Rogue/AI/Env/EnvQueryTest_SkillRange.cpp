@@ -7,6 +7,8 @@
 #include "EnvironmentQuery/Items/EnvQueryItemType_VectorBase.h"
 #include "EnvironmentQuery/Contexts/EnvQueryContext_Querier.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(EnvQueryTest_SkillRange)
 
@@ -86,8 +88,22 @@ void UEnvQueryTest_SkillRange::RunTest(FEnvQueryInstance& QueryInstance) const
 	default:
 		break;
 	}
+	///TEMP DEbug
+	TArray<FHitResult> HitResults;
+	TArray<AActor*> IgnoreActors;
+	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
+		MaxThresholdValue, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		HitResults, true);
+	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
+		MinThresholdValue, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		HitResults, true);
+	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
+		1200.f, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		HitResults, true);
+	UE_LOG(LogTemp, Log, TEXT("PawnName : % s , MaxThresholdValue : %f"),*QueryPawn->GetName(), MaxThresholdValue);
 
-
+	MaxThresholdValue -= 100.f;
+	///TEMP
 	TArray<FVector> ContextLocations;
 	if (!QueryInstance.PrepareContext(DistanceTo, ContextLocations))
 	{
@@ -101,8 +117,12 @@ void UEnvQueryTest_SkillRange::RunTest(FEnvQueryInstance& QueryInstance) const
 		const FVector ItemLocation = GetItemLocation(QueryInstance, It.GetIndex());
 		for (int32 ContextIndex = 0; ContextIndex < ContextLocations.Num(); ContextIndex++)
 		{
-			const float Distance = FVector::Dist(ItemLocation, QueryPawn->GetActorLocation());
+			const float Distance = FVector::Dist(ItemLocation, ContextLocations[ContextIndex]);
 			It.SetScore(TestPurpose, FilterType, Distance, MinThresholdValue, MaxThresholdValue);
+			if (Distance <= MaxThresholdValue)
+			{
+				int Check=0;
+			}
 		}
 	}
 }

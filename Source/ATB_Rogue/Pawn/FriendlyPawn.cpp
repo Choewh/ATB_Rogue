@@ -10,6 +10,13 @@ AFriendlyPawn::AFriendlyPawn(const FObjectInitializer& ObjectInitializer)
 
 }
 
+void AFriendlyPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetActorRotation(FRotator(0.f, -90.f, 0.f));
+}
+
 void AFriendlyPawn::SetData()
 {
 	Super::SetData();

@@ -26,6 +26,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ShowSkillRange(ESkills UseSkill);
 private:
+	UFUNCTION()
+	void FinishTurn();
+
 	void SetImage();
 public:
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))

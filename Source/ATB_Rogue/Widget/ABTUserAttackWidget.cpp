@@ -15,6 +15,7 @@ void UABTUserAttackWidget::NativePreConstruct()
 void UABTUserAttackWidget::NativeConstruct()
 {
 	Init();
+	GetWorld()->GetSubsystem<UBattleSubsystem>()->BattleFinishTurn.AddDynamic(this, &ThisClass::FinishTurn);
 }
 
 void UABTUserAttackWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -53,6 +54,11 @@ void UABTUserAttackWidget::ShowSkillRange(ESkills UseSkill)
 		BasePawn->EffectComponent->HideRange();
 		break;
 	}
+}
+
+void UABTUserAttackWidget::FinishTurn()
+{
+	RemoveFromParent();
 }
 
 void UABTUserAttackWidget::SetImage()
