@@ -20,6 +20,7 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 
 void UBattleSubsystem::IsDieCheck()
 {
+	//@TODO
 	//EnemyPawns 배열이 비었다면 승리 -> 플래그 세워주기
 	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
@@ -49,10 +50,10 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
 	InPawn->ActiveCollision(false);
+	InPawn->ControllerInit();
 	switch (InPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
-		InPawn->ControllerInit();
 		break;
 	case EPawnGroup::Friendly:
 		SelectActionView();

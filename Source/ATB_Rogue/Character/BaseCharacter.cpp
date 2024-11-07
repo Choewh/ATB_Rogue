@@ -153,8 +153,7 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		NewPawn->SetData();
-		NewPawn->SetActorLocation(RoundsTransform[(CurRound - 1) % 10][i].GetLocation());
-		NewPawn->SetSpawnPos(RoundsTransform[(CurRound - 1) % 10][i].GetRotation().GetForwardVector());
+		NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
 		NewPawn->OnSpawn();
 		CurHavePawns.Add(NewPawn);
 	}

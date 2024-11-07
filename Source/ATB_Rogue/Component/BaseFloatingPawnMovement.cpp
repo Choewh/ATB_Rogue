@@ -15,9 +15,14 @@ FRotator UBaseFloatingPawnMovement::GetDeltaRotation(float DeltaTime) const
 	return FRotator(GetAxisDeltaRotation2(RotationRate.Pitch, DeltaTime), GetAxisDeltaRotation2(RotationRate.Yaw, DeltaTime), GetAxisDeltaRotation2(RotationRate.Roll, DeltaTime));
 }
 
+void UBaseFloatingPawnMovement::SetUseControllerRotationYaw(bool InActive)
+{
+	bOrientRotationToMovement = InActive; //켜면 회전함.
+}
+
 
 UBaseFloatingPawnMovement::UBaseFloatingPawnMovement()
-	: bOrientRotationToMovement(true)
+	: bOrientRotationToMovement(false)
 {
 
 	RotationRate = FRotator(0.f, 360.0f, 0.0f);

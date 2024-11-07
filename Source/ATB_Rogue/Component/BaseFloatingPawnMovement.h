@@ -18,6 +18,7 @@ public:
 
 	UBaseFloatingPawnMovement();
 	virtual FRotator GetDeltaRotation(float DeltaTime) const;
+	void SetUseControllerRotationYaw(bool Active);
 protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void PhysicsRotation(float DeltaTime);

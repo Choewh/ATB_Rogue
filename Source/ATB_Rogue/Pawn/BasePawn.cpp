@@ -335,6 +335,8 @@ UTexture2D* ABasePawn::GetPortrait()
 /// </summary>
 void ABasePawn::OnStartTurn()
 {
+	MovementComponent->SetUseControllerRotationYaw(true);
+
 	bActive = false;
 }
 

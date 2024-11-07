@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Pawn/EnemyPawn.h"
-
+#include "Enums/Levels.h"
 #include "Subsystem/BattleSubsystem.h"
 
 #include "Subsystem/EnemyCreateSubsystem.h"
@@ -39,6 +39,9 @@ protected:
 public:
 	UFUNCTION()
 	virtual void SpawnPawn(); // 라운스 시작시 폰들 스폰 //배틀시스템->BattleStart 델리게이트 추가
+	
+	UFUNCTION(BlueprintCallable)
+	void SetLevel(ELevels InLevel) { CurLevel = InLevel; }
 
 	UFUNCTION()
 	virtual void OnFirstSet(uint8 Round);
@@ -52,6 +55,8 @@ protected:
 	TArray<TArray<FBasePawnInfo>> RoundsPawns; // 1~10 라운드까지 등장할 Pawns 배열
 	TArray<TArray<FTransform>> RoundsTransform; //라운드별 소환 위치
 private:
+	UPROPERTY(EditAnywhere)
+	ELevels CurLevel;
 	UPROPERTY(EditAnywhere)
 	uint8 CurRound = 1;
 	UPROPERTY(EditAnywhere)

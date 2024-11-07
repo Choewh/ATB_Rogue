@@ -16,6 +16,9 @@
 
 /**
  *
+ * 베이스 스탯 /
+ * 
+ * 
  */
 USTRUCT(BlueprintType)
 struct FSpeciesInfo

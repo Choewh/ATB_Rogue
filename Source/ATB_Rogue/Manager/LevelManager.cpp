@@ -9,6 +9,8 @@
 
 #include "Kismet/GameplayStatics.h"
 
+//레벨매니저에서 생성해야하나?.. 가지고있는 테이블 데이터에서 배열을 넘겨줘서 서브시스템에서 랜덤으로 반환 TODO
+
 // Sets default values
 ALevelManager::ALevelManager()
 {
@@ -53,17 +55,18 @@ void ALevelManager::SetMaxRound()
 
 void ALevelManager::SetRoundPawns()
 {
+	//여기서 레벨 데이터와 종 배열 넘겨주기
 	for (uint8 i = 0; i < MaxRound; i++)
 	{
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel);
 			RoundsPawns.Add(RoundPawns);
 		}
 		else
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, EBattleSpec::Boss);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel , EBattleSpec::Boss);
 			RoundsPawns.Add(RoundPawns);
 		}
 	}
@@ -104,8 +107,7 @@ void ALevelManager::SpawnPawn()
 		NewPawn->Species = RoundsPawns[Round][i-1].Species;
 		NewPawn->PawnGroup = RoundsPawns[Round][i-1].PawnGroup;
 		NewPawn->SetData();
-		NewPawn->SetActorLocation(RoundsTransform[Round][i - 1].GetLocation());
-		NewPawn->SetSpawnPos(RoundsTransform[Round][i - 1].GetRotation().GetForwardVector());
+		NewPawn->SetActorTransform(RoundsTransform[Round][i - 1]);
 		NewPawn->OnSpawn();
 		CurRoundPawns.Add(NewPawn);
 		RoundsTransform[Round].RemoveAt(i-1);
