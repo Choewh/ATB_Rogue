@@ -9,8 +9,6 @@
 
 #include "Kismet/GameplayStatics.h"
 
-//레벨매니저에서 생성해야하나?.. 가지고있는 테이블 데이터에서 배열을 넘겨줘서 서브시스템에서 랜덤으로 반환 TODO
-
 // Sets default values
 ALevelManager::ALevelManager()
 {
@@ -31,6 +29,7 @@ void ALevelManager::BeginPlay()
 	Super::BeginPlay();
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
+	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
 	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
 	Init();
 	//BattleSubsystem->BattleStart(CurRound);
@@ -66,7 +65,7 @@ void ALevelManager::SetRoundPawns()
 		}
 		else
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel , EBattleSpec::Boss);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel, EBattleSpec::Boss);
 			RoundsPawns.Add(RoundPawns);
 		}
 	}
@@ -97,21 +96,24 @@ void ALevelManager::SpawnPawn()
 	//EnemySpawn 액터를 찾아서 그 위치에 순서대로 배치 할지 고민
 	if (RoundsPawns.IsEmpty()) { return; }
 	uint8 Round = CurRound - 1;
-	for (uint8 i = RoundsPawns[Round].Num(); i > 0 ; i--)
+	for (uint8 i = RoundsPawns[Round].Num(); i > 0; i--)
 	{
 		if (RoundsPawns.IsEmpty()) { break; } //비었으면 끝
 		if (RoundsTransform[Round].IsEmpty()) { break; } //비었으면 끝
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		AEnemyPawn* NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[Round][i-1], ActorSpawnParameters);
-		NewPawn->Species = RoundsPawns[Round][i-1].Species;
-		NewPawn->PawnGroup = RoundsPawns[Round][i-1].PawnGroup;
+		AEnemyPawn* NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[Round][i - 1], ActorSpawnParameters);
+		NewPawn->Species = RoundsPawns[Round][i - 1].Species;
+		NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
 		NewPawn->SetData();
+		//TODO 생성하면서 구조체로 받은 SpeciesInfo 데이터를 추가해주기
+		TUniquePtr<FSpeciesInfo> SpeciesInfoPtr = MakeUnique<FSpeciesInfo>(RoundsPawns[Round][i - 1].SpeciesInfo);
+		//NewPawn->StatusComponent->SetSpeciesInfo(SpeciesInfoPtr);
 		NewPawn->SetActorTransform(RoundsTransform[Round][i - 1]);
 		NewPawn->OnSpawn();
 		CurRoundPawns.Add(NewPawn);
-		RoundsTransform[Round].RemoveAt(i-1);
-		RoundsPawns[Round].RemoveAt(i-1);
+		RoundsTransform[Round].RemoveAt(i - 1);
+		RoundsPawns[Round].RemoveAt(i - 1);
 	}
 }
 
@@ -133,8 +135,8 @@ void ALevelManager::NextLevel()
 	else
 	{
 		//다음라운드 시작하기
-		//BattleStart(CurRound++);
-		CurRound++;
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		BattleSubsystem->BattleStart(CurRound++);
 	}
 }
 

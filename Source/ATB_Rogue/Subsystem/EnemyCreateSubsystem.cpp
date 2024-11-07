@@ -86,8 +86,9 @@ TArray<FBasePawnInfo> UEnemyCreateSubsystem::CreateRoundSpecies(uint8 MaxSpecies
 }
 
 
-FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpecies SpawnSpecies)
+FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpecies SpawnSpecies , uint8 Level)
 {
+	//레벨 있으면 구조체에 레벨 설정해주기
 	FBasePawnInfo NewSpecies;
 	//랜덤
 	if (SpawnSpecies == ESpecies::None)
@@ -95,8 +96,11 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpeci
 		SpawnSpecies = GetRandomSpecies();
 	}
 	//TEMP //만들어줄때 보스면 StatusComponent 불러서 보스 체크
+	
 	NewSpecies.PawnGroup = SpawnGroup;
 	NewSpecies.Species = SpawnSpecies;
+	FSpeciesInfo SpeciesInfo(Level); //레벨만 추가로 받으면 되고 나머진 베이스 스탯이라 ㄱㅊ 
+	NewSpecies.SpeciesInfo = SpeciesInfo;
 	return NewSpecies;
 }
 

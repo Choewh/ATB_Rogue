@@ -22,6 +22,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStartTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEnd);
+
 
 UCLASS()
 class ATB_ROGUE_API UBattleSubsystem : public UWorldSubsystem
@@ -125,6 +127,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FBattleStartTurn BattleStartTurn;
+	UPROPERTY(BlueprintAssignable)
+	FBattleEnd BattleEnd;
 public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ABasePawn*> EnemyPawns;

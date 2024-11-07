@@ -88,6 +88,7 @@ void ABasePawn::BeginPlay()
 	Super::BeginPlay();
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::OnStartBattle);
 		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
 	}
@@ -296,15 +297,16 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 void ABasePawn::Evolution()
 {
-	
+
 	FTransform OriginTransform = GetActorTransform();
 	Species = PawnData->NextSpecies;
 	if (Species != ESpecies::End)
 	{
+		bEvolution = true;
 		SetData();
 		SetActorTransform(OriginTransform);
 		ActiveCollision(false);
-		OnSpawn(); 
+		OnSpawn();
 	}
 	//Roar 애니메이션 재생 ㄱㅊ은듯
 	//이펙트 효과
@@ -333,10 +335,13 @@ UTexture2D* ABasePawn::GetPortrait()
 /// <summary>
 /// Delegate
 /// </summary>
+void ABasePawn::OnStartBattle(uint8 Round)
+{
+
+}
 void ABasePawn::OnStartTurn()
 {
 	MovementComponent->SetUseControllerRotationYaw(true);
-
 	bActive = false;
 }
 
@@ -368,7 +373,7 @@ void ABasePawn::MaterialInit()
 			SkeletalMeshComponent->SetMaterial(i, DynamicMaterial);
 		}
 	}
-}	
+}
 /// <summary>
 /// Die
 /// </summary>
@@ -408,7 +413,16 @@ void ABasePawn::OnSpawnEffect(float InDissolve)
 }
 void ABasePawn::OnSpawnEffectEnd()
 {
-	//로어 애니메이션 재생 TODO
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	if (bEvolution)
+	{
+		AnimInstance->Montage_Play(AnimComponent->AnimData->EvoReactMontage);
+		bEvolution = false;
+	}
+	else
+	{
+		AnimInstance->Montage_Play(AnimComponent->AnimData->RoarReactMontage);
+	}
 }
 /// <summary>
 /// Debug

@@ -180,6 +180,9 @@ private:
 	bool bDie = false;
 	UPROPERTY(EditAnywhere)
 	bool bDestroy = false;
+	UPROPERTY()
+	bool bEvolution = false;
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnATBChanged OnATBChanged;
@@ -187,6 +190,8 @@ public:
 	FStartTurn StartTurn;
 	UPROPERTY(BlueprintAssignable)
 	FFinishTurn FinishTurn;
+	UFUNCTION()
+	virtual void OnStartBattle(uint8 Round);
 	UFUNCTION()
 	virtual void OnStartTurn();
 	UFUNCTION()

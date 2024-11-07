@@ -25,8 +25,8 @@ struct FSpeciesInfo
 {
     GENERATED_BODY()
 public:
-    FSpeciesInfo()
-       :Level(1),
+    FSpeciesInfo(uint8 Level = 1)
+       :Level(Level),
         Species(ESpecies::None),
         Stage(EStage::None),
         Attribute(EAttribute::None),
@@ -38,6 +38,20 @@ public:
         ACC(0.f),
         EVA(0.f),
         MoveRange(1200.f)
+    {}
+    FSpeciesInfo(const FSpeciesInfo& Other)
+        : Level(Other.Level),
+        Species(Other.Species),
+        Stage(Other.Stage),
+        Attribute(Other.Attribute),
+        HP(Other.HP),
+        ATK(Other.ATK),
+        DEF(Other.DEF),
+        SPATK(Other.SPATK),
+        SPD(Other.SPD),
+        ACC(Other.ACC),
+        EVA(Other.EVA),
+        MoveRange(Other.MoveRange)
     {}
 
 public:

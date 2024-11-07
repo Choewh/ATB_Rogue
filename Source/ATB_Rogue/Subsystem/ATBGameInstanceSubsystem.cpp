@@ -26,6 +26,9 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpe
 	return true;
 }
 
+//필요없는거같기도 라운드 -> 라운드 넘어갈땐 그냥 Location 만 수정해주기 체력과 스탯 그대로 
+// 라운드 -> 레벨 
+// Save Pawn Info 호출해서 스탯 구조체 , 종 // 추후 추가할거 있으면 적어두기
 bool UATBGameInstanceSubsystem::SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns)
 {
 	int InPawnsNum = InPlayerPawns.Num();

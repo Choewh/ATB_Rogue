@@ -15,12 +15,17 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
 	//배틀 끝날때마다 초기화 해주니 처음 시작시 한번싹 초기화 해주기
-	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 2.f, false);
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 5.f, false);
 }
 
 void UBattleSubsystem::IsDieCheck()
 {
 	//@TODO
+	if (EnemyPawns.IsEmpty())
+	{
+		BattleEnd.Broadcast();
+		//배틀엔드에 레벨매니저 라운드 or 레벨 데이터 업데이트 후 배틀 시작
+	}
 	//EnemyPawns 배열이 비었다면 승리 -> 플래그 세워주기
 	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
@@ -30,6 +35,10 @@ void UBattleSubsystem::IsDieCheck()
 			EnemyPawns[i]->Destroy();
 			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 		}
+	}
+	if (FriendlyPawns.IsEmpty())
+	{
+		//게임오버 -> 메인화면 레벨 오픈
 	}
 	//FriendlyPawns 배열이 비었다면 게임오버 -> 플래그 ㄱ
 	for (int32 i = FriendlyPawns.Num() - 1; i >= 0; --i)
@@ -49,11 +58,11 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
-	InPawn->ActiveCollision(false);
 	InPawn->ControllerInit();
 	switch (InPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
+		InPawn->ActiveCollision(false); // 그냥 병123신같이 움직이는것도 포용하기...
 		break;
 	case EPawnGroup::Friendly:
 		SelectActionView();

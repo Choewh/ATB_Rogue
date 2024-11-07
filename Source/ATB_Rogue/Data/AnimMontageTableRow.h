@@ -25,5 +25,9 @@ public:
 	UAnimMontage* HitReactMontage;
 	UPROPERTY(EditAnywhere, Category = "Pawn|Animation")
 	UAnimMontage* DieReactMontage;
+	UPROPERTY(EditAnywhere, Category = "Pawn|Animation")
+	UAnimMontage* EvoReactMontage;
+	UPROPERTY(EditAnywhere, Category = "Pawn|Animation")
+	UAnimMontage* RoarReactMontage;
 
 };

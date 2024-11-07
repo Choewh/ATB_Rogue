@@ -23,21 +23,28 @@ class ATB_ROGUE_API UATBGameInstanceSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY()
-	TArray<ESpecies> PlayerSpecies; //플레이어폰 자체만 담고있기 ㅇ 
-	TArray<FBasePawnInfo> PlayerPawnsInfo; //플레이어폰 자체만 담고있기 ㅇ 
-	TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
-
-public:
 
 	TArray<ESpecies> GetPlayerSpecies() { return PlayerSpecies; } // 플레이어 폰 반환
 	TArray<FBasePawnInfo> GetPlayerPawnsInfo() { return PlayerPawnsInfo; } //플레이어폰 자체만 담고있기 ㅇ  
+	
+	//TODO 로드 불러오기 기능 구현
+	 
 	//스탯을 구조체로 폰마다 지니고있음 구조체가 Null 이면 기본 스탯입력.
+	UFUNCTION()
 	bool SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpeciesInfo);
 	UFUNCTION()
-	TArray<ABasePawn*> GetPlayerPawn() { return PlayerPawns; } // 플레이어 폰 반환
+	bool SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns); // 플레이어 폰 받아 저장 ? 왜 필요없는거같은데 보고 지워주기 
+															// 폰 레퍼런스 들고 있을 필요가 없는거같은디 라운드 - > 라운드 이동 라운드 -> 레벨 구조체로 저장 후 로드 
 	UFUNCTION()
-	bool SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns); // 플레이어 폰 받아 저장
+	TArray<ABasePawn*> GetPlayerPawn() { return PlayerPawns; } // 플레이어 폰 반환
+
+public:
+	UPROPERTY()
+	TArray<ESpecies> PlayerSpecies; //플레이어폰 자체만 담고있기 ㅇ 
+	UPROPERTY()
+	TArray<FBasePawnInfo> PlayerPawnsInfo; //플레이어폰 자체만 담고있기 ㅇ 
+	UPROPERTY()
+	TArray<ABasePawn*> PlayerPawns; //플레이어폰 자체만 담고있기 ㅇ 
 
 public:
 	//레벨 오픈 하면 플레이어 폰을 전달 | 델리게이트 ㄱ
