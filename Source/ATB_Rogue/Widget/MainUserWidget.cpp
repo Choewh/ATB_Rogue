@@ -40,15 +40,18 @@ ESpecies GetNextSpecies(ESpecies CurrentSpecies)
 
 void UMainUserWidget::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
 
 }
 
 void UMainUserWidget::NativePreConstruct()
 {
+	Super::NativePreConstruct();
 }
 
 void UMainUserWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
 	CreateButtons(8);
 	Init();
 	//델리게이트 만들어서 생성해서 블루프린트에서 해결하는걸로 변경하기
@@ -166,7 +169,6 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 		Image->SetDesiredSizeOverride(FVector2D(200.f, 200.f));
 		{
 			SetSpeciesPortrait.Broadcast(Image, SpeciesName);
-
 		}
 		{
 			SelectableCell->Species = Species;

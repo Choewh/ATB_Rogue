@@ -5,7 +5,7 @@
 #include "Misc/Utils.h"
 
 #include "Pawn/EnemySpawnTransform.h"
-
+#include "Subsystem/ATBUserUISubSystem.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -123,8 +123,10 @@ void ALevelManager::SpawnPawn()
 			NewPawn->SetActorTransform(RoundsTransform[0][i - 1]);
 		}
 		//
-
-		//TODO 생성하면서 구조체로 받은 SpeciesInfo 데이터를 추가해주기
+		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->BattleUIAddPawn(NewPawn);
+		//TODO 생성하면서 구조체로 받은 SpeciesInfo 데이터를 추가해주기 라운드에 따른 레벨 ㅇ
 		//TUniquePtr<FSpeciesInfo> SpeciesInfoPtr = MakeUnique<FSpeciesInfo>(RoundsPawns[Round][i - 1].SpeciesInfo);
 		//NewPawn->StatusComponent->SetSpeciesInfo(SpeciesInfoPtr);
 

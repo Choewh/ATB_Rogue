@@ -9,6 +9,7 @@
 #include "Subsystem/BattleSubsystem.h"
 #include "Pawn/FriendlySpawnLocation.h"
 #include "Component/RotatorCharMoveComponent.h"
+#include "Subsystem/ATBUserUISubSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -150,6 +151,9 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->StatusComponent->SetSpeciesInfo(NewSpeciesInfo);
 		//셋데이터에서 스탯은 베이스스탯만 초기화
 		NewPawn->SetData();
+		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->BattleUIAddPawn(NewPawn);
 		NewPawn->SetActorTransform(RoundsTransform[0][i]);
 		NewPawn->OnSpawn();
 		CurHavePawns.Add(NewPawn);

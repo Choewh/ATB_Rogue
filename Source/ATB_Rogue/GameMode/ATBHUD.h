@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Widget/ATBBarUserWidget.h"
+#include "Widget/ATBBattleUserWidget.h"
 #include "ATBHUD.generated.h"
 
 /**
@@ -26,7 +27,9 @@ public:
 
 
 	UFUNCTION()
-	void ShowATBBar(uint8 Round);
+	void AddPawnBattleUI(ABasePawn* InPawn);
+	UFUNCTION()
+	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
 	void ShowViewPort();
 
@@ -35,7 +38,7 @@ private:
 	TObjectPtr<class ABasePlayerController> PlayerController;
 
 	UPROPERTY()
-	TObjectPtr<class UATBUserWidget> Widget;
+	TObjectPtr<UATBBattleUserWidget> ATBBattleUserWidget;
 
 	UPROPERTY()
 	TObjectPtr<UATBBarUserWidget> ATBWidget;
