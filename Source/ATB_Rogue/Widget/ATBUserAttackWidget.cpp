@@ -1,33 +1,33 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widget/ABTUserAttackWidget.h"
+#include "Widget/ATBUserAttackWidget.h"
 #include "Pawn/BasePawn.h"
-#include "ABTUserAttackWidget.h"
-void UABTUserAttackWidget::NativeOnInitialized()
+#include "ATBUserAttackWidget.h"
+void UATBUserAttackWidget::NativeOnInitialized()
 {
 }
 
-void UABTUserAttackWidget::NativePreConstruct()
+void UATBUserAttackWidget::NativePreConstruct()
 {
 }
 
-void UABTUserAttackWidget::NativeConstruct()
+void UATBUserAttackWidget::NativeConstruct()
 {
 	Init();
 	GetWorld()->GetSubsystem<UBattleSubsystem>()->BattleFinishTurn.AddDynamic(this, &ThisClass::FinishTurn);
 }
 
-void UABTUserAttackWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UATBUserAttackWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 }
 
-void UABTUserAttackWidget::Init()
+void UATBUserAttackWidget::Init()
 {
 	SetImage();
 }
 
-void UABTUserAttackWidget::ShowSkillRange(ESkills UseSkill)
+void UATBUserAttackWidget::ShowSkillRange(ESkills UseSkill)
 {
 	ABasePawn* BasePawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
 	switch (UseSkill)
@@ -56,12 +56,12 @@ void UABTUserAttackWidget::ShowSkillRange(ESkills UseSkill)
 	}
 }
 
-void UABTUserAttackWidget::FinishTurn()
+void UATBUserAttackWidget::FinishTurn()
 {
 	RemoveFromParent();
 }
 
-void UABTUserAttackWidget::SetImage()
+void UATBUserAttackWidget::SetImage()
 {
 	ABasePawn* BasePawn =GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
 	FirstSkillImage->SetBrushFromTexture(BasePawn->SkillComponent->GetSkillData(ESkills::FirstSkill)->Skill_Icon);

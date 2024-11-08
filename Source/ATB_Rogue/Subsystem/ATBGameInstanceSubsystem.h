@@ -31,9 +31,9 @@ public:
 	 
 	//스탯을 구조체로 폰마다 지니고있음 구조체가 Null 이면 기본 스탯입력.
 	UFUNCTION()
-	bool SavePlayerPawnsInfo(TArray<ESpecies> InPlayerSpeciesInfo);
+	bool InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPlayerSpeciesInfo);
 	UFUNCTION()
-	bool SavePlayerPawns(TArray<ABasePawn*> InPlayerPawns); // 플레이어 폰 받아 저장 ? 왜 필요없는거같은데 보고 지워주기 
+	bool SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerPawns); // 플레이어 폰 받아 저장 ? 왜 필요없는거같은데 보고 지워주기 
 															// 폰 레퍼런스 들고 있을 필요가 없는거같은디 라운드 - > 라운드 이동 라운드 -> 레벨 구조체로 저장 후 로드 
 	UFUNCTION()
 	TArray<ABasePawn*> GetPlayerPawn() { return PlayerPawns; } // 플레이어 폰 반환

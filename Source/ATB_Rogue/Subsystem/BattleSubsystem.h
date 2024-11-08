@@ -22,7 +22,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStartTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndFirst);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndSecond);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndThird);
 
 
 UCLASS()
@@ -41,7 +45,7 @@ public:
 	void BattleStart(uint8 Round);
 
 	UFUNCTION()
-	void IsDieCheck();
+	bool IsDieCheck();
 	UFUNCTION()
 	void SetEnemyPawns(TArray<ABasePawn*> InPawn) { EnemyPawns = InPawn; }
 	UFUNCTION()
@@ -118,17 +122,18 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable)
 	FBattleStartFirst BattleStartFirst;
-
 	UPROPERTY(BlueprintAssignable)
 	FBattleStartSecond BattleStartSecond;
-
 	UPROPERTY(BlueprintAssignable)
 	FBattleFinishTurn BattleFinishTurn;
-
 	UPROPERTY(BlueprintAssignable)
 	FBattleStartTurn BattleStartTurn;
 	UPROPERTY(BlueprintAssignable)
-	FBattleEnd BattleEnd;
+	FBattleEndFirst BattleEndFirst;
+	UPROPERTY(BlueprintAssignable)
+	FBattleEndSecond BattleEndSecond;
+	UPROPERTY(BlueprintAssignable)
+	FBattleEndThird BattleEndThird;
 public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ABasePawn*> EnemyPawns;

@@ -5,11 +5,11 @@
 #include "Subsystem/BattleSubSystem.h"
 #include "GameMode/BasePlayerController.h"
 #include "Character/BaseCharacter.h"
-#include "GameMode/ABTHUD.h"
+#include "GameMode/ATBHUD.h"
 ABattleGameMode::ABattleGameMode()
 {
 	PlayerControllerClass = ABasePlayerController::StaticClass();
-	HUDClass = AABTHUD::StaticClass();
+	HUDClass = AATBHUD::StaticClass();
 	DefaultPawnClass = ABaseCharacter::StaticClass();
 }
 

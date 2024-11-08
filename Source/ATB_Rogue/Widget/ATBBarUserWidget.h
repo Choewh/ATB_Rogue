@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameMode/ABTUserWidget.h"
+#include "GameMode/ATBUserWidget.h"
 #include "Components/Slider.h"
 #include "Engine/Texture2D.h"
-#include "ABTBarUserWidget.generated.h"
+#include "ATBBarUserWidget.generated.h"
 
 /**
  *
@@ -16,7 +16,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSetPortrait);
 
 UCLASS()
-class ATB_ROGUE_API UABTBarUserWidget : public UABTUserWidget
+class ATB_ROGUE_API UATBBarUserWidget : public UATBUserWidget
 {
 	GENERATED_BODY()
 

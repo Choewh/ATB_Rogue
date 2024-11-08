@@ -110,6 +110,7 @@ void ABaseCharacter::BeginPlay()
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
+		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::OnBattleEndThird);
 
 		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
@@ -124,19 +125,12 @@ void ABaseCharacter::Init()
 
 void ABaseCharacter::SetRoundsTransform()
 {
-	TArray<AActor*> AllRoundTransforms;
-	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AFriendlySpawnLocation::StaticClass(), FName("RoundTransform"), AllRoundTransforms);
-	for (uint8 i = 0; i < AllRoundTransforms.Num(); i++)
+	TArray<AActor*> RoundTransforms;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AFriendlySpawnLocation::StaticClass(), FName("DefualtRound"), RoundTransforms);
+	for (auto& Transforms : RoundTransforms)
 	{
-		TArray<AActor*> RoundTransforms;
-		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AFriendlySpawnLocation::StaticClass(), FUtils::Round(i), RoundTransforms);
-		//AEnemySpawnTransform* EnemySpawnTransform = Cast<AEnemySpawnTransform>(RoundTransforms[i]);
-		//RoundsTransform.Add(EnemySpawnTransform->GetSpawnTransform());
-		for (auto& Transforms : RoundTransforms)
-		{
-			AFriendlySpawnLocation* FriendlySpawnLocation = Cast<AFriendlySpawnLocation>(Transforms);
-			RoundsTransform.Add(FriendlySpawnLocation->GetSpawnTransform());
-		}
+		AFriendlySpawnLocation* FriendlySpawnLocation = Cast<AFriendlySpawnLocation>(Transforms);
+		RoundsTransform.Add(FriendlySpawnLocation->GetSpawnTransform());
 	}
 }
 
@@ -146,14 +140,17 @@ void ABaseCharacter::SpawnPawn()
 	for (uint8 i = 0; i < PlayerPawnsInfo.Num(); i++)
 	{
 		if (PlayerPawnsInfo.IsEmpty()) { break; } //비었으면 끝
-		if (RoundsTransform[(CurRound - 1) % 10].IsEmpty()) { break; }
 		FActorSpawnParameters ActorSpawnParameters;
 		ActorSpawnParameters.Owner = this;
-		AFriendlyPawn* NewPawn = GetWorld()->SpawnActor<AFriendlyPawn>(AFriendlyPawn::StaticClass(), FTransform::Identity, ActorSpawnParameters);
+		AFriendlyPawn* NewPawn = GetWorld()->SpawnActor<AFriendlyPawn>(AFriendlyPawn::StaticClass(), RoundsTransform[0][i], ActorSpawnParameters);
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
+		//레벨이랑 베이스 스탯 세팅
+		TSharedPtr<FSpeciesInfo> NewSpeciesInfo = MakeShared<FSpeciesInfo>(PlayerPawnsInfo[i].SpeciesInfo);
+		NewPawn->StatusComponent->SetSpeciesInfo(NewSpeciesInfo);
+		//셋데이터에서 스탯은 베이스스탯만 초기화
 		NewPawn->SetData();
-		NewPawn->SetActorTransform(RoundsTransform[(CurRound - 1) % 10][i]);
+		NewPawn->SetActorTransform(RoundsTransform[0][i]);
 		NewPawn->OnSpawn();
 		CurHavePawns.Add(NewPawn);
 	}
@@ -177,13 +174,19 @@ void ABaseCharacter::OnFinishTurn()
 
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
+	CurRound++;
 	if (CurRound % 10 == 1)
 	{
-		SpawnPawn();
-		CurRound++;
+		SpawnPawn(); //라운드 넘어갈때마다 저장 했다 로드 해주기 ㅇㄸ ㄱㅊ은듯?? TODO
 	}
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	BattleSubsystem->SetFriendlyPawns(CurHavePawns);
+}
+
+void ABaseCharacter::OnBattleEndThird()
+{
+	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+	GameInstanceSubsystem->SavePlayerPawnsInfo(CurHavePawns);
 }
 
 ///

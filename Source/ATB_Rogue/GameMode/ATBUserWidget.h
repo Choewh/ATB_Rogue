@@ -9,17 +9,17 @@
 #include "Subsystem/ATBGameInstanceSubsystem.h"
 #include "GameMode/BasePlayerController.h"
 
-#include "ABTUserWidget.generated.h"
+#include "ATBUserWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API UABTUserWidget : public UUserWidget
+class ATB_ROGUE_API UATBUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	friend class AABTHUD;
+	friend class AATBHUD;
 
 public:
 	virtual void NativeOnInitialized();

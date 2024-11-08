@@ -15,17 +15,15 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
 	//배틀 끝날때마다 초기화 해주니 처음 시작시 한번싹 초기화 해주기
-	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 5.f, false);
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 4.f, false);
 }
 
-void UBattleSubsystem::IsDieCheck()
+bool UBattleSubsystem::IsDieCheck()
 {
+	// 안에서 없애주기전에 이미 비어있으면 오류난거임 ㅇㅇ
+	if (EnemyPawns.IsEmpty()) { ensure(false); return false; }
+	if (FriendlyPawns.IsEmpty()) { ensure(false); return false; }
 	//@TODO
-	if (EnemyPawns.IsEmpty())
-	{
-		BattleEnd.Broadcast();
-		//배틀엔드에 레벨매니저 라운드 or 레벨 데이터 업데이트 후 배틀 시작
-	}
 	//EnemyPawns 배열이 비었다면 승리 -> 플래그 세워주기
 	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
@@ -35,10 +33,6 @@ void UBattleSubsystem::IsDieCheck()
 			EnemyPawns[i]->Destroy();
 			EnemyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 		}
-	}
-	if (FriendlyPawns.IsEmpty())
-	{
-		//게임오버 -> 메인화면 레벨 오픈
 	}
 	//FriendlyPawns 배열이 비었다면 게임오버 -> 플래그 ㄱ
 	for (int32 i = FriendlyPawns.Num() - 1; i >= 0; --i)
@@ -50,6 +44,24 @@ void UBattleSubsystem::IsDieCheck()
 			FriendlyPawns.RemoveAt(i); // 사망한 적을 배열에서 제거
 		}
 	}
+
+	if (EnemyPawns.IsEmpty())
+	{
+		BattleEndFirst.Broadcast();
+		BattleEndSecond.Broadcast();
+		BattleEndThird.Broadcast();
+
+		//배틀엔드에 레벨매니저 라운드 or 레벨 데이터 업데이트 후 배틀 시작
+
+		return true;
+	}
+
+	if (FriendlyPawns.IsEmpty())
+	{
+		//게임오버 -> 메인화면 레벨 오픈
+		return true;
+	}
+	return false;
 }
 
 void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
@@ -59,10 +71,10 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
 	InPawn->ControllerInit();
+	InPawn->ActiveCollision(false); // 그냥 병123신같이 움직이는것도 포용하기...
 	switch (InPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
-		InPawn->ActiveCollision(false); // 그냥 병123신같이 움직이는것도 포용하기...
 		break;
 	case EPawnGroup::Friendly:
 		SelectActionView();
@@ -213,13 +225,13 @@ void UBattleSubsystem::FinishTurn()
 	if (ActionPawn)
 	{
 		//턴종료시 해야할것
-		//액션폰의 ABT 게이지를 비워주고
-		//에너미들의 ABTFeeling On 
+		//액션폰의 ATB 게이지를 비워주고
+		//에너미들의 ATBFeeling On 
 		//액션폰은 null로 초기화
-		ActionPawn->ABTReset();
+		ActionPawn->ATBReset();
 		ActionPawn = nullptr;
 		//죽은 폰이 있는지 확인하고 배열에서 제거
-		IsDieCheck();
+		if (IsDieCheck()) { return; } // bool 반환받고 레벨 전환 또는 라운드 전환 생기면 리턴해주기
 
 		BattleFinishTurn.Broadcast(); //배틀 끝나고 호출할거 싹다 넣어주기
 	}

@@ -31,9 +31,6 @@ protected:
 	UPROPERTY(EditAnywhere , Category = Node)
 	ESkills UseSkillSelect;
 
-	UPROPERTY(EditAnywhere , Category = Node)
-	ESkillRange SkillRangeType;
-
 	USkillComponent* SkillComponent;
 
 	UStatusComponent* StatusComponent;

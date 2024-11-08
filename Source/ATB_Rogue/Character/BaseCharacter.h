@@ -41,7 +41,8 @@ public:
 	virtual void OnFinishTurn();
 	UFUNCTION()
 	virtual void OnFirstSet(uint8 Round);
-
+	UFUNCTION()
+	virtual void OnBattleEndThird();
 private:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComponent;
@@ -60,5 +61,6 @@ protected:
 	TArray<ABasePawn*> CurHavePawns;
 	TArray<TArray<FTransform>> RoundsTransform; 
 private:
-	uint8 CurRound = 1;
+	UPROPERTY(VisibleAnywhere)
+	uint8 CurRound = 0;
 };

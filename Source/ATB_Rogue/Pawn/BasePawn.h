@@ -50,7 +50,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 public:
-	void SetSpawnPos(FVector SpawnPos);
 	virtual void PostDuplicate(EDuplicateMode::Type DuplicateMode) override;
 	virtual void PostLoad() override;
 	virtual void PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph) override;
@@ -58,6 +57,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform);
 
 	virtual void ControllerInit();
+	virtual void Init();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -65,8 +65,8 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
-	void ABTReset() { ABT_Cur = 0; }
-	void ABTFeeling();
+	void ATBReset() { ATB_Cur = 0; }
+	void ATBFeeling();
 
 	void SetActive(bool Active) { bActive = Active; }
 	void ActiveCollision(bool Active);
@@ -98,10 +98,10 @@ public:
 
 	bool IsActive() { return bActive; }
 
-	float GetABT() { return ABT_Cur; }
+	float GetATB() { return ATB_Cur; }
 
 	UFUNCTION(BlueprintCallable)
-	float GetPercent() { return ABT_Cur / ABT_MAX; }
+	float GetPercent() { return ATB_Cur / ATB_MAX; }
 
 	UFUNCTION(BlueprintCallable)
 	UTexture2D* GetPortrait();
@@ -152,9 +152,10 @@ protected:
 
 
 public:
-
+	void SetMaxHP(float InMaxHP) { MaxHP = InMaxHP; CurHP = MaxHP; }
+	void SetATBSpeed(float InATBSpeed) {}
 	void SetATBbar(USlider* InSlider) { ATBbar = InSlider; }
-	USlider* GetABTbar() { return ATBbar; }
+	USlider* GetATBbar() { return ATBbar; }
 	UPROPERTY()
 	USlider* ATBbar;
 
@@ -164,13 +165,13 @@ private:
 	bool bActive = false;
 
 	UPROPERTY(EditAnywhere)
-	float ABT_Min = 0.f;
+	float ATB_Min = 0.f;
 	UPROPERTY(EditAnywhere)
-	float ABT_Cur = ABT_Min;
+	float ATB_Cur = ATB_Min;
 	UPROPERTY(EditAnywhere)
-	float ABT_MAX = 1000.f;
+	float ATB_MAX = 1000.f;
 	UPROPERTY(EditAnywhere)
-	float ABT_Speed = 1.f;
+	float ATB_Speed = 1.f;
 
 	UPROPERTY(EditAnywhere)
 	float MaxHP = 100;
@@ -196,6 +197,8 @@ public:
 	virtual void OnStartTurn();
 	UFUNCTION()
 	virtual void OnFinishTurn();
+	UFUNCTION()
+	virtual void OnBattleEndFirst();
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

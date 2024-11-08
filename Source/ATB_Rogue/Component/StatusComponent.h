@@ -34,6 +34,7 @@ public:
         ATK(0.f),
         DEF(0.f),
         SPATK(0.f),
+        SPDEF(0.f),
         SPD(0.f),
         ACC(0.f),
         EVA(0.f),
@@ -48,6 +49,7 @@ public:
         ATK(Other.ATK),
         DEF(Other.DEF),
         SPATK(Other.SPATK),
+        SPDEF(Other.SPDEF),
         SPD(Other.SPD),
         ACC(Other.ACC),
         EVA(Other.EVA),
@@ -116,16 +118,24 @@ public:
 	FStatTableRow* StatData;
 
 public:
+    const TSharedPtr<FSpeciesInfo> GetSpeciesInfo() { return SpeciesInfo; }
 
-    float CalculateHP(float BaseHP);
-    float CalculateStat(float BaseStat);
-public:
-    const FSpeciesInfo* GetSpeciesInfo() { return SpeciesInfo.Get(); }
-
-	void SetSpeciesInfo(TUniquePtr<FSpeciesInfo> NewSpeciesInfo) { check(!SpeciesInfo); SpeciesInfo = MoveTemp(NewSpeciesInfo); }
+	void SetSpeciesInfo(TSharedPtr<FSpeciesInfo> NewSpeciesInfo) { SpeciesInfo = NewSpeciesInfo; }
 protected:
 	void ReleaseContext() { check(SpeciesInfo); SpeciesInfo = nullptr; } //지울일이있나?
 
-	TUniquePtr<FSpeciesInfo> SpeciesInfo;
+private:
+    uint8 GetRand() { return FMath::RandRange(85, 100); }
+    float AffinityCalcu(EAttribute CauserAttribute, EAttribute thisAttribute);
+private:
+	TSharedPtr<FSpeciesInfo> SpeciesInfo;
+
+    const float AffinityTable[4][4] = {
+        // Vaccine, Data, Virus, Unknown
+            {1.0f, 0.5f, 1.5f, 1.0f},   // Vaccine에 대한 상성
+            {1.5f, 1.0f, 0.5f, 1.0f},   // Data에 대한 상성
+            {0.5f, 1.5f, 1.0f, 1.0f},   // Virus에 대한 상성
+            {1.0f, 1.0f, 1.0f, 1.0f}    // Unknown에 대한 상성
+    };    
 
 };

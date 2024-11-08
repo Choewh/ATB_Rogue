@@ -131,7 +131,7 @@ bool UMainUserWidget::EnterGame()
 
 	if (GameInstanceSubsystem)
 	{
-	Result = GameInstanceSubsystem->SavePlayerPawnsInfo(SelectPawns);
+	Result = GameInstanceSubsystem->InitSpawnPlayerPawnSpecies(SelectPawns);
 	}
 
 	return Result;

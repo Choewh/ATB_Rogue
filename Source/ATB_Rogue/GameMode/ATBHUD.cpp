@@ -1,25 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameMode/ABTHUD.h"
-#include "GameMode/ABTUserWidget.h"
+#include "GameMode/ATBHUD.h"
+#include "GameMode/ATBUserWidget.h"
 #include "GameMode/BasePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
-AABTHUD::AABTHUD()
+AATBHUD::AATBHUD()
 {
 	{
-		UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar'
-		check(WidgetClass);
-		ATBWidget = CreateWidget<UABTBarUserWidget>(GetWorld(), WidgetClass);
+		//UClass* WidgetClass = LoadClass<UATBBarUserWidget>(nullptr,
+		//TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar'
+		//check(WidgetClass);
+		//ATBWidget = CreateWidget<UATBBarUserWidget>(GetWorld(), WidgetClass);
 
 	}
 	{
-		UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
-			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_User_UI.ABT_User_UI_C'"));
-		check(WidgetClass);
-		Widget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
+		//UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
+		//	TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_User_UI.ATB_User_UI_C'"));
+		//check(WidgetClass);
+		//Widget = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	}
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	/*UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
@@ -28,9 +28,9 @@ AABTHUD::AABTHUD()
 
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
-	PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);*/
+	PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);*/
 }
-void AABTHUD::PostInitializeComponents()
+void AATBHUD::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
@@ -40,23 +40,23 @@ void AABTHUD::PostInitializeComponents()
 
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
-	PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);
+	PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);
 }
-void AABTHUD::BeginPlay()
+void AATBHUD::BeginPlay()
 {
 	//Super::BeginPlay();
 	//{
-	//	UClass* WidgetClass = LoadClass<UABTBarUserWidget>(nullptr,
-	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_Bar.ABT_Bar'
+	//	UClass* WidgetClass = LoadClass<UATBBarUserWidget>(nullptr,
+	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar'
 	//	check(WidgetClass);
-	//	ATBWidget = CreateWidget<UABTBarUserWidget>(GetWorld(), WidgetClass);
+	//	ATBWidget = CreateWidget<UATBBarUserWidget>(GetWorld(), WidgetClass);
 
 	//}
 	//{
-	//	UClass* WidgetClass = LoadClass<UABTUserWidget>(nullptr,
-	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ABT_User_UI.ABT_User_UI_C'"));
+	//	UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
+	//		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_User_UI.ATB_User_UI_C'"));
 	//	check(WidgetClass);
-	//	Widget = CreateWidget<UABTUserWidget>(GetWorld(), WidgetClass);
+	//	Widget = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	//}
 	//{  //Temp
 	//	UClass* WidgetClass = LoadClass<UUserWidget>(nullptr,
@@ -72,12 +72,12 @@ void AABTHUD::BeginPlay()
 
 	//PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	//check(PlayerController);
-	//PlayerController->ShowWidget.AddDynamic(this, &AABTHUD::ShowViewPort);
+	//PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);
 }
 
 
 
-void AABTHUD::ShowATBBar(uint8 Round)
+void AATBHUD::ShowATBBar(uint8 Round)
 {
 
 	if (ATBWidget && !ATBWidget->IsInViewport())
@@ -88,7 +88,7 @@ void AABTHUD::ShowATBBar(uint8 Round)
 	}
 }
 
-void AABTHUD::ShowViewPort()
+void AATBHUD::ShowViewPort()
 {
 	if (Widget && !Widget->IsInViewport())
 	{

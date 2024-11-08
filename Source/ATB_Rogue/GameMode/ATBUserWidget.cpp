@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameMode/ABTUserWidget.h"
+#include "GameMode/ATBUserWidget.h"
 #include "Kismet/GameplayStatics.h"
-void UABTUserWidget::NativeOnInitialized()
+void UATBUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	PlayerController = Cast<ABasePlayerController>(GetOwningPlayer());
@@ -11,12 +11,12 @@ void UABTUserWidget::NativeOnInitialized()
 	ATBGameInstanceSubsystem = UGameplayStatics::GetGameInstance(this)->GetSubsystem<UATBGameInstanceSubsystem>();
 }
 
-void UABTUserWidget::NativePreConstruct()
+void UATBUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 }
 
-void UABTUserWidget::NativeConstruct()
+void UATBUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	//ensure(OwningPawn);

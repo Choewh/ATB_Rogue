@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Widget/ABTBarUserWidget.h"
-#include "ABTHUD.generated.h"
+#include "Widget/ATBBarUserWidget.h"
+#include "ATBHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API AABTHUD : public AHUD
+class ATB_ROGUE_API AATBHUD : public AHUD
 {
 	GENERATED_BODY()
 public:
-	AABTHUD();
+	AATBHUD();
 
 
 public:
@@ -35,10 +35,10 @@ private:
 	TObjectPtr<class ABasePlayerController> PlayerController;
 
 	UPROPERTY()
-	TObjectPtr<class UABTUserWidget> Widget;
+	TObjectPtr<class UATBUserWidget> Widget;
 
 	UPROPERTY()
-	TObjectPtr<UABTBarUserWidget> ATBWidget;
+	TObjectPtr<UATBBarUserWidget> ATBWidget;
 
 	
 

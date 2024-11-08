@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widget/ABTBarUserWidget.h"
+#include "Widget/ATBBarUserWidget.h"
 #include "Styling/SlateBrush.h"
 #include "Styling/SlateTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Pawn/BasePawn.h"
 
-void UABTBarUserWidget::NativeOnInitialized()
+void UATBBarUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
@@ -24,28 +24,28 @@ void UABTBarUserWidget::NativeOnInitialized()
 
 }
 
-void UABTBarUserWidget::NativePreConstruct()
+void UATBBarUserWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 }
 
-void UABTBarUserWidget::NativeConstruct()
+void UATBBarUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UABTBarUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UATBBarUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 }
 
 
-void UABTBarUserWidget::OnHiddenUI()
+void UATBBarUserWidget::OnHiddenUI()
 {
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UABTBarUserWidget::OnDie()
+void UATBBarUserWidget::OnDie()
 {
 }
 

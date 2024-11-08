@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameMode/ABTUserWidget.h"
+#include "GameMode/ATBUserWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Widget/USelectableCell.h"
-#include "ABTUserAttackWidget.generated.h"
+#include "ATBUserAttackWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ATB_ROGUE_API UABTUserAttackWidget : public UABTUserWidget
+class ATB_ROGUE_API UATBUserAttackWidget : public UATBUserWidget
 {
 	GENERATED_BODY()
 	

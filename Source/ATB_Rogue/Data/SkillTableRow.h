@@ -19,9 +19,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Skill|Icon")			UTexture2D* Skill_Icon;
 	UPROPERTY(EditAnywhere, Category = "Skill|Name")			FName Skill_Name;
 	UPROPERTY(EditAnywhere, Category = "Skill|DamageType ")		EHitDamageType Skill_DamageType;
-	UPROPERTY(EditAnywhere, Category = "Skill|RangeType")		ESkillRange Skill_RangeType;
-	UPROPERTY(EditAnywhere, Category = "Skill|TargetType ")		EHitTargetType Skill_TargetType;
+	UPROPERTY(EditAnywhere, Category = "Skill|DamageType ")		TSubclassOf<UDamageType> Skill_DamageClass;
+	//UPROPERTY(EditAnywhere, Category = "Skill|RangeType")		ESkillRange Skill_RangeType;
+	//UPROPERTY(EditAnywhere, Category = "Skill|TargetType ")		EHitTargetType Skill_TargetType;
+
+	UPROPERTY(EditAnywhere, Category = "Skill|Damage ")		float Skill_Damage;
 	UPROPERTY(EditAnywhere, Category = "Skill|Range")			float Skill_Range;
+
 	UPROPERTY(EditAnywhere, Category = "Skill|Animation")		UAnimMontage* SkillReactMontage;
 
 };

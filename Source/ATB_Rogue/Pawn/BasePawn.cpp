@@ -5,7 +5,7 @@
 #include "DrawDebugHelpers.h"
 
 #include "Misc/Utils.h"
-#include "Widget/ABTBarUserWidget.h"
+#include "Widget/ATBBarUserWidget.h"
 //#include "Subsystem/BattleSubsystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -89,8 +89,11 @@ void ABasePawn::BeginPlay()
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::OnStartBattle);
+
 		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
+
+		BattleSubsystem->BattleEndFirst.AddDynamic(this, &ThisClass::OnBattleEndFirst);
 	}
 	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
 
@@ -152,9 +155,11 @@ void ABasePawn::SetData()
 	if (StatusComponent)
 	{
 		StatusComponent->SetData(Species);
+		//HP 계산																								//( 1 + (StatusComponent->GetSpeciesInfo()->Level / 100) ) 1. Level / 100
+		SetMaxHP(FMath::RoundToInt(( (StatusComponent->GetSpeciesInfo()->HP * static_cast<uint8>(StatusComponent->GetSpeciesInfo()->Stage) + 100.f)  *  ((StatusComponent->GetSpeciesInfo()->Level / 100.f) ) + 10.f)));
 
-		ABT_Speed = StatusComponent->GetSpeciesInfo()->SPD;
-	}
+		ATB_Speed = StatusComponent->GetSpeciesInfo()->SPD;
+	}	
 
 	if (EffectComponent)
 	{
@@ -171,14 +176,6 @@ void ABasePawn::SetData()
 		AnimComponent->SetData(Species);
 	}
 	MaterialInit();
-}
-
-void ABasePawn::SetSpawnPos(FVector SpawnPos)
-{
-	FVector MovePoint = GetActorLocation() + SpawnPos * 100;
-
-	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
-	BaseAIController->GetBlackboardComponent()->SetValueAsVector(TEXT("MovePoint"), MovePoint);
 }
 
 void ABasePawn::PostDuplicate(EDuplicateMode::Type DuplicateMode)
@@ -212,33 +209,43 @@ void ABasePawn::ControllerInit()
 	BaseAIController->SetActiveTurn(true);
 }
 
+void ABasePawn::Init()
+{
+	ATBReset();
+	bActive = false;
+	bDie = false;
+	bDestroy = false;
+	bEvolution = false;
+
+}
+
 // Called every frame
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ABTFeeling();
+	ATBFeeling();
 
 }
 
-void ABasePawn::ABTFeeling()
+void ABasePawn::ATBFeeling()
 {
 	if (!bActive)
 	{
 		return;
 	}
 
-	if (ABT_Cur >= ABT_MAX)
+	if (ATB_Cur >= ATB_MAX)
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->EnterActiveTurn(this);
 	}
 	else
 	{
-		ABT_Cur += ABT_Speed;
+		ATB_Cur += ATB_Speed;
 		//뷰포트 로그 float->string
 	}
-	OnATBChanged.Broadcast(ABT_Cur, ABT_MAX);
+	OnATBChanged.Broadcast(ATB_Cur, ATB_MAX);
 }
 
 
@@ -278,9 +285,8 @@ void ABasePawn::HitAnim()
 float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (IsDie()) { return 0.f; }
-
 	//아래에서 최종데미지 계산
-	float DamageResult = StatusComponent->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	float DamageResult = FMath::FloorToInt(StatusComponent->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser));
 	if (FMath::IsNearlyZero(DamageResult)) { return 0.0; }
 
 	CurHP -= DamageResult;
@@ -337,7 +343,7 @@ UTexture2D* ABasePawn::GetPortrait()
 /// </summary>
 void ABasePawn::OnStartBattle(uint8 Round)
 {
-
+	Init();
 }
 void ABasePawn::OnStartTurn()
 {
@@ -351,6 +357,13 @@ void ABasePawn::OnFinishTurn()
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
 	BaseAIController->SetActiveTurn(false);
 	bActive = true;
+}
+void ABasePawn::OnBattleEndFirst()
+{
+	UE_LOG(LogTemp, Display, TEXT("Level : %i"), StatusComponent->GetSpeciesInfo()->Level);
+	StatusComponent->GetSpeciesInfo()->Level++;
+	UE_LOG(LogTemp, Display, TEXT("Level : %i"), StatusComponent->GetSpeciesInfo()->Level);
+
 }
 /// <summary>
 /// EffectTimeLine
