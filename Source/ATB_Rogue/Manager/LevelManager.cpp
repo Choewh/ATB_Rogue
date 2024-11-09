@@ -65,7 +65,7 @@ void ALevelManager::SetRoundPawns()
 		}
 		else
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(1, EPawnGroup::Enemy, CurLevel, EBattleSpec::Boss);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(2, EPawnGroup::Enemy, CurLevel, EBattleSpec::Boss);
 			RoundsPawns.Add(RoundPawns);
 		}
 	}

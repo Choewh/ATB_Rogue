@@ -4,7 +4,8 @@
 #include "Widget/ATBBattleUserWidget.h"
 #include "Components/OverlaySlot.h"
 #include "Components/VerticalBoxSlot.h"
-#include "Components/Overlay.h"
+#include "Components/Border.h"
+
 
 void UATBBattleUserWidget::NativeOnInitialized()
 {
@@ -36,7 +37,8 @@ void UATBBattleUserWidget::AddPawnUI(ABasePawn* InBasePawn)
 
 void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 {
-	UOverlay* BoxOverlay = NewObject<UOverlay>(this);
+
+	UOverlay* ProgressBarBox = NewObject<UOverlay>(this);
 	UImage* Image = NewObject<UImage>(this);
 	UVerticalBox* VerticalBox = NewObject<UVerticalBox>(this);
 	UOverlay* HPOverlay = NewObject<UOverlay>(this);
@@ -49,11 +51,12 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	HPProgressBar->SetIsEnabled(false);
 	ATBProgressBar->SetIsEnabled(false);
 
-	EnemyBarBox->AddChild(BoxOverlay);
+	//EnemyBarBox 설정
+	EnemyBarBox->AddChild(ProgressBarBox);
 	{
-		BoxOverlay->AddChild(Image);
-		BoxOverlay->AddChild(VerticalBox);
-		TArray<UPanelSlot*> Slots = BoxOverlay->GetSlots();
+		ProgressBarBox->AddChild(Image);
+		ProgressBarBox->AddChild(VerticalBox);
+		TArray<UPanelSlot*> Slots = ProgressBarBox->GetSlots();
 		for (auto& OverlaySlots : Slots)
 		{
 			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
@@ -64,7 +67,7 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		}
 		FSlateBrush BrushCopy = Image->GetBrush();
 
-		BrushCopy.SetImageSize(FVector2D(200.f, 30.f));
+		BrushCopy.SetImageSize(FVector2D(200.f, 50.f));
 
 		Image->SetBrush(BrushCopy);
 	}
@@ -110,9 +113,9 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	}
 	{
 		TArray<UPanelSlot*> Slots = EnemyBarBox->GetSlots();
-		for (auto& OverlaySlots : Slots)
+		for (auto& VerticalBoxSlots : Slots)
 		{
-			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(OverlaySlots);
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
 
 			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
 			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
@@ -129,18 +132,45 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
 	ATBProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
 
+
+	
+	//EnemyPortraitBox 설정
+	UImage* Portrait = NewObject<UImage>(this);
+	EnemyPortraitBox->AddChild(Portrait);
+	{
+		TArray<UPanelSlot*> Slots = EnemyPortraitBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		FSlateBrush BrushCopy = Portrait->GetBrush();
+
+		BrushCopy.SetImageSize(FVector2D(100.f, 100.f));
+
+		Portrait->SetBrush(BrushCopy);
+		Portrait->SetBrushFromTexture(InEnemyPawn->GetPortrait());
+	}
+
 	FPawnUIElements PawnUIElements;
 	PawnUIElements.ATBProgressBar = ATBProgressBar;
 	PawnUIElements.HPProgressBar = HPProgressBar;
-	PawnUIElements.Image = Image;
+	PawnUIElements.Portrait = Portrait;
 
 	EnemyUI.Add(InEnemyPawn, PawnUIElements);
 }
 
 
+
 void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 {
-	UOverlay* BoxOverlay = NewObject<UOverlay>(this);
+	UOverlay* ProgressBarBox = NewObject<UOverlay>(this);
 	UImage* Image = NewObject<UImage>(this);
 	UVerticalBox* VerticalBox = NewObject<UVerticalBox>(this);
 	UOverlay* HPOverlay = NewObject<UOverlay>(this);
@@ -153,11 +183,12 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	HPProgressBar->SetIsEnabled(false);
 	ATBProgressBar->SetIsEnabled(false);
 
-	FriendlyBarBox->AddChild(BoxOverlay);
+	//FriendlyBarBox 설정
+	FriendlyBarBox->AddChild(ProgressBarBox);
 	{
-		BoxOverlay->AddChild(Image);
-		BoxOverlay->AddChild(VerticalBox);
-		TArray<UPanelSlot*> Slots = BoxOverlay->GetSlots();
+		ProgressBarBox->AddChild(Image);
+		ProgressBarBox->AddChild(VerticalBox);
+		TArray<UPanelSlot*> Slots = ProgressBarBox->GetSlots();
 		for (auto& OverlaySlots : Slots)
 		{
 			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
@@ -168,7 +199,7 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		}
 		FSlateBrush BrushCopy = Image->GetBrush();
 
-		BrushCopy.SetImageSize(FVector2D(200.f, 30.f));
+		BrushCopy.SetImageSize(FVector2D(200.f, 50.f));
 
 		Image->SetBrush(BrushCopy);
 	}
@@ -214,9 +245,9 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	}
 	{
 		TArray<UPanelSlot*> Slots = FriendlyBarBox->GetSlots();
-		for (auto& OverlaySlots : Slots)
+		for (auto& VerticalBoxSlots : Slots)
 		{
-			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(OverlaySlots);
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
 
 			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
 			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
@@ -233,10 +264,96 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
 	ATBProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
 
+
+
+	//FriendlyPortraitBox 설정
+	UOverlay* PortraitBox = NewObject<UOverlay>(this);
+	UBorder* PortraitBorder = NewObject<UBorder>(this);
+	UImage* Portrait = NewObject<UImage>(this);
+	FriendlyPortraitBox->AddChild(PortraitBox);
+
+	PortraitBox->AddChild(PortraitBorder);
+	PortraitBorder->AddChild(Portrait);
+
+	{
+		TArray<UPanelSlot*> Slots = FriendlyPortraitBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		FSlateBrush BrushCopy = Portrait->GetBrush();
+
+		BrushCopy.SetImageSize(FVector2D(100.f, 100.f));
+
+		Portrait->SetBrush(BrushCopy);
+		Portrait->SetBrushFromTexture(InFriendlyPawn->GetPortrait());
+	}
+	//구조체 생성
 	FPawnUIElements PawnUIElements;
+
+	TWeakObjectPtr<UOverlay> WeakProgressBarBoxPtr;
+	WeakProgressBarBoxPtr = ProgressBarBox;
+
+	PawnUIElements.ProgressBarBox = WeakProgressBarBoxPtr;
 	PawnUIElements.ATBProgressBar = ATBProgressBar;
 	PawnUIElements.HPProgressBar = HPProgressBar;
-	PawnUIElements.Image = Image;
+
+	TWeakObjectPtr<UOverlay> WeakPortraitBoxPtr;
+	WeakPortraitBoxPtr = ProgressBarBox;
+
+	PawnUIElements.PortraitBox = WeakPortraitBoxPtr;
+	PawnUIElements.Portrait = Portrait;
 
 	FriendlyUI.Add(InFriendlyPawn, PawnUIElements);
+}
+
+void UATBBattleUserWidget::RemovePawnUI(ABasePawn* DeadPawn)
+{
+	// NewPawn 생성시 호출 
+	switch (DeadPawn->PawnGroup)
+	{
+	case EPawnGroup::Enemy:
+		RemoveEnemyUI(DeadPawn);
+		break;
+
+	case EPawnGroup::Friendly:
+		RemoveFriendlyUI(DeadPawn);
+		break;
+	default:
+		break;
+	}
+}
+
+void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
+{
+	if (DeadPawn && EnemyUI.Contains(DeadPawn))
+	{
+		// UI 요소 삭제 처리
+		FPawnUIElements* UIElements = EnemyUI.Find(DeadPawn);
+		if (UIElements)
+		{
+			if (UIElements->PortraitBox.IsValid())
+			{
+				UIElements->PortraitBox->RemoveFromParent();
+			}
+			if (UIElements->ProgressBarBox.IsValid())
+			{
+				UIElements->ProgressBarBox->RemoveFromParent();
+			}
+		}
+		// EnemyUI에서 삭제
+		EnemyUI.Remove(DeadPawn);
+	}
+}
+
+void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
+{
+
 }

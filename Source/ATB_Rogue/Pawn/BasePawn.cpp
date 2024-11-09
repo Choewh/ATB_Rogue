@@ -6,7 +6,8 @@
 
 #include "Misc/Utils.h"
 #include "Widget/ATBBarUserWidget.h"
-//#include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/ATBUserUISubSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/SkinnedAssetCommon.h"
@@ -97,6 +98,14 @@ void ABasePawn::BeginPlay()
 	}
 	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
 
+}
+void ABasePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+	check(ATBUserUISubSystem);
+	ATBUserUISubSystem->BattleUIRemovePawn(this);
 }
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()

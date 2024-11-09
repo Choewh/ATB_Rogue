@@ -9,3 +9,8 @@ void UATBUserUISubSystem::BattleUIAddPawn(ABasePawn* InBasePawn)
 {
 	AddPawnUI.Broadcast(InBasePawn);
 }
+
+void UATBUserUISubSystem::BattleUIRemovePawn(ABasePawn* InBasePawn)
+{
+	RemovePawnUI.Broadcast(InBasePawn);
+}

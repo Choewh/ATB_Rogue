@@ -29,6 +29,8 @@ public:
 	UFUNCTION()
 	void AddPawnBattleUI(ABasePawn* InPawn);
 	UFUNCTION()
+	void RemovePawnBattleUI(ABasePawn* DeadPawn);
+	UFUNCTION()
 	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
 	void ShowViewPort();

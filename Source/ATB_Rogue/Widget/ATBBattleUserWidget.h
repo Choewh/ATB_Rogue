@@ -7,6 +7,7 @@
 #include "Components/VerticalBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+#include "Components/Overlay.h"
 #include "ATBBattleUserWidget.generated.h"
 
 /**
@@ -19,8 +20,13 @@ struct FPawnUIElements
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TWeakObjectPtr<UImage> Image;
+	TWeakObjectPtr<UOverlay> PortraitBox;
 
+	UPROPERTY()
+	TWeakObjectPtr<UImage> Portrait;
+
+	UPROPERTY()
+	TWeakObjectPtr<UOverlay> ProgressBarBox;
 	UPROPERTY()
 	TWeakObjectPtr<UProgressBar> HPProgressBar;
 
@@ -42,6 +48,11 @@ public:
 	void AddPawnUI(ABasePawn* InBasePawn);
 	void AddEnemyUI(ABasePawn* InEnemyPAwn);
 	void AddFriendlyUI(ABasePawn* InFriendlyPAwn);
+
+	void RemovePawnUI(ABasePawn* DeadPawn);
+	void RemoveEnemyUI(ABasePawn* DeadPawn);
+	void RemoveFriendlyUI(ABasePawn* DeadPawn);
+	
 
 
 

@@ -35,16 +35,23 @@ void AATBHUD::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
-	UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
-	check(ATBUserUISubSystem);
-	ATBUserUISubSystem->AddPawnUI.AddDynamic(this, &ThisClass::AddPawnBattleUI);
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	check(BattleSubsystem);
-	BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUI);
-
-	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
-	check(PlayerController);
-	PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);
+	{
+		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->AddPawnUI.AddDynamic(this, &ThisClass::AddPawnBattleUI);
+		ATBUserUISubSystem->RemovePawnUI.AddDynamic(this, &ThisClass::RemovePawnBattleUI);
+	}
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUI);
+	}
+	
+	{
+		PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+		check(PlayerController);
+		PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);
+	}
 }
 void AATBHUD::BeginPlay()
 {
@@ -56,6 +63,11 @@ void AATBHUD::BeginPlay()
 void AATBHUD::AddPawnBattleUI(ABasePawn* InPawn)
 {
 	ATBBattleUserWidget->AddPawnUI(InPawn);
+}
+
+void AATBHUD::RemovePawnBattleUI(ABasePawn* DeadPawn)
+{
+	ATBBattleUserWidget->RemovePawnUI(DeadPawn);
 }
 
 void AATBHUD::ShowBattleUI(uint8 Round)
