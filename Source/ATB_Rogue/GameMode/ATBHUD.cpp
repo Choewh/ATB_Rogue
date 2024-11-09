@@ -16,11 +16,10 @@ AATBHUD::AATBHUD()
 		ATBBattleUserWidget = CreateWidget<UATBBattleUserWidget>(GetWorld(), WidgetClass);
 	}
 	{
-		//UClass* WidgetClass = LoadClass<UATBBarUserWidget>(nullptr,
-		//TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar_C'"));///Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Bar.ATB_Bar'
-		//check(WidgetClass);
-		//ATBWidget = CreateWidget<UATBBarUserWidget>(GetWorld(), WidgetClass);
-
+		UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
+		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Battle_Turn.ATB_Battle_Turn_C'"));
+		check(WidgetClass);
+		TurnActionWidget = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	}
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	/*UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
@@ -29,7 +28,7 @@ AATBHUD::AATBHUD()
 
 	PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	check(PlayerController);
-	PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);*/
+	PlayerController->ShowTurnActionWidget.AddDynamic(this, &AATBHUD::ShowTurnActionWidget);*/
 }
 void AATBHUD::PostInitializeComponents()
 {
@@ -50,7 +49,7 @@ void AATBHUD::PostInitializeComponents()
 	{
 		PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		check(PlayerController);
-		PlayerController->ShowWidget.AddDynamic(this, &AATBHUD::ShowViewPort);
+		PlayerController->ShowTurnActionWidget.AddDynamic(this, &AATBHUD::ShowTurnActionWidget);
 	}
 }
 void AATBHUD::BeginPlay()
@@ -85,13 +84,13 @@ void AATBHUD::ShowBattleUI(uint8 Round)
 	//}
 }
 
-void AATBHUD::ShowViewPort()
+void AATBHUD::ShowTurnActionWidget()
 {
-	//if (Widget && !Widget->IsInViewport())
-	//{
-	//	Widget->AddToViewport();
-	//	UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
-	//}
+	if (TurnActionWidget && !TurnActionWidget->IsInViewport())
+	{
+		TurnActionWidget->AddToViewport();
+		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+	}
 }
 
 

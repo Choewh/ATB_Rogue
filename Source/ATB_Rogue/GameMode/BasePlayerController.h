@@ -16,7 +16,7 @@
 
 #include "BasePlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FShowWidget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FShowTurnActionWidget);
 
 /**
  *
@@ -77,7 +77,7 @@ public:
 public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FShowWidget ShowWidget;
+	FShowTurnActionWidget ShowTurnActionWidget;
 
 	UFUNCTION()
 	void StartTurn();

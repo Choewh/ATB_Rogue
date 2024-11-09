@@ -86,7 +86,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 
 void UBattleSubsystem::SelectActionView()
 {
-	PlayerController->ShowWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
+	PlayerController->ShowTurnActionWidget.Broadcast(); // 제일 첫 Move Attack Wait 메뉴 상태
 	SetViewCameraMode(ECameraViewMode::PawnView);
 	SetBattleState(EBattleState::Defalut);
 	//그럴일없겠지만 있으면 삭제 ㅇㅇ

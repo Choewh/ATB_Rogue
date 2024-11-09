@@ -33,7 +33,7 @@ public:
 	UFUNCTION()
 	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
-	void ShowViewPort();
+	void ShowTurnActionWidget();
 
 private:
 	UPROPERTY()
@@ -43,7 +43,10 @@ private:
 	TObjectPtr<UATBBattleUserWidget> ATBBattleUserWidget;
 
 	UPROPERTY()
-	TObjectPtr<UATBBarUserWidget> ATBWidget;
+	TObjectPtr<UATBUserWidget> TurnActionWidget;
+
+	/*UPROPERTY()
+	TObjectPtr<UATBBarUserWidget> ATBWidget;*/
 
 	
 
