@@ -181,7 +181,11 @@ void ABaseCharacter::OnFirstSet(uint8 Round)
 	CurRound++;
 	if (CurRound % 10 == 1)
 	{
-		SpawnPawn(); //라운드 넘어갈때마다 저장 했다 로드 해주기 ㅇㄸ ㄱㅊ은듯?? TODO
+		SpawnPawn(); //레벨 이동시 새로 생성
+	}
+	else //라운드 시작시 위치만 새로 조정
+	{
+		ReSetTransform();
 	}
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	BattleSubsystem->SetFriendlyPawns(CurHavePawns);
@@ -191,6 +195,16 @@ void ABaseCharacter::OnBattleEndThird()
 {
 	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
 	GameInstanceSubsystem->SavePlayerPawnsInfo(CurHavePawns);
+}
+
+void ABaseCharacter::ReSetTransform()
+{
+	for (uint8 i = 0; i < CurHavePawns.Num(); i++)
+	{
+		if (CurHavePawns.IsEmpty()) { break; } //비었으면 끝
+		CurHavePawns[i]->SetActorTransform(RoundsTransform[0][i]);
+		CurHavePawns[i]->OnSpawn();
+	}
 }
 
 ///

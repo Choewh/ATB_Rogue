@@ -31,6 +31,8 @@ public:
 	UFUNCTION()
 	void RemovePawnBattleUI(ABasePawn* DeadPawn);
 	UFUNCTION()
+	void UpdatePawnPortraitUI(ABasePawn* UpdatePawn);
+	UFUNCTION()
 	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
 	void ShowTurnActionWidget();

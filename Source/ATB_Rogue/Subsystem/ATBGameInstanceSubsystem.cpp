@@ -47,8 +47,8 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerP
 	//정보만 따로 빼서 구조체화 하기
 	TArray<FBasePawnInfo> NewPlayerPawnsInfo;
 
-	for (auto& Pawn : PlayerPawns)
-	{
+	for (auto& Pawn : PlayerPawns) //TODO Destroy 하면 정보를 남기거나 여기서 그냥 null 이면 배열에서 빼기 
+	{							//아니면 파괴된 폰은 따로 배열에 저장해놓고 생성시 추가해주기 ㄱ
 		FBasePawnInfo NewBasePawnInfo;
 		NewBasePawnInfo.SpeciesInfo = *Pawn->StatusComponent->GetSpeciesInfo();
 		NewBasePawnInfo.Species = Pawn->Species;

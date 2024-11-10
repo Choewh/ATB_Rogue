@@ -25,6 +25,10 @@
  *
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedHPBar, ABasePawn*, InBasePawn, float, HPPercent);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangedATBBar, ABasePawn*, InBasePawn, float, ATBPercent);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnATBChanged, float, CurrentATB, float, MaxATB);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStartTurn);
@@ -192,6 +196,10 @@ public:
 	FStartTurn StartTurn;
 	UPROPERTY(BlueprintAssignable)
 	FFinishTurn FinishTurn;
+	UPROPERTY(BlueprintAssignable)
+	FOnChangedHPBar OnChangedHPBar;
+	UPROPERTY(BlueprintAssignable)
+	FOnChangedATBBar OnChangedATBBar;
 	UFUNCTION()
 	virtual void OnStartBattle(uint8 Round);
 	UFUNCTION()

@@ -4,13 +4,21 @@
 #include "Widget/ATBBattleUserWidget.h"
 #include "Components/OverlaySlot.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Components/HorizontalBoxSlot.h"
 #include "Components/Border.h"
+
 
 
 void UATBBattleUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+}
+
+void UATBBattleUserWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	UTexture2D* MyTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Textures/MyTextureName.MyTextureName"));
 }
 
 void UATBBattleUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -37,6 +45,10 @@ void UATBBattleUserWidget::AddPawnUI(ABasePawn* InBasePawn)
 
 void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 {
+	if (!InEnemyPawn) { return; }
+
+	InEnemyPawn->OnChangedATBBar.AddDynamic(this, &ThisClass::OnATBBarUpdate);
+	InEnemyPawn->OnChangedHPBar.AddDynamic(this, &ThisClass::OnHPBarUpdate);
 
 	UOverlay* ProgressBarBox = NewObject<UOverlay>(this);
 	UImage* Image = NewObject<UImage>(this);
@@ -126,17 +138,25 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		}
 	}
 	//빨강
+	HPProgressBar->SetPercent(1);
 	HPProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.f, 0.f));
 	HPProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
 	//노랑
+	ATBProgressBar->SetPercent(0);
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
 	ATBProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
 
 
 	
 	//EnemyPortraitBox 설정
+	UOverlay* PortraitBox = NewObject<UOverlay>(this);
+	UBorder* PortraitBorder = NewObject<UBorder>(this);
 	UImage* Portrait = NewObject<UImage>(this);
-	EnemyPortraitBox->AddChild(Portrait);
+	EnemyPortraitBox->AddChild(PortraitBox);
+
+	PortraitBox->AddChild(PortraitBorder);
+	PortraitBorder->AddChild(Portrait);
+
 	{
 		TArray<UPanelSlot*> Slots = EnemyPortraitBox->GetSlots();
 		for (auto& VerticalBoxSlots : Slots)
@@ -157,10 +177,46 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		Portrait->SetBrush(BrushCopy);
 		Portrait->SetBrushFromTexture(InEnemyPawn->GetPortrait());
 	}
-
+	//ATBBar에 추가
+	USlider* ATBSlider = NewObject<USlider>(this);
+	ATBBarBox->AddChild(ATBSlider);
+	{
+		TArray<UPanelSlot*> Slots = ATBBarBox->GetSlots();
+		for (auto& OverlaySlots : Slots)
+		{
+			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
+			OverlaySlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+			OverlaySlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
+			OverlaySlot->SynchronizeProperties();
+		}
+		FSliderStyle SliderStyle;
+		FSlateBrush SlateBrush;
+		SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
+		SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+		SlateBrush.SetResourceObject(InEnemyPawn->GetPortrait());
+		FSlateBrushOutlineSettings OutlineSettings(30.f,FSlateColor(FColor(1.f,0.f,0.f,1.f)),5.f);
+		SlateBrush.OutlineSettings = OutlineSettings;
+		SliderStyle.SetDisabledThumbImage(SlateBrush);
+		SliderStyle.SetNormalThumbImage(SlateBrush);
+		ATBSlider->SetWidgetStyle(SliderStyle);
+		ATBSlider->SetSliderBarColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
+	}
+	//구조체 생성
 	FPawnUIElements PawnUIElements;
+
+	PawnUIElements.SliderBar = ATBSlider;
+
+	TWeakObjectPtr<UOverlay> WeakProgressBarBoxPtr;
+	WeakProgressBarBoxPtr = ProgressBarBox;
+
+	PawnUIElements.ProgressBarBox = WeakProgressBarBoxPtr;
 	PawnUIElements.ATBProgressBar = ATBProgressBar;
 	PawnUIElements.HPProgressBar = HPProgressBar;
+
+	TWeakObjectPtr<UOverlay> WeakPortraitBoxPtr;
+	WeakPortraitBoxPtr = PortraitBox;
+
+	PawnUIElements.PortraitBox = WeakPortraitBoxPtr;
 	PawnUIElements.Portrait = Portrait;
 
 	EnemyUI.Add(InEnemyPawn, PawnUIElements);
@@ -170,6 +226,11 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 
 void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 {
+	if (!InFriendlyPawn) { return; }
+	
+	InFriendlyPawn->OnChangedATBBar.AddDynamic(this, &ThisClass::OnATBBarUpdate);
+	InFriendlyPawn->OnChangedHPBar.AddDynamic(this, &ThisClass::OnHPBarUpdate);
+
 	UOverlay* ProgressBarBox = NewObject<UOverlay>(this);
 	UImage* Image = NewObject<UImage>(this);
 	UVerticalBox* VerticalBox = NewObject<UVerticalBox>(this);
@@ -177,12 +238,7 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	UOverlay* ATBOverlay = NewObject<UOverlay>(this);
 	UProgressBar* HPProgressBar = NewObject<UProgressBar>(this);
 	UProgressBar* ATBProgressBar = NewObject<UProgressBar>(this);
-
-	VerticalBox->SetIsEnabled(false);
-	Image->SetIsEnabled(false);
-	HPProgressBar->SetIsEnabled(false);
-	ATBProgressBar->SetIsEnabled(false);
-
+	
 	//FriendlyBarBox 설정
 	FriendlyBarBox->AddChild(ProgressBarBox);
 	{
@@ -258,13 +314,13 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		}
 	}
 	//빨강
+	HPProgressBar->SetPercent(1);
 	HPProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.f, 0.f));
-	HPProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
+	HPProgressBar->SetBarFillType(EProgressBarFillType::RightToLeft);
 	//노랑
+	ATBProgressBar->SetPercent(0);
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
-	ATBProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
-
-
+	ATBProgressBar->SetBarFillType(EProgressBarFillType::RightToLeft);
 
 	//FriendlyPortraitBox 설정
 	UOverlay* PortraitBox = NewObject<UOverlay>(this);
@@ -295,8 +351,34 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		Portrait->SetBrush(BrushCopy);
 		Portrait->SetBrushFromTexture(InFriendlyPawn->GetPortrait());
 	}
+
+	USlider* ATBSlider = NewObject<USlider>(this);
+	ATBBarBox->AddChild(ATBSlider);
+	{
+		TArray<UPanelSlot*> Slots = ATBBarBox->GetSlots();
+		for (auto& OverlaySlots : Slots)
+		{
+			UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(OverlaySlots);
+			OverlaySlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+			OverlaySlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
+			OverlaySlot->SynchronizeProperties();
+		}
+		FSliderStyle SliderStyle;
+		FSlateBrush SlateBrush;
+		SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
+		SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+		SlateBrush.SetResourceObject(InFriendlyPawn->GetPortrait());
+		FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(0.f, 0.f, 1.f, 1.f)), 5.f);
+		SlateBrush.OutlineSettings = OutlineSettings;
+		SliderStyle.SetDisabledThumbImage(SlateBrush);
+		SliderStyle.SetNormalThumbImage(SlateBrush);
+		ATBSlider->SetWidgetStyle(SliderStyle);
+		ATBSlider->SetSliderBarColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
+	}
 	//구조체 생성
 	FPawnUIElements PawnUIElements;
+
+	PawnUIElements.SliderBar = ATBSlider;
 
 	TWeakObjectPtr<UOverlay> WeakProgressBarBoxPtr;
 	WeakProgressBarBoxPtr = ProgressBarBox;
@@ -306,7 +388,7 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	PawnUIElements.HPProgressBar = HPProgressBar;
 
 	TWeakObjectPtr<UOverlay> WeakPortraitBoxPtr;
-	WeakPortraitBoxPtr = ProgressBarBox;
+	WeakPortraitBoxPtr = PortraitBox;
 
 	PawnUIElements.PortraitBox = WeakPortraitBoxPtr;
 	PawnUIElements.Portrait = Portrait;
@@ -343,9 +425,15 @@ void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
 			{
 				UIElements->PortraitBox->RemoveFromParent();
 			}
+
 			if (UIElements->ProgressBarBox.IsValid())
 			{
 				UIElements->ProgressBarBox->RemoveFromParent();
+			}
+
+			if (UIElements->SliderBar.IsValid())
+			{
+				UIElements->SliderBar->RemoveFromParent();
 			}
 		}
 		// EnemyUI에서 삭제
@@ -355,5 +443,128 @@ void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
 
 void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
 {
+	if (DeadPawn && FriendlyUI.Contains(DeadPawn))
+	{
+		// UI 요소 삭제 처리
+		FPawnUIElements* UIElements = FriendlyUI.Find(DeadPawn);
+		if (UIElements)
+		{
+			if (UIElements->PortraitBox.IsValid())
+			{
+				UIElements->PortraitBox->RemoveFromParent();
+			}
 
+			if (UIElements->ProgressBarBox.IsValid())
+			{
+				UIElements->ProgressBarBox->RemoveFromParent();
+			}
+
+			if (UIElements->SliderBar.IsValid())
+			{
+				UIElements->SliderBar->RemoveFromParent();
+			}
+		}
+		// FriendlyUI에서 삭제
+		FriendlyUI.Remove(DeadPawn);
+	}
+}
+
+void UATBBattleUserWidget::OnPortraitUpdate(ABasePawn* UpdatePawn)
+{
+	if (UpdatePawn && FriendlyUI.Contains(UpdatePawn))
+	{
+		FPawnUIElements* UIElements = FriendlyUI.Find(UpdatePawn);
+		if (UIElements)
+		{
+			if (UIElements->Portrait.IsValid())
+			{
+				UIElements->Portrait->SetBrushFromTexture(UpdatePawn->GetPortrait());
+				FSliderStyle SliderStyle;
+				FSlateBrush SlateBrush;
+				SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
+				SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+				SlateBrush.SetResourceObject(UpdatePawn->GetPortrait());
+				FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(0.f, 0.f, 1.f, 1.f)), 5.f);
+				SlateBrush.OutlineSettings = OutlineSettings;
+				SliderStyle.SetDisabledThumbImage(SlateBrush);
+				SliderStyle.SetNormalThumbImage(SlateBrush);
+				UIElements->SliderBar->SetWidgetStyle(SliderStyle);
+			}
+		}
+	}
+	else if (UpdatePawn && EnemyUI.Contains(UpdatePawn))
+	{
+		FPawnUIElements* UIElements = EnemyUI.Find(UpdatePawn);
+		if (UIElements)
+		{
+			if (UIElements->Portrait.IsValid())
+			{
+				UIElements->Portrait->SetBrushFromTexture(UpdatePawn->GetPortrait());
+				FSliderStyle SliderStyle;
+				FSlateBrush SlateBrush;
+				SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
+				SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+				SlateBrush.SetResourceObject(UpdatePawn->GetPortrait());
+				FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(0.f, 0.f, 1.f, 1.f)), 5.f);
+				SlateBrush.OutlineSettings = OutlineSettings;
+				SliderStyle.SetDisabledThumbImage(SlateBrush);
+				SliderStyle.SetNormalThumbImage(SlateBrush);
+				UIElements->SliderBar->SetWidgetStyle(SliderStyle);
+			}
+		}
+	}
+}
+
+void UATBBattleUserWidget::OnHPBarUpdate(ABasePawn* InPawn, float InPercent)
+{
+	if (InPawn && FriendlyUI.Contains(InPawn))
+	{
+		FPawnUIElements* UIElements = FriendlyUI.Find(InPawn);
+		if (UIElements)
+		{
+			if (UIElements->HPProgressBar.IsValid())
+			{
+				UIElements->HPProgressBar->SetPercent(InPercent);
+			}
+		}
+	}
+	else if (InPawn && EnemyUI.Contains(InPawn))
+	{
+		FPawnUIElements* UIElements = EnemyUI.Find(InPawn);
+		if (UIElements)
+		{
+			if (UIElements->HPProgressBar.IsValid())
+			{
+				UIElements->HPProgressBar->SetPercent(InPercent);
+			}
+		}
+	}
+}
+
+void UATBBattleUserWidget::OnATBBarUpdate(ABasePawn* InPawn, float InPercent)
+{
+	if (InPawn && FriendlyUI.Contains(InPawn))
+	{
+		FPawnUIElements* UIElements = FriendlyUI.Find(InPawn);
+		if (UIElements)
+		{
+			if (UIElements->ATBProgressBar.IsValid())
+			{
+				UIElements->ATBProgressBar->SetPercent(InPercent);
+				UIElements->SliderBar->SetValue(InPercent);
+			}
+		}
+	}
+	else if (InPawn && EnemyUI.Contains(InPawn))
+	{
+		FPawnUIElements* UIElements = EnemyUI.Find(InPawn);
+		if (UIElements)
+		{
+			if (UIElements->ATBProgressBar.IsValid())
+			{
+				UIElements->ATBProgressBar->SetPercent(InPercent);
+				UIElements->SliderBar->SetValue(InPercent);
+			}
+		}
+	}
 }

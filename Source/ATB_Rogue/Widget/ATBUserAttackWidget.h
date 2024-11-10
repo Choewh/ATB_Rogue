@@ -6,6 +6,7 @@
 #include "GameMode/ATBUserWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Components/HorizontalBox.h"
 #include "Widget/USelectableCell.h"
 #include "ATBUserAttackWidget.generated.h"
 
@@ -28,27 +29,25 @@ protected:
 private:
 	UFUNCTION()
 	void FinishTurn();
+	
+	void CreateSkillUI();
 
-	void SetImage();
 public:
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* FirstSkillImage;
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	USelectableCell* FirstSkillCell;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* SecondSkillImage;
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	USelectableCell* SecondSkillCell;
+	UHorizontalBox* SkillHorizontalBox;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skills")
+	UButton* FirstSkillCell;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skills")
+	UButton* SecondSkillCell;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skills")
+	UButton* ThirdSkillCell;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* ThirdSkillImage;
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	USelectableCell* ThirdSkilICell;
-
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* Portrait;
-
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UButton* Cancle;
+	USelectableCell* Cancle;
+private:
+	UTexture2D* SkillBG;
 };

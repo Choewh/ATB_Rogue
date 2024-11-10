@@ -55,10 +55,10 @@ void ALevelManager::SetMaxRound()
 void ALevelManager::SetRoundPawns()
 {
 	//여기서 레벨 데이터와 종 배열 넘겨주기
-	for (uint8 i = 0; i < MaxRound; i++)
+	for (uint8 i = 1; i <= MaxRound; i++)
 	{
 		TArray<FBasePawnInfo> RoundPawns;
-		if (CurRound != BossRound)
+		if (i != BossRound)
 		{																				//TEMP 1 해뒀는데 랜덤으로 나오게 ㄱ
 			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(1, EPawnGroup::Enemy, CurLevel);
 			RoundsPawns.Add(RoundPawns);

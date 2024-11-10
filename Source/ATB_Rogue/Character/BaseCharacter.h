@@ -44,6 +44,8 @@ public:
 	UFUNCTION()
 	virtual void OnBattleEndThird();
 private:
+	void ReSetTransform();
+private:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComponent;
 	

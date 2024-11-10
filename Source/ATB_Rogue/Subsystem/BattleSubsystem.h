@@ -18,6 +18,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartFirst, uint8 , First);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleStartSecond, uint8 , First);
 
+
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStartTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
@@ -27,6 +29,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndFirst);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndSecond);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndThird);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRemoveWidget); //이동 공격 등 중복으로 띄울수없는 위젯
 
 
 UCLASS()
@@ -134,6 +138,9 @@ public:
 	FBattleEndSecond BattleEndSecond;
 	UPROPERTY(BlueprintAssignable)
 	FBattleEndThird BattleEndThird;
+	UPROPERTY(BlueprintAssignable)
+	FRemoveWidget RemoveWidget;
+
 public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ABasePawn*> EnemyPawns;

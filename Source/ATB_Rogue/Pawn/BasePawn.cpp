@@ -225,7 +225,7 @@ void ABasePawn::Init()
 	bDie = false;
 	bDestroy = false;
 	bEvolution = false;
-
+	OnChangedHPBar.Broadcast(this, CurHP / MaxHP);
 }
 
 // Called every frame
@@ -254,7 +254,7 @@ void ABasePawn::ATBFeeling()
 		ATB_Cur += ATB_Speed;
 		//뷰포트 로그 float->string
 	}
-	OnATBChanged.Broadcast(ATB_Cur, ATB_MAX);
+	OnChangedATBBar.Broadcast(this, ATB_Cur / ATB_MAX);
 }
 
 
@@ -300,7 +300,7 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 	CurHP -= DamageResult;
 	CurHP = FMath::Clamp(CurHP, 0.f, CurHP);
-
+	OnChangedHPBar.Broadcast(this, CurHP / MaxHP);
 	if (CurHP == 0.f)
 	{	//플래그 변경
 		bDie = true;
@@ -322,6 +322,9 @@ void ABasePawn::Evolution()
 		SetActorTransform(OriginTransform);
 		ActiveCollision(false);
 		OnSpawn();
+		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->UpdatePortrait(this);
 	}
 	//Roar 애니메이션 재생 ㄱㅊ은듯
 	//이펙트 효과

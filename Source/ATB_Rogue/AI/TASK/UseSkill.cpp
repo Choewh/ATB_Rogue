@@ -4,6 +4,7 @@
 #include "AI/TASK/UseSkill.h"
 #include "Kismet/GameplayStatics.h"
 #include "UseSkill.h"
+#include "Subsystem/BattleSubsystem.h"
 #include "Damage/Type/MeleeType.h"
 #include "Damage/Type/SpecialType.h"
 
@@ -21,8 +22,9 @@ EBTNodeResult::Type UUseSkill::ExecuteTask(UBehaviorTreeComponent& OwnerComp, ui
 		SetOwner(BehaviorTreeComponent->GetOwner());
 		BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	}
-
+	GetWorld()->GetSubsystem<UBattleSubsystem>()->RemoveWidget.Broadcast();
 	UseSkillSet(UseSkillSelect);
+	
 
 	return EBTNodeResult::Succeeded;
 }
