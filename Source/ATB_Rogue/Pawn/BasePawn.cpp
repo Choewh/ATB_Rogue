@@ -103,6 +103,7 @@ void ABasePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+
 	UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
 	check(ATBUserUISubSystem);
 	ATBUserUISubSystem->BattleUIRemovePawn(this);
@@ -165,10 +166,13 @@ void ABasePawn::SetData()
 	{
 		StatusComponent->SetData(Species);
 		//HP 계산																								//( 1 + (StatusComponent->GetSpeciesInfo()->Level / 100) ) 1. Level / 100
-		SetMaxHP(FMath::RoundToInt(( (StatusComponent->GetSpeciesInfo()->HP * static_cast<uint8>(StatusComponent->GetSpeciesInfo()->Stage) + 100.f)  *  ((StatusComponent->GetSpeciesInfo()->Level / 100.f) ) + 10.f)));
+		if (MaxHP == CurHP)
+		{
+			SetMaxHP(FMath::RoundToInt(((StatusComponent->GetSpeciesInfo()->HP * static_cast<uint8>(StatusComponent->GetSpeciesInfo()->Stage) + 100.f) * ((StatusComponent->GetSpeciesInfo()->Level / 100.f)) + 10.f)));
+		}
 
 		ATB_Speed = StatusComponent->GetSpeciesInfo()->SPD;
-	}	
+	}
 
 	if (EffectComponent)
 	{
@@ -318,13 +322,20 @@ void ABasePawn::Evolution()
 	if (Species != ESpecies::End)
 	{
 		bEvolution = true;
+		int Pre_MaxHP = MaxHP;
+		int Pre_CurHP = CurHP;
+		//CurHP 정보는 따로 빼두고 진화후 MaxHp - 진화전 MaxHP 더해주기
 		SetData();
+		Pre_MaxHP = MaxHP - Pre_MaxHP;
+		CurHP = Pre_CurHP + Pre_MaxHP;
 		SetActorTransform(OriginTransform);
 		ActiveCollision(false);
 		OnSpawn();
+
 		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->UpdatePortrait(this);
+		OnChangedHPBar.Broadcast(this, CurHP / MaxHP);
 	}
 	//Roar 애니메이션 재생 ㄱㅊ은듯
 	//이펙트 효과
@@ -350,6 +361,7 @@ UTexture2D* ABasePawn::GetPortrait()
 	if (PawnData) return PawnData->Portraits;
 	return nullptr;
 }
+
 /// <summary>
 /// Delegate
 /// </summary>
@@ -368,14 +380,35 @@ void ABasePawn::OnFinishTurn()
 	ActiveCollision(true);
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
 	BaseAIController->SetActiveTurn(false);
+	MovementComponent->SetUseControllerRotationYaw(false);
 	bActive = true;
 }
-void ABasePawn::OnBattleEndFirst()
+void ABasePawn::OnBattleEndFirst() //Temp 레벨업 넣어뒀는데 TODO 경험치량 설정하기
 {
 	UE_LOG(LogTemp, Display, TEXT("Level : %i"), StatusComponent->GetSpeciesInfo()->Level);
 	StatusComponent->GetSpeciesInfo()->Level++;
 	UE_LOG(LogTemp, Display, TEXT("Level : %i"), StatusComponent->GetSpeciesInfo()->Level);
 
+}
+void ABasePawn::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	// Evolution 상태일 때만 BattleState를 설정
+	if (bEvolution)
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		if (BattleSubsystem)
+		{
+			BattleSubsystem->SetBattleState(EBattleState::Default);
+		}
+		bEvolution = false;
+	}
+
+	// 델리게이트 해제 (한 번만 호출되도록 보장)
+	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->OnMontageEnded.RemoveDynamic(this, &ABasePawn::OnMontageEnded);
+	}
 }
 /// <summary>
 /// EffectTimeLine
@@ -439,10 +472,15 @@ void ABasePawn::OnSpawnEffect(float InDissolve)
 void ABasePawn::OnSpawnEffectEnd()
 {
 	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	// 이전 델리게이트 해제
+	AnimInstance->OnMontageEnded.Clear();
+	// 몽타주가 끝났을 때 호출될 함수 바인딩
+	AnimInstance->OnMontageEnded.AddDynamic(this, &ABasePawn::OnMontageEnded);
 	if (bEvolution)
 	{
 		AnimInstance->Montage_Play(AnimComponent->AnimData->EvoReactMontage);
-		bEvolution = false;
+		//UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		//BattleSubsystem->SetBattleState(EBattleState::Default);
 	}
 	else
 	{

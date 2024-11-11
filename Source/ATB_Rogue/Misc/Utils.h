@@ -7,6 +7,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Enums/Species.h"
+#include "Enums/Stage.h"
+#include "Enums/SelectAbleSpecies.h"
 
 
 namespace CollisionProfileName
@@ -54,6 +56,17 @@ public:
 		{
 			// Enum 값에 해당하는 DisplayName을 FText로 반환
 			return EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(InSpecies));
+		}
+		return FText::FromString("Invalid");
+	}
+	static const FText  GetStageName(EStage InStage)
+	{
+		// UEnum 객체를 가져옵니다.
+		UEnum* EnumPtr = StaticEnum<EStage>();
+		if (EnumPtr)
+		{
+			// Enum 값에 해당하는 DisplayName을 FText로 반환
+			return EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(InStage));
 		}
 		return FText::FromString("Invalid");
 	}

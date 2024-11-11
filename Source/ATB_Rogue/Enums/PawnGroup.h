@@ -9,7 +9,7 @@
 UENUM(BlueprintType)
 enum class EPawnGroup : uint8
 {
-	Defalut UMETA(DisplayName = "Default"),
+	Default UMETA(DisplayName = "Default"),
 	Friendly UMETA(DisplayName = "Friendly"),
 	Enemy UMETA(DisplayName = "Enemy")
 };

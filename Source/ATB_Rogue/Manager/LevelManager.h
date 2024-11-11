@@ -56,6 +56,8 @@ protected:
 	TArray<TArray<FTransform>> RoundsTransform; //라운드별 소환 위치
 private:
 	UPROPERTY(EditAnywhere)
+	FName NextLevelName;
+	UPROPERTY(EditAnywhere)
 	ELevels CurLevel;
 	UPROPERTY(EditAnywhere)
 	uint8 CurRound = 1;

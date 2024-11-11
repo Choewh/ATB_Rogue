@@ -10,10 +10,12 @@
 #include "Components/Image.h"
 #include "Components/Overlay.h"
 #include "Components/Slider.h"
+#include "Components/TextBlock.h"
+
 #include "ATBBattleUserWidget.generated.h"
 
 /**
- * 
+ *
  */
 
 USTRUCT(BlueprintType)
@@ -23,6 +25,8 @@ struct FPawnUIElements
 
 	UPROPERTY()
 	TWeakObjectPtr<USlider> SliderBar;
+	UPROPERTY()
+	TWeakObjectPtr<UTextBlock> LevelText; // TODO 레벨업시 업데이트 
 	UPROPERTY()
 	TWeakObjectPtr<UOverlay> PortraitBox;
 
@@ -42,9 +46,10 @@ UCLASS()
 class ATB_ROGUE_API UATBBattleUserWidget : public UATBUserWidget
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativePreConstruct() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
@@ -57,7 +62,7 @@ public:
 	void RemovePawnUI(ABasePawn* DeadPawn);
 	void RemoveEnemyUI(ABasePawn* DeadPawn);
 	void RemoveFriendlyUI(ABasePawn* DeadPawn);
-	
+
 	UFUNCTION()
 	void OnPortraitUpdate(ABasePawn* UpdatePawn);
 	UFUNCTION()
@@ -67,6 +72,13 @@ public:
 
 
 
+private:
+	UPROPERTY()
+	UTexture2D* DataTexture;
+	UPROPERTY()
+	UTexture2D* VaccineTexture;
+	UPROPERTY()
+	UTexture2D* VirusTexture;
 private:
 	UPROPERTY()
 	TMap<TWeakObjectPtr<ABasePawn>, FPawnUIElements> EnemyUI;
@@ -79,10 +91,18 @@ private:
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	UVerticalBox* EnemyBarBox;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UVerticalBox* EnemyLevelBox;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	UVerticalBox* EnemyPortraitBox;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UVerticalBox* EnemyAttributeBox;
 	/// 
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UVerticalBox* FriendlyBarBox;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
+	UVerticalBox* FriendlyLevelBox;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	UVerticalBox* FriendlyPortraitBox;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UVerticalBox* FriendlyBarBox;
+	UVerticalBox* FriendlyAttributeBox;
 };

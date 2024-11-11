@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ScrollBox.h"
 #include "Components/Image.h"
+#include "Components/Button.h"
 #include "Engine/DataTable.h"
 #include "Engine/Texture2D.h"
 
@@ -18,8 +19,6 @@
 
 class ABasePawn;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FFindPortraitFromName, UImage*, Image, FName, SpeciesName);
-
 UCLASS()
 class ATB_ROGUE_API UMainUserWidget : public UUserWidget
 {
@@ -29,8 +28,6 @@ public:
 	void CreateButtons(uint8 InNum);
 
 protected:
-	UFUNCTION()
-	void OnButtonClicked();
 	UFUNCTION()
 	void SelectPawn(ESpecies SelectSpecies, UImage* Portrait);
 	virtual void NativeOnInitialized();
@@ -50,8 +47,7 @@ private:
 
 	UTexture2D* GetTexture2DFromImage(UImage* InImage);
 
-	UPROPERTY(BlueprintAssignable)
-	FFindPortraitFromName SetSpeciesPortrait;
+	TArray<FName> SelectAblePawnNames;
 
 	TArray<ESpecies> SelectPawns; //크기 300 300 /패딩 40
 

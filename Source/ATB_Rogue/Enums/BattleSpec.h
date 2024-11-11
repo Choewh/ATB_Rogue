@@ -9,6 +9,6 @@
 UENUM(BlueprintType)
 enum class EBattleSpec : uint8
 {
-	Defalut UMETA(DisplayName = "Default"),
+	Default UMETA(DisplayName = "Default"),
 	Boss UMETA(DisplayName = "Boss"),
 };

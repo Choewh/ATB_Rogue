@@ -128,7 +128,7 @@ void ALevelManager::SpawnPawn()
 		ATBUserUISubSystem->BattleUIAddPawn(NewPawn);
 		//TODO 생성하면서 구조체로 받은 SpeciesInfo 데이터를 추가해주기 라운드에 따른 레벨 ㅇ
 		//TUniquePtr<FSpeciesInfo> SpeciesInfoPtr = MakeUnique<FSpeciesInfo>(RoundsPawns[Round][i - 1].SpeciesInfo);
-		//NewPawn->StatusComponent->SetSpeciesInfo(SpeciesInfoPtr);
+		//NewPawn->StatusComponent->SetSpeciesInfo(SpeciesInfoPtr);                         
 
 		NewPawn->OnSpawn();
 		CurRoundPawns.Add(NewPawn);
@@ -153,8 +153,7 @@ void ALevelManager::NextLevel()
 		//다음 레벨로 넘어가기
 		//지금은 그냥 레벨1로 넘어가기
 		//넘어가기전에 플레이어 폰의 데이터 저장
-		FName LevelName = TEXT("FirstLevel");
-		UGameplayStatics::OpenLevel(this, LevelName, true);
+		UGameplayStatics::OpenLevel(this, NextLevelName, true);
 	}
 	else
 	{

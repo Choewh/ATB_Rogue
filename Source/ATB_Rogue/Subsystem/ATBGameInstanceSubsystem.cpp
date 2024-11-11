@@ -2,6 +2,7 @@
 
 
 #include "Subsystem/ATBGameInstanceSubsystem.h"
+#include "Pawn/FriendlyPawn.h"
 
 //처음 플레이어 폰 생성시 호출
 bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPlayerSpecies)
@@ -12,13 +13,14 @@ bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPl
 		InPlayerSpecies.Pop();
 		InPawnsNum = InPlayerSpecies.Num();
 	}
-	PlayerSpecies = InPlayerSpecies;
-	
-	for (auto& SelectPawnInfo : PlayerSpecies)
+
+	for (auto& SelectPawnInfo : InPlayerSpecies)
 	{
 		FBasePawnInfo NewInfo = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateSpecies(EPawnGroup::Friendly, SelectPawnInfo, 5); //첫 생성시 레벨 5 
 		PlayerPawnsInfo.Add(NewInfo);
 	}
+
+	PlayerAlivePawnsInfo = PlayerPawnsInfo;
 
 	if (InPawnsNum != PlayerPawnsInfo.Num())
 	{
@@ -40,27 +42,57 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerP
 		InPlayerPawns.Pop();
 		InPawnsNum = InPlayerPawns.Num();
 	}
-	
+
 	//근데 레벨 넘어가면 사라져서 필요한가 싶네
 	PlayerPawns = InPlayerPawns;
 
 	//정보만 따로 빼서 구조체화 하기
 	TArray<FBasePawnInfo> NewPlayerPawnsInfo;
 
-	for (auto& Pawn : PlayerPawns) //TODO Destroy 하면 정보를 남기거나 여기서 그냥 null 이면 배열에서 빼기 
-	{							//아니면 파괴된 폰은 따로 배열에 저장해놓고 생성시 추가해주기 ㄱ
+	for (auto& Pawn : PlayerPawns) 
+	{
 		FBasePawnInfo NewBasePawnInfo;
 		NewBasePawnInfo.SpeciesInfo = *Pawn->StatusComponent->GetSpeciesInfo();
 		NewBasePawnInfo.Species = Pawn->Species;
 		NewBasePawnInfo.PawnGroup = Pawn->PawnGroup;
 		NewPlayerPawnsInfo.Add(NewBasePawnInfo);
 	}
-	
+
 	PlayerPawnsInfo = NewPlayerPawnsInfo;
+
+	for (auto& info : PlayerDiePawnsInfo)
+	{
+		PlayerPawnsInfo.Add(info);
+	}
+
+	int a = PlayerPawnsInfo.Num();
 
 	if (InPawnsNum != PlayerPawns.Num())
 	{
 		return false;
 	}
 	return true;
+}
+
+void UATBGameInstanceSubsystem::AddDiePawnInfo(ABasePawn* DiePawn)
+{
+	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(DiePawn);
+	if (!FriendlyPawn) { return; }
+	//불러오기할때 싹 비워주기
+	FBasePawnInfo DiePawnInfo;
+	DiePawnInfo.PawnGroup = DiePawn->PawnGroup;
+	DiePawnInfo.Species = DiePawn->Species;
+	DiePawnInfo.SpeciesInfo = *DiePawn->StatusComponent->GetSpeciesInfo().Get();
+	PlayerDiePawnsInfo.Add(DiePawnInfo);
+}
+
+TArray<FBasePawnInfo> UATBGameInstanceSubsystem::LoadPlayerPawnsInfo()
+{	
+	if (!PlayerDiePawnsInfo.IsEmpty())
+	{
+		PlayerPawnsInfo = PlayerDiePawnsInfo;
+		return PlayerPawnsInfo;
+	}
+	PlayerPawnsInfo = PlayerAlivePawnsInfo;
+	return PlayerPawnsInfo;
 }

@@ -9,9 +9,10 @@
 UENUM(BlueprintType)
 enum class EBattleState : uint8
 {
-	Defalut UMETA(DisplayName = "Default"),
+	Default UMETA(DisplayName = "Default"),
 	Move UMETA(DisplayName = "Move"),
 	Attack UMETA(DisplayName = "Attack"),
 	Wait UMETA(DisplayName = "Wait"),
 	Finish UMETA(DisplayName = "Finish"),
+	Evolution UMETA(DisplayName = "Evolution"),
 };

@@ -63,6 +63,9 @@ public:
 
 	void SetBattleState(EBattleState NewState) { BattleState = NewState; }
 
+	UFUNCTION(BlueprintCallable)
+	bool CheckBattleState(EBattleState CheckBattleState);
+
 public:
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
@@ -103,7 +106,7 @@ protected:
 	ECameraViewMode CameraViewMode = ECameraViewMode::DefaultView;
 
 	UPROPERTY(VisibleAnywhere)
-	EBattleState BattleState = EBattleState::Defalut;
+	EBattleState BattleState = EBattleState::Default;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* DefaultCamera;

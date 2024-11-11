@@ -16,6 +16,9 @@
 #include "Subsystem/EnemyCreateSubsystem.h"
 #include "Subsystem/ATBGameInstanceSubsystem.h"
 
+#include "Engine/DataTable.h"
+#include "Data/StatTableRow.h"
+#include "Data/PawnTableRow.h"
 
 #include "Enums/Species.h"
 
@@ -41,7 +44,28 @@ ESpecies GetNextSpecies(ESpecies CurrentSpecies)
 void UMainUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	//폰데이터 테이블과 //초상화 
+	//스탯 데이터 테이블 // 단계 Rookie 단계의 Pawn Species Name 뽑아서 배열에 추가
+	UDataTable* StatDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("/Game/DataTable/StatTable.StatTable")));
+	if (StatDataTable)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("StatData Succeeded"));
+		//StatDataTable
 
+		TArray<FStatTableRow*> StatTable_Array;
+		StatDataTable->GetAllRows<FStatTableRow>("", StatTable_Array);
+
+		for (auto& StatTable : StatTable_Array)
+		{
+			if (StatTable->Stage == EStage::Rookie)
+			{
+				FText SpeciesText = FUtils::GetSpeciesName(StatTable->Species);
+				FName SpeciesName = *SpeciesText.ToString();
+				SelectAblePawnNames.Add(SpeciesName);
+				continue;
+			}
+		}
+	}
 }
 
 void UMainUserWidget::NativePreConstruct()
@@ -52,7 +76,7 @@ void UMainUserWidget::NativePreConstruct()
 void UMainUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	CreateButtons(8);
+	CreateButtons(0);
 	Init();
 	//델리게이트 만들어서 생성해서 블루프린트에서 해결하는걸로 변경하기
 }
@@ -134,14 +158,10 @@ bool UMainUserWidget::EnterGame()
 
 	if (GameInstanceSubsystem)
 	{
-	Result = GameInstanceSubsystem->InitSpawnPlayerPawnSpecies(SelectPawns);
+		Result = GameInstanceSubsystem->InitSpawnPlayerPawnSpecies(SelectPawns);
 	}
 
 	return Result;
-}
-void UMainUserWidget::OnButtonClicked()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Button Clicked!"));
 }
 
 void UMainUserWidget::SelectPawn(ESpecies SelectSpecies, UImage* Portrait) // 
@@ -153,33 +173,51 @@ void UMainUserWidget::SelectPawn(ESpecies SelectSpecies, UImage* Portrait) //
 
 void UMainUserWidget::CreateButtons(uint8 InNum)
 {
-	ESpecies Species = ESpecies::Jyarimon;
-	for (uint8 i = 0; i < InNum; i++)
+	for (uint8 i = 0; i < SelectAblePawnNames.Num(); i++)
 	{
 		//생성할때 Species 에서 종에대한 정보 받고 여기도 폰테이블 추가해서 초상화까지 고려해보기
 		//버튼 생성 텍스트 표기
-		FText SpeciesText = FUtils::GetSpeciesName(Species);
-		FName SpeciesName = *SpeciesText.ToString();
-
 		UOverlay* Overlay = NewObject<UOverlay>(this);
-
-
 		UImage* Image = NewObject<UImage>(Overlay);
 		USelectableCell* SelectableCell = NewObject<USelectableCell>(Overlay);
+
+		SelectBox->AddChild(Overlay);
+		Overlay->AddChild(Image);
+		Overlay->AddChild(SelectableCell);
+
 		Image->SetDesiredSizeOverride(FVector2D(200.f, 200.f));
 		{
-			SetSpeciesPortrait.Broadcast(Image, SpeciesName);
 		}
 		{
-			SelectableCell->Species = Species;
-			SelectableCell->Image = Image;
-			SelectableCell->OnClicked.AddDynamic(this, &ThisClass::OnButtonClicked);
-			SelectableCell->AddPawn.AddDynamic(this, &ThisClass::SelectPawn);
-		}
-		{
-			Overlay->AddChild(Image);
-			Overlay->AddChild(SelectableCell);
-			SelectBox->AddChild(Overlay);
+
+			UEnum* EnumPtr = StaticEnum<ESpecies>();
+			if (EnumPtr)
+			{
+				// 2. FName을 Enum 값으로 변환하기
+				FName StageName = SelectAblePawnNames[i]; // 예를 들어 "Rookie"라는 이름이 열거형에 있다고 가정
+				int32 EnumIndex = EnumPtr->GetIndexByName(StageName);
+				SelectableCell->Species = static_cast<ESpecies>(EnumIndex);
+
+				UDataTable* PawnDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'")));
+					if (PawnDataTable)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
+
+						TArray<FPawnTableRow*> PawnTable_Array;
+						PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
+
+						for (auto& PawnTable : PawnTable_Array)
+						{
+							if (PawnTable->Species == SelectableCell->Species)
+							{
+								Image->SetBrushFromTexture(PawnTable->Portraits);
+								continue;
+							}
+						}
+					}
+				SelectableCell->Image = Image;
+				SelectableCell->AddPawn.AddDynamic(this, &ThisClass::SelectPawn);
+			}
 		}
 
 		TArray<UPanelSlot*> Slots = Overlay->GetSlots();
@@ -190,11 +228,6 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 			OverlaySlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 			OverlaySlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
 			OverlaySlot->SynchronizeProperties();
-		}
-
-		{
-			Species = GetNextSpecies(Species);
-			if (Species == ESpecies::None) { break; }
 		}
 	}
 }

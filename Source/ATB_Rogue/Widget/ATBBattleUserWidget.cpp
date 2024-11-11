@@ -12,13 +12,31 @@
 void UATBBattleUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+	{
+		UTexture2D* Texture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Resource/UI_Gimic_3_Card_Data.UI_Gimic_3_Card_Data'"));
+		check(Texture);
+		DataTexture = Texture;
+	}
+	{
+		UTexture2D* Texture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Resource/UI_Gimic_3_Card_Vaccine.UI_Gimic_3_Card_Vaccine'"));
+		check(Texture);
+		VaccineTexture = Texture;
+	}
+	{
+		UTexture2D* Texture = LoadObject<UTexture2D>(nullptr, TEXT("/Script/Engine.Texture2D'/Game/Resource/UI_Gimic_3_Card_Virus.UI_Gimic_3_Card_Virus'"));
+		check(Texture);
+		VirusTexture = Texture;
+	}
+}
 
+void UATBBattleUserWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
 }
 
 void UATBBattleUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	UTexture2D* MyTexture = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Textures/MyTextureName.MyTextureName"));
 }
 
 void UATBBattleUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -28,7 +46,7 @@ void UATBBattleUserWidget::NativeTick(const FGeometry& MyGeometry, float InDelta
 
 void UATBBattleUserWidget::AddPawnUI(ABasePawn* InBasePawn)
 {
-	// NewPawn »ý¼º½Ã È£Ãâ 
+	// NewPawn ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ 
 	switch (InBasePawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
@@ -58,12 +76,7 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	UProgressBar* HPProgressBar = NewObject<UProgressBar>(this);
 	UProgressBar* ATBProgressBar = NewObject<UProgressBar>(this);
 
-	VerticalBox->SetIsEnabled(false);
-	Image->SetIsEnabled(false);
-	HPProgressBar->SetIsEnabled(false);
-	ATBProgressBar->SetIsEnabled(false);
-
-	//EnemyBarBox ¼³Á¤
+	//EnemyBarBox ï¿½ï¿½ï¿½ï¿½
 	EnemyBarBox->AddChild(ProgressBarBox);
 	{
 		ProgressBarBox->AddChild(Image);
@@ -137,18 +150,18 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 			VerticalBoxSlot->SynchronizeProperties();
 		}
 	}
-	//»¡°­
+	//ï¿½ï¿½ï¿½ï¿½
 	HPProgressBar->SetPercent(1);
 	HPProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.f, 0.f));
 	HPProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
-	//³ë¶û
+	//ï¿½ï¿½ï¿½
 	ATBProgressBar->SetPercent(0);
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
 	ATBProgressBar->SetBarFillType(EProgressBarFillType::LeftToRight);
 
 
-	
-	//EnemyPortraitBox ¼³Á¤
+
+	//EnemyPortraitBox ï¿½ï¿½ï¿½ï¿½
 	UOverlay* PortraitBox = NewObject<UOverlay>(this);
 	UBorder* PortraitBorder = NewObject<UBorder>(this);
 	UImage* Portrait = NewObject<UImage>(this);
@@ -177,7 +190,67 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		Portrait->SetBrush(BrushCopy);
 		Portrait->SetBrushFromTexture(InEnemyPawn->GetPortrait());
 	}
-	//ATBBar¿¡ Ãß°¡
+	//EnemyPortraitBox
+	UTextBlock* LevelText = NewObject<UTextBlock>(this);
+	EnemyLevelBox->AddChild(LevelText);
+	{
+		TArray<UPanelSlot*> Slots = EnemyLevelBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		int32 Level = InEnemyPawn->StatusComponent->GetSpeciesInfo()->Level;
+
+		// "Level : ~" í˜•ì‹ì˜ í…ìŠ¤íŠ¸ ìƒì„±
+		FString LevelTextString = FString::Printf(TEXT("Level : %d"), Level);
+
+
+		LevelText->SetText(FText::FromString(LevelTextString));
+	}
+	UImage* AttributeImage = NewObject<UImage>(this);
+	EnemyAttributeBox->AddChild(AttributeImage);
+	{
+		TArray<UPanelSlot*> Slots = EnemyAttributeBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		FSlateBrush BrushCopy = AttributeImage->GetBrush();
+
+		BrushCopy.SetImageSize(FVector2D(30, 30.f));
+
+		AttributeImage->SetBrush(BrushCopy);
+		switch (InEnemyPawn->StatusComponent->GetSpeciesInfo()->Attribute)
+		{
+		case EAttribute::Data:
+			AttributeImage->SetBrushFromTexture(DataTexture);
+			break;
+		case EAttribute::Vaccine:
+			AttributeImage->SetBrushFromTexture(VaccineTexture);
+			break;
+		case EAttribute::Virus:
+			AttributeImage->SetBrushFromTexture(VirusTexture);
+			break;
+		default:
+			break;
+		}
+	}
+
+	//ATBBarï¿½ï¿½ ï¿½ß°ï¿½
 	USlider* ATBSlider = NewObject<USlider>(this);
 	ATBBarBox->AddChild(ATBSlider);
 	{
@@ -194,14 +267,14 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
 		SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
 		SlateBrush.SetResourceObject(InEnemyPawn->GetPortrait());
-		FSlateBrushOutlineSettings OutlineSettings(30.f,FSlateColor(FColor(1.f,0.f,0.f,1.f)),5.f);
+		FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(1.f, 0.f, 0.f, 1.f)), 5.f);
 		SlateBrush.OutlineSettings = OutlineSettings;
 		SliderStyle.SetDisabledThumbImage(SlateBrush);
 		SliderStyle.SetNormalThumbImage(SlateBrush);
 		ATBSlider->SetWidgetStyle(SliderStyle);
 		ATBSlider->SetSliderBarColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
 	}
-	//±¸Á¶Ã¼ »ý¼º
+	//ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 	FPawnUIElements PawnUIElements;
 
 	PawnUIElements.SliderBar = ATBSlider;
@@ -219,6 +292,8 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	PawnUIElements.PortraitBox = WeakPortraitBoxPtr;
 	PawnUIElements.Portrait = Portrait;
 
+	PawnUIElements.LevelText = LevelText;
+
 	EnemyUI.Add(InEnemyPawn, PawnUIElements);
 }
 
@@ -227,7 +302,7 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 {
 	if (!InFriendlyPawn) { return; }
-	
+
 	InFriendlyPawn->OnChangedATBBar.AddDynamic(this, &ThisClass::OnATBBarUpdate);
 	InFriendlyPawn->OnChangedHPBar.AddDynamic(this, &ThisClass::OnHPBarUpdate);
 
@@ -238,8 +313,8 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	UOverlay* ATBOverlay = NewObject<UOverlay>(this);
 	UProgressBar* HPProgressBar = NewObject<UProgressBar>(this);
 	UProgressBar* ATBProgressBar = NewObject<UProgressBar>(this);
-	
-	//FriendlyBarBox ¼³Á¤
+
+	//FriendlyBarBox ï¿½ï¿½ï¿½ï¿½
 	FriendlyBarBox->AddChild(ProgressBarBox);
 	{
 		ProgressBarBox->AddChild(Image);
@@ -313,16 +388,16 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 			VerticalBoxSlot->SynchronizeProperties();
 		}
 	}
-	//»¡°­
+	//ï¿½ï¿½ï¿½ï¿½
 	HPProgressBar->SetPercent(1);
 	HPProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 0.f, 0.f));
 	HPProgressBar->SetBarFillType(EProgressBarFillType::RightToLeft);
-	//³ë¶û
+	//ï¿½ï¿½ï¿½
 	ATBProgressBar->SetPercent(0);
 	ATBProgressBar->SetFillColorAndOpacity(FLinearColor(1.f, 1.f, 0.f));
 	ATBProgressBar->SetBarFillType(EProgressBarFillType::RightToLeft);
 
-	//FriendlyPortraitBox ¼³Á¤
+	//FriendlyPortraitBox ï¿½ï¿½ï¿½ï¿½
 	UOverlay* PortraitBox = NewObject<UOverlay>(this);
 	UBorder* PortraitBorder = NewObject<UBorder>(this);
 	UImage* Portrait = NewObject<UImage>(this);
@@ -352,6 +427,67 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		Portrait->SetBrushFromTexture(InFriendlyPawn->GetPortrait());
 	}
 
+	UTextBlock* LevelText = NewObject<UTextBlock>(this);
+	FriendlyLevelBox->AddChild(LevelText);
+	{
+		TArray<UPanelSlot*> Slots = FriendlyLevelBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		int32 Level = InFriendlyPawn->StatusComponent->GetSpeciesInfo()->Level;
+
+		// "Level : ~" í˜•ì‹ì˜ í…ìŠ¤íŠ¸ ìƒì„±
+		FString LevelTextString = FString::Printf(TEXT("Level : %d"), Level);
+
+
+		LevelText->SetText(FText::FromString(LevelTextString));
+		LevelText->SetJustification(ETextJustify::Right);
+	}
+
+	UImage* AttributeImage = NewObject<UImage>(this);
+	FriendlyAttributeBox->AddChild(AttributeImage);
+	{
+		TArray<UPanelSlot*> Slots = FriendlyAttributeBox->GetSlots();
+		for (auto& VerticalBoxSlots : Slots)
+		{
+			UVerticalBoxSlot* VerticalBoxSlot = Cast<UVerticalBoxSlot>(VerticalBoxSlots);
+
+			VerticalBoxSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+			VerticalBoxSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+			FSlateChildSize Size(ESlateSizeRule::Fill);
+			VerticalBoxSlot->SetSize(Size);
+
+			VerticalBoxSlot->SynchronizeProperties();
+		}
+		FSlateBrush BrushCopy = AttributeImage->GetBrush();
+
+		BrushCopy.SetImageSize(FVector2D(30, 30.f));
+
+		AttributeImage->SetBrush(BrushCopy);
+		switch (InFriendlyPawn->StatusComponent->GetSpeciesInfo()->Attribute)
+		{
+		case EAttribute::Data:
+			AttributeImage->SetBrushFromTexture(DataTexture);
+			break;
+		case EAttribute::Vaccine:
+			AttributeImage->SetBrushFromTexture(VaccineTexture);
+			break;
+		case EAttribute::Virus:
+			AttributeImage->SetBrushFromTexture(VirusTexture);
+			break;
+		default:
+			break;
+		}
+	}
+
 	USlider* ATBSlider = NewObject<USlider>(this);
 	ATBBarBox->AddChild(ATBSlider);
 	{
@@ -374,8 +510,9 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		SliderStyle.SetNormalThumbImage(SlateBrush);
 		ATBSlider->SetWidgetStyle(SliderStyle);
 		ATBSlider->SetSliderBarColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
+		ATBSlider->SetLocked(true);
 	}
-	//±¸Á¶Ã¼ »ý¼º
+	//ï¿½ï¿½ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½
 	FPawnUIElements PawnUIElements;
 
 	PawnUIElements.SliderBar = ATBSlider;
@@ -393,12 +530,14 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	PawnUIElements.PortraitBox = WeakPortraitBoxPtr;
 	PawnUIElements.Portrait = Portrait;
 
+	PawnUIElements.LevelText = LevelText;
+
 	FriendlyUI.Add(InFriendlyPawn, PawnUIElements);
 }
 
 void UATBBattleUserWidget::RemovePawnUI(ABasePawn* DeadPawn)
 {
-	// NewPawn »ý¼º½Ã È£Ãâ 
+	// NewPawn ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ 
 	switch (DeadPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
@@ -417,7 +556,7 @@ void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
 {
 	if (DeadPawn && EnemyUI.Contains(DeadPawn))
 	{
-		// UI ¿ä¼Ò »èÁ¦ Ã³¸®
+		// UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 		FPawnUIElements* UIElements = EnemyUI.Find(DeadPawn);
 		if (UIElements)
 		{
@@ -436,7 +575,7 @@ void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
 				UIElements->SliderBar->RemoveFromParent();
 			}
 		}
-		// EnemyUI¿¡¼­ »èÁ¦
+		// EnemyUIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		EnemyUI.Remove(DeadPawn);
 	}
 }
@@ -445,7 +584,7 @@ void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
 {
 	if (DeadPawn && FriendlyUI.Contains(DeadPawn))
 	{
-		// UI ¿ä¼Ò »èÁ¦ Ã³¸®
+		// UI ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
 		FPawnUIElements* UIElements = FriendlyUI.Find(DeadPawn);
 		if (UIElements)
 		{
@@ -464,7 +603,7 @@ void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
 				UIElements->SliderBar->RemoveFromParent();
 			}
 		}
-		// FriendlyUI¿¡¼­ »èÁ¦
+		// FriendlyUIï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		FriendlyUI.Remove(DeadPawn);
 	}
 }

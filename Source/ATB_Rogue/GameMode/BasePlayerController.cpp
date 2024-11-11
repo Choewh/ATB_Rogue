@@ -96,7 +96,7 @@ void ABasePlayerController::Init()
 	DefaultCamera->SetRelativeRotation(FRotator(-30.f, 0.f, 0.f));
 	CameraViewMode = ECameraViewMode::DefaultView;
 	CameraViewUpdate();
-	BattleState = EBattleState::Defalut;
+	BattleState = EBattleState::Default;
 	BattleStateUpdate();
 	bMove = true;
 }
@@ -142,7 +142,7 @@ void ABasePlayerController::BattleStateUpdate()
 {
 	switch (BattleState)
 	{
-	case EBattleState::Defalut:
+	case EBattleState::Default:
 		break;
 	case EBattleState::Move:
 		break;
@@ -152,9 +152,20 @@ void ABasePlayerController::BattleStateUpdate()
 		break;
 	case EBattleState::Finish:
 		break;
+	case EBattleState::Evolution:
+		break;
 	default:
 		break;
 	}
+}
+
+bool ABasePlayerController::CheckBattleState(EBattleState CheckBattleState)
+{
+	if (BattleState == CheckBattleState)
+	{
+		return true;
+	}
+	return false;
 }
 
 void ABasePlayerController::MoveCancle()

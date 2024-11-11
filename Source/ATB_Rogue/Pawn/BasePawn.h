@@ -201,6 +201,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnChangedATBBar OnChangedATBBar;
 	UFUNCTION()
+	virtual void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
 	virtual void OnStartBattle(uint8 Round);
 	UFUNCTION()
 	virtual void OnStartTurn();

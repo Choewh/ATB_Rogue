@@ -2,7 +2,19 @@
 
 
 #include "Pawn/FriendlyPawn.h"
+#include "Subsystem/ATBGameInstanceSubsystem.h"
 #include "AI/FriendlyAIController.h"
+
+void AFriendlyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	//죽으면 ATB시스템에 넘기기
+	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+	check(GameInstanceSubsystem);
+	GameInstanceSubsystem->AddDiePawnInfo(this);
+
+}
 
 AFriendlyPawn::AFriendlyPawn(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -35,7 +47,14 @@ void AFriendlyPawn::SetData()
 		// 기존 AI 컨트롤러 삭제 (선택 사항)
 		CurrentController->Destroy();
 	}
-
+	if (bAuto) //컨트롤러를 만들어주는게 아니라 비헤이비어 트리 추가 or 변경 
+	{
+		AIControllerClass = PawnData->EnemyAIController;
+	}
+	else 
+	{
+		AIControllerClass = PawnData->FriendlyAIController;
+	}
 	// 새로운 AI 컨트롤러 생성
 	if (AIControllerClass)
 	{
@@ -62,7 +81,7 @@ bool AFriendlyPawn::Movealbe(FVector NewDestination)
 		UE_LOG(LogTemp, Warning, TEXT("Target is too close."));
 		return false;
 	}
-	else if(Distance <= StatusComponent->GetSpeciesInfo()->MoveRange)
+	else if (Distance <= StatusComponent->GetSpeciesInfo()->MoveRange)
 	{
 		// 범위 내에 있는 경우
 		UE_LOG(LogTemp, Warning, TEXT("Target is within range."));
@@ -81,4 +100,21 @@ void AFriendlyPawn::MoveTo(FVector NewDestination)
 	AFriendlyAIController* AIController = Cast<AFriendlyAIController>(GetController());
 	AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bMove"), true);
 	AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("MovePoint"), NewDestination);
+}
+
+bool AFriendlyPawn::OnAutoPlay(bool Active)
+{
+	FTransform OriginTransform = GetActorTransform();
+	if (Active)
+	{
+		bAuto = true;
+		SetData();
+	}
+	else
+	{
+		bAuto = false;
+		SetData();
+	}
+	SetActorTransform(OriginTransform);
+	return bAuto;
 }

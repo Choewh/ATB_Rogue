@@ -42,7 +42,7 @@ public:
 	UFUNCTION()
 	virtual void OnFirstSet(uint8 Round);
 	UFUNCTION()
-	virtual void OnBattleEndThird();
+	virtual void OnBattleEndSecond();
 private:
 	void ReSetTransform();
 private:
@@ -55,13 +55,14 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPawnViewCameraComponent* PawnViewCameraComponent;
 
-
 	TArray<FBasePawnInfo> PlayerPawnsInfo;
-protected:
-	ABasePawn* ActionPawn;
 
 	TArray<ABasePawn*> CurHavePawns;
+
 	TArray<TArray<FTransform>> RoundsTransform; 
+
+	ABasePawn* ActionPawn;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	uint8 CurRound = 0;

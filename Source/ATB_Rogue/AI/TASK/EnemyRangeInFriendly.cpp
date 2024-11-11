@@ -72,9 +72,18 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 	{
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
-		UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
-			MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
-			HitResults, true);
+		if (Pawn->PawnGroup == EPawnGroup::Enemy)
+		{
+			UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
+				MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+				HitResults, true);
+		}
+		else if (Pawn->PawnGroup == EPawnGroup::Friendly)
+		{
+			UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
+				MoveRange + Range[i], TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+				HitResults, true);
+		}
 		if (!HitResults.IsEmpty())
 		{
 			UnableSkill(i);
@@ -89,6 +98,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 				HitPawns.Add(HitPawn);
 			}
 		}
+
 		AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIOwner);
 
 		if (!HitPawns.IsEmpty())

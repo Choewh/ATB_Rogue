@@ -61,6 +61,9 @@ public:
 
 public :
 	//컨트롤러 에너미 추가
+
+	UFUNCTION(BlueprintCallable)
+	bool AutoPlay();
 	UFUNCTION()
 	void SetPlayerController(ABasePlayerController* Controller) { PlayerController = Controller; }
 	//턴 시작
@@ -152,6 +155,8 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<ABasePlayerController> PlayerController;
+
+	bool bAuto = false;
 
 	//ABasePlayerController* PlayerController;
 	/*

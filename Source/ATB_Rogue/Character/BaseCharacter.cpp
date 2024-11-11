@@ -105,13 +105,13 @@ void ABaseCharacter::BeginPlay()
 	//레벨 시작시 Instance 에서 폰정보를 받아옴
 	{
 		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
-		PlayerPawnsInfo = GameInstanceSubsystem->GetPlayerPawnsInfo();
+		PlayerPawnsInfo = GameInstanceSubsystem->LoadPlayerPawnsInfo();
 	}
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
-		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::OnBattleEndThird);
+		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::OnBattleEndSecond);
 
 		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
@@ -121,7 +121,8 @@ void ABaseCharacter::BeginPlay()
 
 void ABaseCharacter::Init()
 {
-	SetRoundsTransform();
+	SetRoundsTransform(); 
+	CurRound = 0;
 }
 
 void ABaseCharacter::SetRoundsTransform()
@@ -138,6 +139,7 @@ void ABaseCharacter::SetRoundsTransform()
 
 void ABaseCharacter::SpawnPawn()
 {
+	CurHavePawns.Empty();
 	for (uint8 i = 0; i < PlayerPawnsInfo.Num(); i++)
 	{
 		if (PlayerPawnsInfo.IsEmpty()) { break; } //비었으면 끝
@@ -179,29 +181,30 @@ void ABaseCharacter::OnFinishTurn()
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
 	CurRound++;
+	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	if (CurRound % 10 == 1)
 	{
 		SpawnPawn(); //레벨 이동시 새로 생성
+		BattleSubsystem->SetFriendlyPawns(CurHavePawns);
 	}
 	else //라운드 시작시 위치만 새로 조정
 	{
+		CurHavePawns = BattleSubsystem->FriendlyPawns;
 		ReSetTransform();
 	}
-	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-	BattleSubsystem->SetFriendlyPawns(CurHavePawns);
 }
 
-void ABaseCharacter::OnBattleEndThird()
+void ABaseCharacter::OnBattleEndSecond() //
 {
-	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
-	GameInstanceSubsystem->SavePlayerPawnsInfo(CurHavePawns);
+
 }
 
 void ABaseCharacter::ReSetTransform()
 {
 	for (uint8 i = 0; i < CurHavePawns.Num(); i++)
 	{
-		if (CurHavePawns.IsEmpty()) { break; } //비었으면 끝
+		if (CurHavePawns.IsEmpty()) { break; } //비었으면 패스
+		if (!IsValid(CurHavePawns[i])) { break; } //죽었으면 패스
 		CurHavePawns[i]->SetActorTransform(RoundsTransform[0][i]);
 		CurHavePawns[i]->OnSpawn();
 	}

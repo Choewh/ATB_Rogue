@@ -11,7 +11,7 @@
 UENUM(BlueprintType)
 enum class EPawnState : uint8
 {
-	Defalut UMETA(DisplayName = "Default"),
+	Default UMETA(DisplayName = "Default"),
 	Move UMETA(DisplayName = "Move"),
 	Attack UMETA(DisplayName = "Attack")
 };

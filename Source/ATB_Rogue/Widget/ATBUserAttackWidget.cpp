@@ -95,7 +95,7 @@ void UATBUserAttackWidget::CreateSkillUI()
 		SkillOverlay->AddChild(SkillImage);
 		SkillOverlay->AddChild(SkillButton);
 
-		//¹è°æÅõ¸íÇÏ°Ô¼³Á¤
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Ô¼ï¿½ï¿½ï¿½
 		SkillButton->SetBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
 
 		{

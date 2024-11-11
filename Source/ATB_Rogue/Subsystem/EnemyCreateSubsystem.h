@@ -30,7 +30,7 @@ class ATB_ROGUE_API UEnemyCreateSubsystem : public UWorldSubsystem
 	
 public:
 	//에너미 생성시 레벨 정보 설정 어디서 할지 고민 TODO
-	TArray<FBasePawnInfo> CreateRoundSpecies(uint8 MaxSpecies , EPawnGroup SpawnGroup, ELevels Level = ELevels::None , EBattleSpec BattleSpec = EBattleSpec::Defalut);//나중엔 레벨 종류도 받아서 맞는 폰 생성
+	TArray<FBasePawnInfo> CreateRoundSpecies(uint8 MaxSpecies , EPawnGroup SpawnGroup, ELevels Level = ELevels::None , EBattleSpec BattleSpec = EBattleSpec::Default);//나중엔 레벨 종류도 받아서 맞는 폰 생성
 	//폰 생성 정보 전달 스탯 구조체 있는지 확인
 	FBasePawnInfo CreateSpecies(EPawnGroup SpawnGroup,ESpecies SpawnSpecies = ESpecies::None , uint8 Level = 1);
 	FBasePawnInfo CreateSpeciesFromLevel(ELevels Level , EPawnGroup SpawnGroup = EPawnGroup::Enemy);
