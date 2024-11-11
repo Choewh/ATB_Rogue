@@ -293,6 +293,7 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 	PawnUIElements.Portrait = Portrait;
 
 	PawnUIElements.LevelText = LevelText;
+	PawnUIElements.AttributeImage = AttributeImage;
 
 	EnemyUI.Add(InEnemyPawn, PawnUIElements);
 }
@@ -531,6 +532,7 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 	PawnUIElements.Portrait = Portrait;
 
 	PawnUIElements.LevelText = LevelText;
+	PawnUIElements.AttributeImage = AttributeImage;
 
 	FriendlyUI.Add(InFriendlyPawn, PawnUIElements);
 }
@@ -574,6 +576,16 @@ void UATBBattleUserWidget::RemoveEnemyUI(ABasePawn* DeadPawn)
 			{
 				UIElements->SliderBar->RemoveFromParent();
 			}
+
+			if (UIElements->LevelText.IsValid())
+			{
+				UIElements->LevelText->RemoveFromParent();
+			}
+
+			if (UIElements->AttributeImage.IsValid())
+			{
+				UIElements->AttributeImage->RemoveFromParent();
+			}
 		}
 		// EnemyUI���� ����
 		EnemyUI.Remove(DeadPawn);
@@ -601,6 +613,16 @@ void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
 			if (UIElements->SliderBar.IsValid())
 			{
 				UIElements->SliderBar->RemoveFromParent();
+			}
+
+			if (UIElements->LevelText.IsValid())
+			{
+				UIElements->LevelText->RemoveFromParent();
+			}
+
+			if (UIElements->AttributeImage.IsValid())
+			{
+				UIElements->AttributeImage->RemoveFromParent();
 			}
 		}
 		// FriendlyUI���� ����

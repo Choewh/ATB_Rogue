@@ -84,10 +84,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 				MoveRange + Range[i], TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 				HitResults, true);
 		}
-		if (!HitResults.IsEmpty())
-		{
-			UnableSkill(i);
-		}
+	
 		TArray<ABasePawn*> HitPawns;
 
 		for (auto& HitResult : HitResults)
@@ -96,6 +93,8 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 			if (HitPawn)
 			{
 				HitPawns.Add(HitPawn);
+				UnableSkill(i);
+				FindPawn = true;
 			}
 		}
 
@@ -107,15 +106,12 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 			{
 			case 0:
 				EnemyAIController->FirstSkillRangePawns = HitPawns;
-				FindPawn = true;
 				break;
 			case 1:
 				EnemyAIController->SecondSkillRangePawns = HitPawns;
-				FindPawn = true;
 				break;
 			case 2:
 				EnemyAIController->ThirdSkillRangePawns = HitPawns;
-				FindPawn = true;
 				break;
 			default:
 				break;

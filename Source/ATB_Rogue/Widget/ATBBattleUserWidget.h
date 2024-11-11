@@ -32,6 +32,8 @@ struct FPawnUIElements
 
 	UPROPERTY()
 	TWeakObjectPtr<UImage> Portrait;
+	UPROPERTY()
+	TWeakObjectPtr<UImage> AttributeImage;
 
 	UPROPERTY()
 	TWeakObjectPtr<UOverlay> ProgressBarBox;
