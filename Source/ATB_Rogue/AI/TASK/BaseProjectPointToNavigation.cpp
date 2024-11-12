@@ -7,7 +7,7 @@
 
 UBaseProjectPointToNavigation::UBaseProjectPointToNavigation()
 {
-    NodeName = "ProjectPointToNavigation";
+	NodeName = "ProjectPointToNavigation";
 }
 
 EBTNodeResult::Type UBaseProjectPointToNavigation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -16,17 +16,31 @@ EBTNodeResult::Type UBaseProjectPointToNavigation::ExecuteTask(UBehaviorTreeComp
 	SetOwner(BehaviorTreeComponent->GetOwner());
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 
-    ABasePawn* TargetPawn = Cast<ABasePawn>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
-    if (IsValid(TargetPawn))
-    {
-        FVector TargetLocation = TargetPawn->GetActorLocation();
-        FNavLocation ClosestPoint;
-        UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-        if (NavSystem->ProjectPointToNavigation(TargetLocation, ClosestPoint, FVector(200.0, 200.0, 200.0)))
-        {
-            BlackboardComponent->SetValueAsVector(TEXT("TargetPoint"), ClosestPoint.Location);
-        }
-    }
+	ABasePawn* TargetPawn = Cast<ABasePawn>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
+	FVector TargetLocation;
+	FNavLocation ClosestPoint;
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+	bool Succeeded;
+	if (IsValid(TargetPawn))
+	{
+		TargetLocation = TargetPawn->GetActorLocation();
+		Succeeded = NavSystem->ProjectPointToNavigation(TargetLocation, ClosestPoint, FVector(200.0, 200.0, 200.0));
+		if (Succeeded)
+		{
+			BlackboardComponent->SetValueAsVector(TEXT("TargetPoint"), ClosestPoint.Location);
+			BlackboardComponent->SetValueAsVector(TEXT("MovePoint"), ClosestPoint.Location);
+		}
+	}
+	else
+	{
+		TargetLocation = BlackboardComponent->GetValueAsVector(TEXT("MovePoint"));
+		Succeeded = NavSystem->ProjectPointToNavigation(TargetLocation, ClosestPoint, FVector(200.0, 200.0, 200.0));
+		if (Succeeded)
+		{
+			BlackboardComponent->SetValueAsVector(TEXT("TargetPoint"), ClosestPoint.Location);
+			BlackboardComponent->SetValueAsVector(TEXT("MovePoint"), ClosestPoint.Location);
+		}
+	}
 
 	return EBTNodeResult::Succeeded;
 }

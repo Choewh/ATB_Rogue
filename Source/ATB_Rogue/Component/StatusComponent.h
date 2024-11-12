@@ -12,6 +12,7 @@
 #include "Enums/Stat.h"
 #include "Enums/Stage.h"
 #include "Enums/Species.h"
+#include "Enums/BattleSpec.h"
 #include "StatusComponent.generated.h"
 
 /**
@@ -28,9 +29,10 @@ struct FSpeciesInfo
 	GENERATED_BODY()
 
 public:
-	FSpeciesInfo(uint8 Level = 1)
-		:Level(Level),
-		LevelExp(expLevels[Level]),
+	FSpeciesInfo()
+		:Level(1),
+		Boss(EBattleSpec::Default),
+		LevelExp(expLevels[0]),
 		Species(ESpecies::None),
 		Stage(EStage::None),
 		Attribute(EAttribute::None),
@@ -44,27 +46,73 @@ public:
 		EVA(0.f),
 		MoveRange(1200.f)
 	{}
-	FSpeciesInfo(const FSpeciesInfo& Other)
-		: Level(Other.Level),
-		LevelExp(Other.LevelExp),
-		Species(Other.Species),
-		Stage(Other.Stage),
-		Attribute(Other.Attribute),
-		HP(Other.HP),
-		ATK(Other.ATK),
-		DEF(Other.DEF),
-		SPATK(Other.SPATK),
-		SPDEF(Other.SPDEF),
-		SPD(Other.SPD),
-		ACC(Other.ACC),
-		EVA(Other.EVA),
-		MoveRange(Other.MoveRange)
+
+	FSpeciesInfo(uint8 Level)
+		:Level(Level),
+		Boss(EBattleSpec::Default),
+		LevelExp(expLevels[Level-1]),
+		Species(ESpecies::None),
+		Stage(EStage::None),
+		Attribute(EAttribute::None),
+		HP(0.f),
+		ATK(0.f),
+		DEF(0.f),
+		SPATK(0.f),
+		SPDEF(0.f),
+		SPD(0.f),
+		ACC(0.f),
+		EVA(0.f),
+		MoveRange(1200.f)
 	{}
+
+	FSpeciesInfo(uint8 Level, EBattleSpec Boss)
+		:Level(Level),
+		Boss(Boss),
+		LevelExp(expLevels[Level - 1]),
+		Species(ESpecies::None),
+		Stage(EStage::None),
+		Attribute(EAttribute::None),
+		HP(0.f),
+		ATK(0.f),
+		DEF(0.f),
+		SPATK(0.f),
+		SPDEF(0.f),
+		SPD(0.f),
+		ACC(0.f),
+		EVA(0.f),
+		MoveRange(1200.f)
+	{}
+
+	FSpeciesInfo(const FSpeciesInfo& Other) = delete;
+
+	FSpeciesInfo& operator=(const FSpeciesInfo& Other) {
+		if (this != &Other) {
+			Level = Other.Level;
+			Boss = Other.Boss;
+			LevelExp = Other.LevelExp;
+			Species = Other.Species;
+			Stage = Other.Stage;
+			Attribute = Other.Attribute;
+			HP = Other.HP;
+			ATK = Other.ATK;
+			DEF = Other.DEF;
+			SPATK = Other.SPATK;
+			SPDEF = Other.SPDEF;
+			SPD = Other.SPD;
+			ACC = Other.ACC;
+			EVA = Other.EVA;
+			MoveRange = Other.MoveRange;
+		}
+		return *this;
+	}
 
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	uint8 Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EBattleSpec Boss = EBattleSpec::Default;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	uint8 LevelExp;
@@ -127,8 +175,9 @@ public:
 
 public:
 	const TSharedPtr<FSpeciesInfo> GetSpeciesInfo() { return SpeciesInfo; }
-
+	//레벨 * 단계 * Battlespec 1 , 2 *  5 300 1500 
 	void SetSpeciesInfo(TSharedPtr<FSpeciesInfo> NewSpeciesInfo) { SpeciesInfo = NewSpeciesInfo; }
+	void GetLevelExp(uint16 Exp);
 protected:
 	void ReleaseContext() { check(SpeciesInfo); SpeciesInfo = nullptr; } //지울일이있나?
 

@@ -20,7 +20,29 @@ struct FBasePawnInfo
 public:
 	EPawnGroup PawnGroup;
 	ESpecies Species;
-	FSpeciesInfo SpeciesInfo; //일단 생각해보기 
+	TSharedPtr<FSpeciesInfo> SpeciesInfo; //일단 생각해보기 
+	FBasePawnInfo()
+		:
+		PawnGroup(EPawnGroup::Default),
+		Species(ESpecies::None),
+		SpeciesInfo(MakeShared<FSpeciesInfo>())
+	{}
+
+	FBasePawnInfo(const FBasePawnInfo& Other)
+		:
+		PawnGroup(Other.PawnGroup),
+		Species(Other.Species),
+		SpeciesInfo(Other.SpeciesInfo)
+	{}
+
+	FBasePawnInfo& operator=(const FBasePawnInfo& Other) {
+		if (this != &Other) {
+			this->PawnGroup = Other.PawnGroup;
+			this->Species = Other.Species;
+			this->SpeciesInfo = Other.SpeciesInfo;
+		}
+		return *this;
+	}
 };
 
 UCLASS()
@@ -32,7 +54,7 @@ public:
 	//에너미 생성시 레벨 정보 설정 어디서 할지 고민 TODO
 	TArray<FBasePawnInfo> CreateRoundSpecies(uint8 MaxSpecies , EPawnGroup SpawnGroup, ELevels Level = ELevels::None , EBattleSpec BattleSpec = EBattleSpec::Default);//나중엔 레벨 종류도 받아서 맞는 폰 생성
 	//폰 생성 정보 전달 스탯 구조체 있는지 확인
-	FBasePawnInfo CreateSpecies(EPawnGroup SpawnGroup,ESpecies SpawnSpecies = ESpecies::None , uint8 Level = 1);
+	FBasePawnInfo CreateSpecies(EPawnGroup SpawnGroup, EBattleSpec BattleSpec, uint8 Level = 1, ESpecies SpawnSpecies = ESpecies::None);
 	FBasePawnInfo CreateSpeciesFromLevel(ELevels Level , EPawnGroup SpawnGroup = EPawnGroup::Enemy);
 
 

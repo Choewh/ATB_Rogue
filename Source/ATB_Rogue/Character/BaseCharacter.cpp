@@ -149,7 +149,7 @@ void ABaseCharacter::SpawnPawn()
 		NewPawn->Species = PlayerPawnsInfo[i].Species;
 		NewPawn->PawnGroup = PlayerPawnsInfo[i].PawnGroup;
 		//레벨이랑 베이스 스탯 세팅
-		TSharedPtr<FSpeciesInfo> NewSpeciesInfo = MakeShared<FSpeciesInfo>(PlayerPawnsInfo[i].SpeciesInfo);
+		TSharedPtr<FSpeciesInfo> NewSpeciesInfo = PlayerPawnsInfo[i].SpeciesInfo;
 		NewPawn->StatusComponent->SetSpeciesInfo(NewSpeciesInfo);
 		//셋데이터에서 스탯은 베이스스탯만 초기화
 		NewPawn->SetData();

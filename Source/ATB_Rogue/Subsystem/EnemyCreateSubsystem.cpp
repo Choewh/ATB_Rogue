@@ -58,29 +58,15 @@ TArray<FBasePawnInfo> UEnemyCreateSubsystem::CreateRoundSpecies(uint8 MaxSpecies
 	for (uint8 i = 0; i < MaxSpecies; i++)
 	{
 		FBasePawnInfo NewSpecies;
-		if (BattleSpec == EBattleSpec::Boss)
+		//보스는 따로 생성
+		if (Level == ELevels::None) // 소환시 레벨환경제한이 없는 폰
 		{
-			//보스는 따로 생성
-			if (Level == ELevels::None) // 소환시 레벨환경제한이 없는 폰
-			{
-				//함수를 따로 추가 ㄱ
-				NewSpecies = CreateSpecies(SpawnGroup);
-			}
-			else// 레벨이 있다는건 필요한 정보가 있다는거니까 ㅇ
-			{
-				NewSpecies = CreateSpeciesFromLevel(Level, SpawnGroup);
-			}
+			//함수를 따로 추가 ㄱ
+			NewSpecies = CreateSpecies(SpawnGroup, BattleSpec);
 		}
-		else
+		else// 레벨이 있다는건 필요한 정보가 있다는거니까 ㅇ
 		{
-			if (Level == ELevels::None) // 소환시 레벨환경제한이 없는 폰
-			{
-				NewSpecies = CreateSpecies(SpawnGroup);
-			}
-			else// 레벨이 있다는건 필요한 정보가 있다는거니까 ㅇ
-			{
-				NewSpecies = CreateSpeciesFromLevel(Level, SpawnGroup);
-			}
+			NewSpecies = CreateSpeciesFromLevel(Level, SpawnGroup);
 		}
 		//최종적으로 생성된 폰 소환
 		ReturnPawns.Add(NewSpecies);
@@ -89,7 +75,7 @@ TArray<FBasePawnInfo> UEnemyCreateSubsystem::CreateRoundSpecies(uint8 MaxSpecies
 }
 
 
-FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpecies SpawnSpecies, uint8 Level)
+FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, EBattleSpec BattleSpec, uint8 Level, ESpecies SpawnSpecies)
 {
 	//레벨 있으면 구조체에 레벨 설정해주기
 	FBasePawnInfo NewSpecies;
@@ -102,8 +88,7 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, ESpeci
 
 	NewSpecies.PawnGroup = SpawnGroup;
 	NewSpecies.Species = SpawnSpecies;
-	FSpeciesInfo SpeciesInfo(Level); //레벨만 추가로 받으면 되고 나머진 베이스 스탯이라 ㄱㅊ 
-	NewSpecies.SpeciesInfo = SpeciesInfo;
+	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(Level, BattleSpec);
 	return NewSpecies;
 }
 

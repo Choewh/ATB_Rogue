@@ -174,7 +174,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ATB_Cur = ATB_Min;
 	UPROPERTY(EditAnywhere)
-	float ATB_MAX = 1000.f;
+	float ATB_MAX = 2000.f;
 	UPROPERTY(EditAnywhere)
 	float ATB_Speed = 1.f;
 
@@ -209,7 +209,7 @@ public:
 	UFUNCTION()
 	virtual void OnFinishTurn();
 	UFUNCTION()
-	virtual void OnBattleEndFirst();
+	virtual void OnBattleEndFirst(uint16 Exp);
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

@@ -15,8 +15,8 @@ bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPl
 	}
 
 	for (auto& SelectPawnInfo : InPlayerSpecies)
-	{
-		FBasePawnInfo NewInfo = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateSpecies(EPawnGroup::Friendly, SelectPawnInfo, 5); //첫 생성시 레벨 5 
+	{																																	//Temp 
+		FBasePawnInfo NewInfo = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateSpecies(EPawnGroup::Friendly, EBattleSpec::Default , 5 , SelectPawnInfo); //첫 생성시 레벨 5 
 		PlayerPawnsInfo.Add(NewInfo);
 	}
 
@@ -52,7 +52,7 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerP
 	for (auto& Pawn : PlayerPawns) 
 	{
 		FBasePawnInfo NewBasePawnInfo;
-		NewBasePawnInfo.SpeciesInfo = *Pawn->StatusComponent->GetSpeciesInfo();
+		NewBasePawnInfo.SpeciesInfo = Pawn->StatusComponent->GetSpeciesInfo();
 		NewBasePawnInfo.Species = Pawn->Species;
 		NewBasePawnInfo.PawnGroup = Pawn->PawnGroup;
 		NewPlayerPawnsInfo.Add(NewBasePawnInfo);
@@ -76,13 +76,14 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerP
 
 void UATBGameInstanceSubsystem::AddDiePawnInfo(ABasePawn* DiePawn)
 {
+
 	AFriendlyPawn* FriendlyPawn = Cast<AFriendlyPawn>(DiePawn);
 	if (!FriendlyPawn) { return; }
 	//불러오기할때 싹 비워주기
 	FBasePawnInfo DiePawnInfo;
 	DiePawnInfo.PawnGroup = DiePawn->PawnGroup;
 	DiePawnInfo.Species = DiePawn->Species;
-	DiePawnInfo.SpeciesInfo = *DiePawn->StatusComponent->GetSpeciesInfo().Get();
+	DiePawnInfo.SpeciesInfo = DiePawn->StatusComponent->GetSpeciesInfo();
 	PlayerDiePawnsInfo.Add(DiePawnInfo);
 }
 

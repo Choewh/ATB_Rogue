@@ -92,13 +92,13 @@ void UEnvQueryTest_SkillRange::RunTest(FEnvQueryInstance& QueryInstance) const
 	TArray<FHitResult> HitResults;
 	TArray<AActor*> IgnoreActors;
 	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
-		MaxThresholdValue, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		MaxThresholdValue, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 		HitResults, true);
 	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
-		MinThresholdValue, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		MinThresholdValue, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 		HitResults, true);
 	UKismetSystemLibrary::SphereTraceMultiByProfile(QueryPawn, TargetPawn->GetActorLocation(), TargetPawn->GetActorLocation(),
-		1200.f, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+		1200.f, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 		HitResults, true);
 	UE_LOG(LogTemp, Log, TEXT("PawnName : % s , MaxThresholdValue : %f"),*QueryPawn->GetName(), MaxThresholdValue);
 

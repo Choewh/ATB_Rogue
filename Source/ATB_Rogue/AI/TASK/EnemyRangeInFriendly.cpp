@@ -75,13 +75,13 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 		if (Pawn->PawnGroup == EPawnGroup::Enemy)
 		{
 			UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
-				MoveRange + Range[i], TEXT("Friendly"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+				MoveRange + Range[i], TEXT("FriendlyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 				HitResults, true);
 		}
 		else if (Pawn->PawnGroup == EPawnGroup::Friendly)
 		{
 			UKismetSystemLibrary::SphereTraceMultiByProfile(ActorOwner, Pawn->GetActorLocation(), Pawn->GetActorLocation(),
-				MoveRange + Range[i], TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+				MoveRange + Range[i], TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 				HitResults, true);
 		}
 	

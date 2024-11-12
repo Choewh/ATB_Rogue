@@ -115,7 +115,7 @@ void ABasePlayerController::CameraViewUpdate()
 		DefaultCamera->SetActive(false);
 		PawnViewCamera->SetView(true);
 		PawnViewCamera->SetActive(true);
-		PawnViewCamera	->OnPawnViewCamera(BattleSubsystem->GetActionPawn());
+		PawnViewCamera->OnPawnViewCamera(BattleSubsystem->GetActionPawn());
 		break;
 
 	case ECameraViewMode::Attack:
@@ -216,7 +216,7 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
 		bool bHit = UKismetSystemLibrary::SphereTraceMultiByProfile(this, CursorHitVector, CursorHitVector,
-			50.f, TEXT("Enemy"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+			50.f, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
 			HitResults, true);
 		//FCollisionQueryParams CollisionParams;
 		//GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_GameTraceChannel5, CollisionParams);
@@ -230,24 +230,30 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 			for (const FHitResult& Hit : HitResults)
 			{
 				float Distance = FVector::Dist(CursorHitVector, Hit.ImpactPoint);
+
+				ClosestActor = Hit.GetActor();
+				AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(ClosestActor);
+
+				if (!EnemyPawn) { continue; }
+
 				if (Distance < ClosestDistance)
 				{
 					ClosestDistance = Distance;
 					ClosestHit = Hit;
-					ClosestActor = Hit.GetActor();
 				}
 			}
 			if (ClosestActor)
 			{
 				UE_LOG(LogTemp, Log, TEXT("%s"), *ClosestActor->GetName());
 
-				DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation(), 20.f,10, FColor::Red, false, 5.0f, 0, 1.0f);
+				DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation(), 20.f, 10, FColor::Red, false, 5.0f, 0, 1.0f);
 				DrawDebugLine(GetWorld(), CameraLocation, ClosestActor->GetActorLocation(), FColor::Red, false, 5.f);
 			}
+
 			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(ClosestActor);
 			if (EnemyPawn)
 			{
-			BattleSubsystem->SelectTargetPawn(ClosestActor);
+				BattleSubsystem->SelectTargetPawn(ClosestActor);
 			}
 		}
 		// 배틀서브시스템의 Distance 체크 콜 셀렉한 스킬의 사거리 내에 있으면 사용할수 있다 하기 블랙보드 값 ESkill::~~

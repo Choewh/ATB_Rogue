@@ -630,10 +630,12 @@ void UATBBattleUserWidget::RemoveFriendlyUI(ABasePawn* DeadPawn)
 	}
 }
 
-void UATBBattleUserWidget::OnPortraitUpdate(ABasePawn* UpdatePawn)
+void UATBBattleUserWidget::OnUpdateUI(ABasePawn* UpdatePawn)
 {
+
 	if (UpdatePawn && FriendlyUI.Contains(UpdatePawn))
 	{
+
 		FPawnUIElements* UIElements = FriendlyUI.Find(UpdatePawn);
 		if (UIElements)
 		{
@@ -650,6 +652,39 @@ void UATBBattleUserWidget::OnPortraitUpdate(ABasePawn* UpdatePawn)
 				SliderStyle.SetDisabledThumbImage(SlateBrush);
 				SliderStyle.SetNormalThumbImage(SlateBrush);
 				UIElements->SliderBar->SetWidgetStyle(SliderStyle);
+			}
+			if (UIElements->LevelText.IsValid())
+			{
+				int32 Level = UpdatePawn->StatusComponent->GetSpeciesInfo()->Level;
+
+				// "Level : ~" 형식의 텍스트 생성
+				FString LevelTextString = FString::Printf(TEXT("Level : %d"), Level);
+
+
+				UIElements->LevelText->SetText(FText::FromString(LevelTextString));
+				UIElements->LevelText->SetJustification(ETextJustify::Right);
+			}
+			if (UIElements->AttributeImage.IsValid())
+			{
+				FSlateBrush BrushCopy = UIElements->AttributeImage->GetBrush();
+
+				BrushCopy.SetImageSize(FVector2D(30, 30.f));
+
+				UIElements->AttributeImage->SetBrush(BrushCopy);
+				switch (UpdatePawn->StatusComponent->GetSpeciesInfo()->Attribute)
+				{
+				case EAttribute::Data:
+					UIElements->AttributeImage->SetBrushFromTexture(DataTexture);
+					break;
+				case EAttribute::Vaccine:
+					UIElements->AttributeImage->SetBrushFromTexture(VaccineTexture);
+					break;
+				case EAttribute::Virus:
+					UIElements->AttributeImage->SetBrushFromTexture(VirusTexture);
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -672,9 +707,43 @@ void UATBBattleUserWidget::OnPortraitUpdate(ABasePawn* UpdatePawn)
 				SliderStyle.SetNormalThumbImage(SlateBrush);
 				UIElements->SliderBar->SetWidgetStyle(SliderStyle);
 			}
+			if (UIElements->LevelText.IsValid())
+			{
+				int32 Level = UpdatePawn->StatusComponent->GetSpeciesInfo()->Level;
+
+				// "Level : ~" 형식의 텍스트 생성
+				FString LevelTextString = FString::Printf(TEXT("Level : %d"), Level);
+
+
+				UIElements->LevelText->SetText(FText::FromString(LevelTextString));
+				UIElements->LevelText->SetJustification(ETextJustify::Right);
+			}
+			if (UIElements->AttributeImage.IsValid())
+			{
+				FSlateBrush BrushCopy = UIElements->AttributeImage->GetBrush();
+
+				BrushCopy.SetImageSize(FVector2D(30, 30.f));
+
+				UIElements->AttributeImage->SetBrush(BrushCopy);
+				switch (UpdatePawn->StatusComponent->GetSpeciesInfo()->Attribute)
+				{
+				case EAttribute::Data:
+					UIElements->AttributeImage->SetBrushFromTexture(DataTexture);
+					break;
+				case EAttribute::Vaccine:
+					UIElements->AttributeImage->SetBrushFromTexture(VaccineTexture);
+					break;
+				case EAttribute::Virus:
+					UIElements->AttributeImage->SetBrushFromTexture(VirusTexture);
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 }
+
 
 void UATBBattleUserWidget::OnHPBarUpdate(ABasePawn* InPawn, float InPercent)
 {

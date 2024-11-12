@@ -165,7 +165,7 @@ void ABasePawn::SetData()
 	if (StatusComponent)
 	{
 		StatusComponent->SetData(Species);
-		//HP 계산
+		//HP 계산																								//( 1 + (StatusComponent->GetSpeciesInfo()->Level / 100) ) 1. Level / 100
 		if (MaxHP == CurHP)
 		{
 			SetMaxHP(FMath::RoundToInt(((StatusComponent->GetSpeciesInfo()->HP * static_cast<uint8>(StatusComponent->GetSpeciesInfo()->Stage) + 100.f) * ((StatusComponent->GetSpeciesInfo()->Level / 100.f)) + 10.f)));
@@ -316,6 +316,7 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 void ABasePawn::Evolution()
 {
+
 	FTransform OriginTransform = GetActorTransform();
 	Species = PawnData->NextSpecies;
 	if (Species != ESpecies::End)

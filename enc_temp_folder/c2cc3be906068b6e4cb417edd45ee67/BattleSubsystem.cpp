@@ -297,7 +297,7 @@ void UBattleSubsystem::CalcExp()
 		}
 		else
 		{
-			c = 1.5;
+			c = 1;
 		}
 		
 		uint8 ResultExp = a* b* c + 5;

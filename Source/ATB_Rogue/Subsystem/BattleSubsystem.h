@@ -24,7 +24,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleStartTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndFirst);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleEndFirst , uint16 , First);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndSecond);
 
@@ -47,7 +47,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void BattleStart(uint8 Round);
-
+	UFUNCTION()
+	void Init();
 	UFUNCTION()
 	bool IsDieCheck();
 	UFUNCTION()
@@ -116,6 +117,7 @@ public :
 	
 private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
+	void CalcExp();
 public:
 	UFUNCTION()
 	void SetViewCameraMode(ECameraViewMode InViewMode);
@@ -158,6 +160,7 @@ public:
 
 	bool bAuto = false;
 
+	uint16 Exp = 0;
 	//ABasePlayerController* PlayerController;
 	/*
 	Tarray<Player> ~

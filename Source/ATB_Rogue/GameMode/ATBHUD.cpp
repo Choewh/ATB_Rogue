@@ -39,7 +39,7 @@ void AATBHUD::PostInitializeComponents()
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->AddPawnUI.AddDynamic(this, &ThisClass::AddPawnBattleUI);
 		ATBUserUISubSystem->RemovePawnUI.AddDynamic(this, &ThisClass::RemovePawnBattleUI);
-		ATBUserUISubSystem->UpdatePortraitUI.AddDynamic(this, &ThisClass::UpdatePawnPortraitUI);
+		ATBUserUISubSystem->UpdatePawnUIUI.AddDynamic(this, &ThisClass::UpdatePawnUI);
 	}
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
@@ -70,9 +70,9 @@ void AATBHUD::RemovePawnBattleUI(ABasePawn* DeadPawn)
 	ATBBattleUserWidget->RemovePawnUI(DeadPawn);
 }
 
-void AATBHUD::UpdatePawnPortraitUI(ABasePawn* UpdatePawn)
+void AATBHUD::UpdatePawnUI(ABasePawn* UpdatePawn)
 {
-	ATBBattleUserWidget->OnPortraitUpdate(UpdatePawn);
+	ATBBattleUserWidget->OnUpdateUI(UpdatePawn);
 }
 
 void AATBHUD::ShowBattleUI(uint8 Round)

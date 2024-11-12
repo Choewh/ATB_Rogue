@@ -121,6 +121,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bAttack;
 
+	//오토 설정 여기서 할지 생각해보기
 private:
 	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };

@@ -112,8 +112,6 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 	{
 		SpeciesInfo.Get()->Level++;
 		//2레벨 업 할수도있으니 GetLevelExp(0)
-		
-		//진화 레벨 체크 
 		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->UpdatePawnUI(GetOwner());

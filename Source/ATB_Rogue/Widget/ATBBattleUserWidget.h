@@ -66,7 +66,7 @@ public:
 	void RemoveFriendlyUI(ABasePawn* DeadPawn);
 
 	UFUNCTION()
-	void OnPortraitUpdate(ABasePawn* UpdatePawn);
+	void OnUpdateUI(ABasePawn* UpdatePawn);
 	UFUNCTION()
 	void OnHPBarUpdate(ABasePawn* InPawn, float InPercent);
 	UFUNCTION()

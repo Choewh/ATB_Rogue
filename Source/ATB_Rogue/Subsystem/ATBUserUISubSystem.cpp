@@ -5,9 +5,11 @@
 #include "Widget/ATBBattleUserWidget.h"
 #include "ATBUserUISubSystem.h"
 
-void UATBUserUISubSystem::UpdatePortrait(ABasePawn* UpdatePawn)
+void UATBUserUISubSystem::UpdatePawnUI(AActor* UpdatePawn)
 {
-	UpdatePortraitUI.Broadcast(UpdatePawn);
+	ABasePawn* UpdateBasePawn = Cast<ABasePawn>(UpdatePawn);
+	if (!UpdateBasePawn) { return; }
+	UpdatePawnUIUI.Broadcast(UpdateBasePawn);
 }
 
 void UATBUserUISubSystem::BattleUIAddPawn(ABasePawn* InBasePawn)

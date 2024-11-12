@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddPawnUI, ABasePawn*, InPawn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovePawnUI, ABasePawn*, DeadPawn);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdatePortraitUI, ABasePawn*, DeadPawn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdatePawnUIUI, ABasePawn*, DeadPawn);
 /**
  * 
  */
@@ -24,7 +24,7 @@ class ATB_ROGUE_API UATBUserUISubSystem : public UWorldSubsystem
 	
 public :
 	UFUNCTION()
-	void UpdatePortrait(ABasePawn* UpdatePawn);
+	void UpdatePawnUI(AActor* UpdatePawn);
 	UFUNCTION()
 	void BattleUIAddPawn(ABasePawn* InBasePawn);
 	UFUNCTION()
@@ -36,5 +36,5 @@ public:
 	UPROPERTY()
 	FRemovePawnUI RemovePawnUI;
 	UPROPERTY()
-	FUpdatePortraitUI UpdatePortraitUI;
+	FUpdatePawnUIUI UpdatePawnUIUI;
 };
