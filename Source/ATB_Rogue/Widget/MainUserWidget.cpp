@@ -186,8 +186,7 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 		Overlay->AddChild(SelectableCell);
 
 		Image->SetDesiredSizeOverride(FVector2D(200.f, 200.f));
-		{
-		}
+
 		{
 
 			UEnum* EnumPtr = StaticEnum<ESpecies>();

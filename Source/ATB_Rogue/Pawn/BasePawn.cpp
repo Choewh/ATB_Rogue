@@ -173,7 +173,7 @@ void ABasePawn::SetData()
 
 		ATB_Speed = StatusComponent->GetSpeciesInfo()->SPD;
 	}
-
+	
 	if (EffectComponent)
 	{
 		EffectComponent->SetData(Species);
@@ -214,6 +214,7 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+	SetData();
 }
 
 void ABasePawn::ControllerInit()
