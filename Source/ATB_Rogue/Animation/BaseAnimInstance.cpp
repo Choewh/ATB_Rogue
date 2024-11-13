@@ -10,6 +10,7 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	APawn* Pawn = TryGetPawnOwner();
+	if (!Pawn) { return; }
 	if (GIsEditor && FApp::IsGame() && !Pawn)
 	{
 		checkf(false, TEXT("UBaisicCharacterAnimInstance�� ����Ϸ��� �������ڰ� Pawn�̿��� �մϴ�."));
@@ -17,8 +18,11 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 	}
 	else if (!Pawn) { return; }
 
+	UPawnMovementComponent* PawnMovementComponent = Pawn->GetMovementComponent();
+
+	if (!PawnMovementComponent) { return; }
+
 	MovementComponent = Pawn->GetMovementComponent();
-	check(MovementComponent);
 }
 
 void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
