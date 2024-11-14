@@ -114,8 +114,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EBattleSpec Boss = EBattleSpec::Default;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 LevelExp;
+	uint32 LevelExp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESpecies Species;
@@ -169,7 +168,6 @@ public:
 	virtual void SetData(ESpecies InSpecies);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 public:
-	//������ ���̺�
 	UDataTable* StatDataTable;
 	FStatTableRow* StatData;
 

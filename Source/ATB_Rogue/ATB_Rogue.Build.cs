@@ -12,7 +12,7 @@ public class ATB_Rogue : ModuleRules
 		{
             "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
                 "UMG","AIModule","Slate", "SlateCore", "NavigationSystem",
-			"MoviePlayer","MovieScene","Sequencer"
+			"MoviePlayer","MovieScene","Sequencer","LevelSequence"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

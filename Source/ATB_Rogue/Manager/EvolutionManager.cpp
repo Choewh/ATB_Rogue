@@ -3,12 +3,23 @@
 
 #include "Manager/EvolutionManager.h"
 #include "LevelSequencePlayer.h"
+#include "Subsystem/BattleSubsystem.h"
 #include "Engine/SkinnedAssetCommon.h"
 // Sets default values
 AEvolutionManager::AEvolutionManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	//{
+	//	static ConstructorHelpers::FObjectFinder<ULevelSequence> LS(TEXT("/Script/LevelSequence.LevelSequence'/Game/Sequence/EvolutionLevelSequence.EvolutionLevelSequence'"));
+	//	if (LS.Succeeded())
+	//	{
+	//		LevelSequence = LS.Object;
+	//	}
+
+	//	LevelSequenceActor = CreateDefaultSubobject<ALevelSequenceActor>(TEXT("LevelSequenceActor"));
+	//}
 
 	{
 		static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
@@ -71,7 +82,28 @@ AEvolutionManager::AEvolutionManager()
 void AEvolutionManager::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayEvolutionSequence(ESpecies::Guilmon); //현재 Species 받고
+	{
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		BattleSubsystem->OnEvolution.AddDynamic(this, &ThisClass::PlayEvolutionSequence);
+	}
+	{
+		ULevelSequence* LevelSequenceObject = Cast<ULevelSequence>(StaticLoadObject(ULevelSequence::StaticClass(), nullptr, TEXT("/Game/Sequence/EvolutionLevelSequence.EvolutionLevelSequence")));
+		if (LevelSequenceObject)
+		{
+			LevelSequence = LevelSequenceObject;// LevelSequence가 성공적으로 로드되었습니다.
+		}
+		/*static ConstructorHelpers::FObjectFinder<ULevelSequence> LS(TEXT("/Script/LevelSequence.LevelSequence'/Game/Sequence/EvolutionLevelSequence.EvolutionLevelSequence'"));
+		if (LS.Succeeded())
+		{
+			LevelSequence = LS.Object;
+		}*/
+
+		FMovieSceneSequencePlaybackSettings Settings;
+		Settings.bAutoPlay = false;
+		Settings.bPauseAtEnd = true;
+		LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(GetWorld(), LevelSequence, Settings, LevelSequenceActor);
+	}
 }
 
 // Called every frame
@@ -82,10 +114,16 @@ void AEvolutionManager::Tick(float DeltaTime)
 	// 
 }
 
+void AEvolutionManager::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
 void AEvolutionManager::PlayEvolutionSequence(ESpecies InSpecies)
 {
 	//Temp
 	SetData(InSpecies); //현재 Species , 다음 Species , 애니메이션 설정
+	LevelSequencePlayer->Play();
 	//Play
 }
 

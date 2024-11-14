@@ -5,6 +5,7 @@
 #include "Engine/DamageEvents.h"
 #include "Pawn/BasePawn.h"
 #include "Subsystem/ATBUserUISubSystem.h"
+#include "Subsystem/BattleSubSystem.h"
 #include "Misc/AllDamageType.h"
 
 
@@ -104,7 +105,7 @@ float UStatusComponent::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 void UStatusComponent::GetLevelExp(uint16 Exp)
 {
 	// if(100 < SpeciesInfo.Get()->Level) // 100보다 커지면 적용할것
-	uint16 NextLevelExp = SpeciesInfo.Get()->expLevels[SpeciesInfo.Get()->Level];
+	uint32 NextLevelExp = SpeciesInfo.Get()->expLevels[SpeciesInfo.Get()->Level];
 
 	SpeciesInfo.Get()->LevelExp += Exp;
 
@@ -117,6 +118,30 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->UpdatePawnUI(GetOwner());
+
+		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+		check(BattleSubsystem);
+		//진화레벨일 경우 실행
+		switch (SpeciesInfo.Get()->Stage)
+		{
+		case EStage::Rookie:
+			if (SpeciesInfo.Get()->Level >= 16)
+				BattleSubsystem->Evolution(GetOwner());
+			break;
+				//에볼루션 매니저 호출
+		case EStage::Champion:
+			if(SpeciesInfo.Get()->Level >= 35)
+				BattleSubsystem->Evolution(GetOwner());
+			break;
+
+		case EStage::Ultimate:
+			if(SpeciesInfo.Get()->Level >= 50)
+				BattleSubsystem->Evolution(GetOwner());
+			break;
+
+		default:
+			break;
+		}
 		GetLevelExp(0);
 		//UI 업데이트 짜피 시작할때 할거니까 ㄱㅊ을듯?
 	}

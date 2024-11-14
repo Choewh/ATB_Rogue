@@ -214,7 +214,6 @@ void ABasePawn::PostInitializeComponents()
 void ABasePawn::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-	SetData();
 }
 
 void ABasePawn::ControllerInit()

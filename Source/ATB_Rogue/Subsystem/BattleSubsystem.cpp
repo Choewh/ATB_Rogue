@@ -12,6 +12,10 @@ UBattleSubsystem::UBattleSubsystem()
 }
 void UBattleSubsystem::BattleStart(uint8 Round)
 {
+	//TODO
+	//Evolution 중이라면 잠깐 멈추고 Evolution 끝나면 하기 
+	// Evolution 여러마리라면?
+	//Evolution 매니저에 TArray 해놓고 순서대로 진화해주기? ㄱㅊ은듯
 	Init();
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
@@ -241,10 +245,13 @@ void UBattleSubsystem::SelectAttackCancle()
 	SetViewCameraMode(ECameraViewMode::PawnView);
 }
 
-void UBattleSubsystem::Evolution()
+void UBattleSubsystem::Evolution(AActor* EvolutionActor)
 {
+	ABasePawn* EvolutionPawn = Cast<ABasePawn>(EvolutionActor);
+	if (!EvolutionPawn) { ensure(false); return; }
 	SetBattleState(EBattleState::Evolution);
-	ActionPawn->Evolution();
+	EvolutionPawn->Evolution();
+	OnEvolution.Broadcast(EvolutionPawn->Species);
 }
 
 void UBattleSubsystem::MoveActionView() //필요없는거같은데 일단 보류
@@ -300,7 +307,7 @@ void UBattleSubsystem::CalcExp()
 			c = 1.5;
 		}
 		
-		uint8 ResultExp = a* b* c + 5;
+		uint32 ResultExp = (a* b* c + 5) * 1000;
 	
 		Exp += ResultExp;
 	}

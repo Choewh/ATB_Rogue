@@ -7,6 +7,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Enums/Species.h"
 #include "Engine/DataTable.h"
+#include "LevelSequence.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "Data/PawnTableRow.h"
 #include "Data/AnimMontageTableRow.h"
 #include "Components/TimelineComponent.h"
@@ -28,10 +31,12 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 
 public:
 
 	//애니메이션 시작
+	UFUNCTION()
 	void PlayEvolutionSequence(ESpecies InSpecies);
 	void SetData(ESpecies InSpecies); // 메쉬와 애니메이션 설정
 
@@ -65,7 +70,7 @@ public:
 	USkeletalMesh* EvolutionSkeletalMesh;
 
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
 protected:
@@ -83,6 +88,14 @@ private:
 	UDataTable* AnimDataTable;
 	FPawnTableRow* PawnData;
 	FAnimMontageTableRow* AnimData;
+	UPROPERTY(VisibleAnywhere)
+	ULevelSequence* LevelSequence;
+
+	UPROPERTY(VisibleAnywhere)
+	ALevelSequenceActor* LevelSequenceActor;
+
+	UPROPERTY(VisibleAnywhere)
+	ULevelSequencePlayer* LevelSequencePlayer;
 
 	bool bEvolution = false;
 };

@@ -26,6 +26,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleFinishTurn);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBattleEndFirst , uint16 , First);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEvolution, ESpecies, EvolutionSpecies);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndSecond);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndThird);
@@ -104,7 +106,7 @@ public :
 	void SelectAttackCancle();
 
 	UFUNCTION(BlueprintCallable)
-	void Evolution(); // Temp
+	void Evolution(AActor* EvolutionActor); // Temp
 
 	UFUNCTION()
 	void MoveActionView();
@@ -144,7 +146,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FBattleEndThird BattleEndThird;
 	UPROPERTY(BlueprintAssignable)
+	FOnEvolution OnEvolution;
+	UPROPERTY(BlueprintAssignable)
 	FRemoveWidget RemoveWidget;
+
 
 public:
 	UPROPERTY(BlueprintReadOnly)
