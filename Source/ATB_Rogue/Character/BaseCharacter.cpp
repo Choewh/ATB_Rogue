@@ -32,7 +32,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 		SpringArmComponent->bUsePawnControlRotation = true;
 		SpringArmComponent->bInheritRoll = false;
 		SpringArmComponent->bInheritPitch = false;
-		SpringArmComponent->bDoCollisionTest = false;
+		//SpringArmComponent->bDoCollisionTest = false; //Temp
 		SpringArmComponent->bEnableCameraRotationLag = true;
 		SpringArmComponent->CameraRotationLagSpeed = 1.f;
 		SpringArmComponent->SetUsingAbsoluteRotation(false);
@@ -157,7 +157,6 @@ void ABaseCharacter::SpawnPawn()
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->BattleUIAddPawn(NewPawn);
 		NewPawn->SetActorTransform(RoundsTransform[0][i]);
-		NewPawn->OnSpawn();
 		CurHavePawns.Add(NewPawn);
 	}
 }
@@ -206,7 +205,6 @@ void ABaseCharacter::ReSetTransform()
 		if (CurHavePawns.IsEmpty()) { break; } //비었으면 패스
 		if (!IsValid(CurHavePawns[i])) { break; } //죽었으면 패스
 		CurHavePawns[i]->SetActorTransform(RoundsTransform[0][i]);
-		CurHavePawns[i]->OnSpawn();
 	}
 }
 

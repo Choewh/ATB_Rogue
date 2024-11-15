@@ -61,7 +61,7 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual void OnConstruction(const FTransform& Transform);
 
-	virtual void ControllerInit();
+	virtual void ControllerInit(bool Active);
 	virtual void Init();
 public:
 	// Called every frame

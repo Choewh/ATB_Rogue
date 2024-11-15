@@ -24,9 +24,7 @@ void UBaseFloatingPawnMovement::SetUseControllerRotationYaw(bool InActive)
 UBaseFloatingPawnMovement::UBaseFloatingPawnMovement()
 	: bOrientRotationToMovement(false)
 {
-
 	RotationRate = FRotator(0.f, 360.0f, 0.0f);
-
 }
 
 void UBaseFloatingPawnMovement::PhysicsRotation(float DeltaTime)
@@ -129,7 +127,7 @@ bool UBaseFloatingPawnMovement::CheckFalling(float DeltaTime)
 	//const INavigationDataInterface* NavData = FNavigationSystem::GetNavDataForActor(*OwningPawn);
 	const FNavAgentProperties& AgentProps = OwningPawn->GetNavAgentPropertiesRef();
 	//const float SearchRadius = AgentProps.AgentRadius * 2.0f;
-	const float SearchHeight = AgentProps.AgentHeight * AgentProps.NavWalkingSearchHeightScale * 0.4f;
+	const float SearchHeight = AgentProps.AgentHeight * AgentProps.NavWalkingSearchHeightScale * 0.2f;
 	//FNavLocation DestNavLocation;
 	bool bFoundFloor = false;//NavData->ProjectPoint(AdjustedDest, DestNavLocation, FVector(SearchRadius, SearchRadius, SearchHeight));
 	//if (!bFoundFloor)
@@ -139,17 +137,19 @@ bool UBaseFloatingPawnMovement::CheckFalling(float DeltaTime)
 		Params.AddIgnoredActor(GetOwner());
 		FVector Start = OldLocation;
 		FVector End = Start - FVector(0.0f, 0.0f, SearchHeight);
+		bFoundFloor = GetWorld()->LineTraceSingleByProfile(HitResult, Start, End, TEXT("Floor"), Params);
 
-		bFoundFloor = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params);
-	}
 
-	if (bFoundFloor)
-	{
-		FallingDeltaTime = 0.f;
-	}
-	else
-	{
-		FallingDeltaTime += DeltaTime;
+		if (bFoundFloor)
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 5.f);
+			FallingDeltaTime = 0.f;
+		}
+		else
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.f);
+			FallingDeltaTime += DeltaTime;
+		}
 	}
 
 	bFalling = !bFoundFloor;
@@ -217,17 +217,27 @@ void UBaseFloatingPawnMovement::TickComponent(float DeltaTime, ELevelTick TickTy
 				Velocity = Velocity.GetUnsafeNormal() * MaxSpeed;
 			}
 
-			static const FVector GravityDirection = FVector::UpVector;
-			static const FVector Gravity = -GravityDirection * 980.0;
-			if (CheckFalling(DeltaTime))
+			//static const FVector GravityDirection = FVector::UpVector;
+			//static const FVector Gravity = -GravityDirection * 980.0;
+
+			//if (CheckFalling(DeltaTime))
+			//{
+			//	Velocity.Z -= 1.f;
+			//}
+			/*			if (CheckFalling(DeltaTime))
 			{
 				Velocity = NewFallVelocity(Velocity, Gravity, FallingDeltaTime);
-			}
-			else if (!Velocity.IsNearlyZero())
-			{
-				// 통상의 경우 미세 중력을 적용해서 공중으로 뜨지 않도록 처리
-				Velocity = NewFallVelocity(Velocity, Gravity, DeltaTime * 5.f);
-			}
+			}*/
+
+			//else if (!Velocity.IsNearlyZero())
+			//{
+			//	// 통상의 경우 미세 중력을 적용해서 공중으로 뜨지 않도록 처리
+			//	Velocity = NewFallVelocity(Velocity, Gravity, DeltaTime * 5.f);
+			//}
+			////else
+			////{
+			////	Velocity = FVector(0.f,0.f,0.f);
+			////}
 
 			LimitWorldBounds();
 			bPositionCorrected = false;
@@ -256,6 +266,7 @@ void UBaseFloatingPawnMovement::TickComponent(float DeltaTime, ELevelTick TickTy
 				{
 					const FVector NewLocation = UpdatedComponent->GetComponentLocation();
 					Velocity = ((NewLocation - OldLocation) / DeltaTime);
+					int a = 0;
 				}
 			}
 

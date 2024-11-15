@@ -30,7 +30,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEvolution, ESpecies, EvolutionSpe
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndSecond);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBattleEndThird);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnNextBattle);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRemoveWidget); //이동 공격 등 중복으로 띄울수없는 위젯
 
@@ -72,6 +72,11 @@ public :
 	//턴 시작
 	UFUNCTION(BlueprintCallable)
 	void EnterActiveTurn(ABasePawn* Enemy);
+
+	UFUNCTION()
+	void OnBattleStart();
+	UFUNCTION()
+	void NextBattle();
 	//액션창
 	UFUNCTION()
 	void SelectActionView();
@@ -116,6 +121,10 @@ public :
 	//턴종료
 	UFUNCTION(BlueprintCallable)
 	void FinishTurn();
+	UFUNCTION(BlueprintCallable)
+	void BattleStartCheck();
+	UFUNCTION(BlueprintCallable)
+	void PawnMongtageIsPlaying();
 	
 private:
 	void SetActionPawn(ABasePawn* NewPawn) { check(!ActionPawn); ActionPawn = NewPawn; }
@@ -144,7 +153,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FBattleEndSecond BattleEndSecond;
 	UPROPERTY(BlueprintAssignable)
-	FBattleEndThird BattleEndThird;
+	FOnNextBattle OnNextBattle;
 	UPROPERTY(BlueprintAssignable)
 	FOnEvolution OnEvolution;
 	UPROPERTY(BlueprintAssignable)
@@ -164,6 +173,7 @@ public:
 	TObjectPtr<ABasePlayerController> PlayerController;
 
 	bool bAuto = false;
+	bool bBattie = false;
 
 	uint16 Exp = 0;
 	//ABasePlayerController* PlayerController;

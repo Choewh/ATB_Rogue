@@ -96,8 +96,6 @@ void ABasePawn::BeginPlay()
 
 		BattleSubsystem->BattleEndFirst.AddDynamic(this, &ThisClass::OnBattleEndFirst);
 	}
-	//SetData(); //인자가 굳이 필요하진 않지만 복붙하기 편하게 넣음
-
 }
 void ABasePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -154,6 +152,7 @@ void ABasePawn::SetData()
 			CapsuleComponent->SetCapsuleSize(PawnData->CollisionCapsuleRadius, PawnData->CollisionCapsuleHalfHeight);
 			CapsuleComponent->SetWorldRotation(FQuat::Identity);
 			CapsuleComponent->bReceivesDecals = false;
+			MovementComponent->UpdateNavAgent(*CapsuleComponent);
 		}
 		SkeletalMeshComponent->SetSkeletalMesh(PawnData->SkeletalMesh);
 		SkeletalMeshComponent->SetAnimClass(PawnData->AnimClass);
@@ -173,7 +172,7 @@ void ABasePawn::SetData()
 
 		ATB_Speed = StatusComponent->GetSpeciesInfo()->SPD;
 	}
-	
+
 	if (EffectComponent)
 	{
 		EffectComponent->SetData(Species);
@@ -216,10 +215,10 @@ void ABasePawn::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 }
 
-void ABasePawn::ControllerInit()
+void ABasePawn::ControllerInit(bool Active)
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(GetController());
-	BaseAIController->SetActiveTurn(true);
+	BaseAIController->SetActiveTurn(Active);
 }
 
 void ABasePawn::Init()
@@ -230,6 +229,7 @@ void ABasePawn::Init()
 	bDestroy = false;
 	bEvolution = false;
 	OnChangedHPBar.Broadcast(this, CurHP / MaxHP);
+	MovementComponent->SetUseControllerRotationYaw(true);
 }
 
 // Called every frame
@@ -316,29 +316,21 @@ float ABasePawn::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACont
 
 void ABasePawn::Evolution()
 {
-	FTransform OriginTransform = GetActorTransform();
 	Species = PawnData->NextSpecies;
 	if (Species != ESpecies::End)
 	{
 		bEvolution = true;
 		int Pre_MaxHP = MaxHP;
 		int Pre_CurHP = CurHP;
-		//CurHP 정보는 따로 빼두고 진화후 MaxHp - 진화전 MaxHP 더해주기
 		SetData();
 		Pre_MaxHP = MaxHP - Pre_MaxHP;
 		CurHP = Pre_CurHP + Pre_MaxHP;
-		SetActorTransform(OriginTransform);
-		ActiveCollision(false);
-		OnSpawn();
 
 		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
 		check(ATBUserUISubSystem);
 		ATBUserUISubSystem->UpdatePawnUI(this);
 		OnChangedHPBar.Broadcast(this, CurHP / MaxHP);
 	}
-	//Roar 애니메이션 재생 ㄱㅊ은듯
-	//이펙트 효과
-	//다음단계로 Species 바꾸고 SetData 호출
 }
 
 bool ABasePawn::OnDieCheck()
@@ -370,8 +362,8 @@ void ABasePawn::OnStartBattle(uint8 Round)
 }
 void ABasePawn::OnStartTurn()
 {
-	MovementComponent->SetUseControllerRotationYaw(true);
 	bActive = false;
+	MovementComponent->SetUseControllerRotationYaw(true);
 }
 
 void ABasePawn::OnFinishTurn()
@@ -388,26 +380,34 @@ void ABasePawn::OnFinishTurn()
 void ABasePawn::OnBattleEndFirst(uint16 Exp) //Temp 레벨업 넣어뒀는데 TODO 경험치량 설정하기
 {
 	StatusComponent->GetLevelExp(Exp);
+	
+	Init();
+
+	UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+	check(ATBUserUISubSystem);
+	ATBUserUISubSystem->UpdatePawnUI(GetOwner());
 }
 void ABasePawn::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	// Evolution 상태일 때만 BattleState를 설정
-	if (bEvolution)
-	{
-		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
-		if (BattleSubsystem)
-		{
-			BattleSubsystem->SetBattleState(EBattleState::Default);
-		}
-		bEvolution = false;
-	}
+	//에볼루션 매니저로 옮겨줬음
+	
+	//// Evolution 상태일 때만 BattleState를 설정
+	//if (bEvolution)
+	//{
+	//	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
+	//	if (BattleSubsystem)
+	//	{
+	//		BattleSubsystem->SetBattleState(EBattleState::Default);
+	//	}
+	//	bEvolution = false;
+	//}
 
-	// 델리게이트 해제 (한 번만 호출되도록 보장)
-	UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
-	if (AnimInstance)
-	{
-		AnimInstance->OnMontageEnded.RemoveDynamic(this, &ABasePawn::OnMontageEnded);
-	}
+	//// 델리게이트 해제 (한 번만 호출되도록 보장)
+	//UAnimInstance* AnimInstance = SkeletalMeshComponent->GetAnimInstance();
+	//if (AnimInstance)
+	//{
+	//	AnimInstance->OnMontageEnded.RemoveDynamic(this, &ABasePawn::OnMontageEnded);
+	//}
 }
 /// <summary>
 /// EffectTimeLine

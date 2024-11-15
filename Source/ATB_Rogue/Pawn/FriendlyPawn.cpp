@@ -104,17 +104,51 @@ void AFriendlyPawn::MoveTo(FVector NewDestination)
 
 bool AFriendlyPawn::OnAutoPlay(bool Active)
 {
-	FTransform OriginTransform = GetActorTransform();
+	//FTransform OriginTransform = GetActorTransform();
 	if (Active)
 	{
 		bAuto = true;
-		SetData();
 	}
 	else
 	{
 		bAuto = false;
-		SetData();
 	}
-	SetActorTransform(OriginTransform);
+
+	AAIController* CurrentController = GetController<AAIController>();
+
+	if (PawnData)
+	{
+		CollisionComponent->SetCollisionProfileName(TEXT("Friendly"));
+	}
+	// 현재 AI 컨트롤러 언포제스
+	if (CurrentController)
+	{
+		CurrentController->UnPossess();
+
+		// 기존 AI 컨트롤러 삭제 (선택 사항)
+		CurrentController->Destroy();
+	}
+	if (bAuto) //컨트롤러를 만들어주는게 아니라 비헤이비어 트리 추가 or 변경 
+	{
+		AIControllerClass = PawnData->EnemyAIController;
+	}
+	else
+	{
+		AIControllerClass = PawnData->FriendlyAIController;
+	}
+	// 새로운 AI 컨트롤러 생성
+	if (AIControllerClass)
+	{
+		// AI 컨트롤러를 월드에서 스폰
+		AAIController* NewController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, GetActorLocation(), GetActorRotation());
+
+		if (NewController)
+		{
+			// 새로운 컨트롤러가 Pawn을 소유하도록 설정
+			NewController->Possess(this);
+		}
+	}
+
+	//SetActorTransform(OriginTransform);
 	return bAuto;
 }

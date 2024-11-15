@@ -267,12 +267,14 @@ void UATBBattleUserWidget::AddEnemyUI(ABasePawn* InEnemyPawn)
 		SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
 		SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
 		SlateBrush.SetResourceObject(InEnemyPawn->GetPortrait());
-		FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(1.f, 0.f, 0.f, 1.f)), 5.f);
+		FSlateBrushOutlineSettings OutlineSettings(FSlateColor(FColor(1.f, 0.f, 0.f, 1.f)), 10.f);
+		OutlineSettings.RoundingType = ESlateBrushRoundingType::HalfHeightRadius;
 		SlateBrush.OutlineSettings = OutlineSettings;
 		SliderStyle.SetDisabledThumbImage(SlateBrush);
 		SliderStyle.SetNormalThumbImage(SlateBrush);
 		ATBSlider->SetWidgetStyle(SliderStyle);
 		ATBSlider->SetSliderBarColor(FLinearColor(1.f, 1.f, 1.f, 0.f));
+		ATBSlider->SetLocked(true);
 	}
 	//����ü ����
 	FPawnUIElements PawnUIElements;
@@ -505,7 +507,8 @@ void UATBBattleUserWidget::AddFriendlyUI(ABasePawn* InFriendlyPawn)
 		SlateBrush.SetImageSize(FVector2D(100.f, 100.f));
 		SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
 		SlateBrush.SetResourceObject(InFriendlyPawn->GetPortrait());
-		FSlateBrushOutlineSettings OutlineSettings(30.f, FSlateColor(FColor(0.f, 0.f, 1.f, 1.f)), 5.f);
+		FSlateBrushOutlineSettings OutlineSettings(FSlateColor(FColor(1.f, 0.f, 0.f, 1.f)), 10.f);
+		OutlineSettings.RoundingType = ESlateBrushRoundingType::HalfHeightRadius;
 		SlateBrush.OutlineSettings = OutlineSettings;
 		SliderStyle.SetDisabledThumbImage(SlateBrush);
 		SliderStyle.SetNormalThumbImage(SlateBrush);

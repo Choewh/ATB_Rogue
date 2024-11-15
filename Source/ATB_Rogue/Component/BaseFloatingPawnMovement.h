@@ -19,15 +19,18 @@ public:
 	UBaseFloatingPawnMovement();
 	virtual FRotator GetDeltaRotation(float DeltaTime) const;
 	void SetUseControllerRotationYaw(bool Active);
+	virtual bool IsFalling() const override;
+	virtual bool IsMovingOnGround() const override;
 protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void PhysicsRotation(float DeltaTime);
 	virtual FRotator ComputeOrientToMovementRotation(const FRotator& CurrentRotation, float DeltaTime, FRotator& DeltaRotation) const;
 
 	virtual bool CheckFalling(float DeltaTime);
-	virtual bool IsFalling() const override;
-	virtual bool IsMovingOnGround() const override;
 	virtual FVector NewFallVelocity(const FVector& InitialVelocity, const FVector& Gravity, float DeltaTime) const;
+
+	void ApplyFriction(FVector& Velocity, float DeltaTime) const;
+
 	UPROPERTY()
 	FVector AccelerationAdvance;
 

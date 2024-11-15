@@ -70,6 +70,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	void MoveCancle(); // 뒤로가기.
 
+
 	UFUNCTION(BlueprintCallable, Category = "Move")
 	bool IsMove() { return bMove; }
 
@@ -82,6 +83,8 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FShowTurnActionWidget ShowTurnActionWidget;
 
+	UFUNCTION()
+	void StartBattle(uint8 Round);
 	UFUNCTION()
 	void StartTurn();
 	UFUNCTION()
@@ -97,6 +100,12 @@ public:
 	UPROPERTY()
 	class UBattleSubsystem* BattleSubsystem;
 
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* DefaultCamera;
+
+	UPROPERTY(VisibleAnywhere)
+	UPawnViewCameraComponent* PawnViewCamera;
+
 protected:
 	UPROPERTY()
 	FVector MovePoint = FVector::Zero();
@@ -107,12 +116,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	EBattleState BattleState = EBattleState::Default;
-
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* DefaultCamera;
-
-	UPROPERTY(VisibleAnywhere)
-	UPawnViewCameraComponent* PawnViewCamera;
 
 
 

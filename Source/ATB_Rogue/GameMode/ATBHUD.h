@@ -35,6 +35,8 @@ public:
 	UFUNCTION()
 	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
+	void HideBattleUI();
+	UFUNCTION()
 	void ShowTurnActionWidget();
 
 private:

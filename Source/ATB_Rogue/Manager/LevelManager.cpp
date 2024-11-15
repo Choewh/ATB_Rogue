@@ -30,7 +30,7 @@ void ALevelManager::BeginPlay()
 	Super::BeginPlay();
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
-	BattleSubsystem->BattleEndThird.AddDynamic(this, &ThisClass::NextLevel);
+	BattleSubsystem->OnNextBattle.AddDynamic(this, &ThisClass::NextLevel);
 	BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
 	Init();
 	//BattleSubsystem->BattleStart(CurRound);
@@ -130,7 +130,6 @@ void ALevelManager::SpawnPawn()
 		//TUniquePtr<FSpeciesInfo> SpeciesInfoPtr = MakeUnique<FSpeciesInfo>(RoundsPawns[Round][i - 1].SpeciesInfo);
 		//NewPawn->StatusComponent->SetSpeciesInfo(SpeciesInfoPtr);                         
 
-		NewPawn->OnSpawn();
 		CurRoundPawns.Add(NewPawn);
 		RoundsPawns[Round].RemoveAt(i - 1);
 	}
@@ -146,9 +145,9 @@ void ALevelManager::OnFirstSet(uint8 Round)
 
 void ALevelManager::NextLevel()
 {
-	uint8 NextRound = CurRound + 1;
+	uint8 OnNextBattle = CurRound + 1;
 	CurRoundPawns.Empty();//전에 비우는건 공통이니까 ㄱ
-	if (NextRound > MaxRound)
+	if (OnNextBattle > MaxRound)
 	{
 		//다음 레벨로 넘어가기
 		//지금은 그냥 레벨1로 넘어가기

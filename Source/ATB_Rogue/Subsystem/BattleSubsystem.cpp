@@ -4,6 +4,7 @@
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/ActorpoolSubsystem.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -20,19 +21,50 @@ void UBattleSubsystem::BattleStart(uint8 Round)
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
 	CalcExp();
+	//OnBattleStart();
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("OnBattleStart"), 2.f, false);
 	//배틀 끝날때마다 초기화 해주니 처음 시작시 한번싹 초기화 해주기
-	UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 4.f, false);
+	//타이머말고 로어 끝나면 하는걸로 OR 그냥 배틀스타트 자체에서 로어 해주기
+	//UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 4.f, false);
 }
 
 void UBattleSubsystem::Init()
 {
+	if (ActionPawn)
+	{
+		ActionPawn->ControllerInit(false);
+		ActionPawn->ActiveCollision(true);
+		ActionPawn = nullptr;
+	}
 	Exp = 0;
+	bBattie = false;
 }
 
 bool UBattleSubsystem::IsDieCheck()
 {
-	if (EnemyPawns.IsEmpty()) { ensure(false); return false; }
-	if (FriendlyPawns.IsEmpty()) { ensure(false); return false; }
+	if (EnemyPawns.IsEmpty())
+	{
+
+		BattleEndFirst.Broadcast(Exp); //경험치 계산
+		Exp = 0; //계산후 경험치 초기화
+		//데이터 저장
+		//BattleEndSecond.Broadcast();
+
+		if (PlayerController->CheckBattleState(EBattleState::Evolution)) { return true; }
+		//데이터 저장
+		OnNextBattle.Broadcast(); //레벨 전환
+
+		//배틀엔드에 레벨매니저 라운드 or 레벨 데이터 업데이트 후 배틀 시작
+
+		return true;
+	}
+
+	if (FriendlyPawns.IsEmpty())
+	{
+		//게임오버 -> 메인화면 레벨 오픈
+		UGameplayStatics::OpenLevel(this, TEXT("Main"), true);
+		return true;
+	}
 
 	for (int32 i = EnemyPawns.Num() - 1; i >= 0; --i)
 	{
@@ -65,12 +97,17 @@ bool UBattleSubsystem::IsDieCheck()
 	{
 
 		BattleEndFirst.Broadcast(Exp); //경험치 계산
-
+		Exp = 0; //계산후 경험치 초기화
 		//데이터 저장
-		//BattleEndSecond.Broadcast();
+		BattleEndSecond.Broadcast();
 
+		if (PlayerController->CheckBattleState(EBattleState::Evolution))
+		{
+			SetViewCameraMode(ECameraViewMode::DefaultView);
+			return true;
+		}
 		//데이터 저장
-		BattleEndThird.Broadcast(); //레벨 전환
+		OnNextBattle.Broadcast(); //레벨 전환
 
 		//배틀엔드에 레벨매니저 라운드 or 레벨 데이터 업데이트 후 배틀 시작
 
@@ -105,7 +142,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
-	InPawn->ControllerInit();
+	InPawn->ControllerInit(true);
 	InPawn->ActiveCollision(false); // 그냥 병123신같이 움직이는것도 포용하기...
 	switch (InPawn->PawnGroup)
 	{
@@ -118,12 +155,73 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 		}
 		else
 		{
-		SelectActionView();
+			SelectActionView();
 		}
 		break;
 	default:
 		break;
 	}
+}
+
+void UBattleSubsystem::OnBattleStart()
+{
+	for (auto& Pawn : FriendlyPawns)
+	{
+		Pawn->OnSpawn();
+	}
+
+	for (auto& Pawn : EnemyPawns)
+	{
+		Pawn->OnSpawn();
+	}
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("BattleStartCheck"), 1.f, false);
+}
+
+void UBattleSubsystem::BattleStartCheck()
+{
+	int a = 0;
+	UKismetSystemLibrary::K2_SetTimer(this, TEXT("PawnMongtageIsPlaying"), 1.f, false);
+}
+
+void UBattleSubsystem::PawnMongtageIsPlaying()
+{
+	int a = 0;
+	for (auto& Pawn : FriendlyPawns)
+	{
+		if (Pawn)
+		{
+			USkeletalMeshComponent* SkeletalMesh = Pawn->GetComponentByClass<USkeletalMeshComponent>();
+			if (SkeletalMesh && SkeletalMesh->GetAnimInstance() && SkeletalMesh->GetAnimInstance()->IsAnyMontagePlaying())
+			{
+				UKismetSystemLibrary::K2_SetTimer(this, TEXT("BattleStartCheck"), 1.f, false);
+				return;
+			}
+		}
+	}
+
+	for (auto& Pawn : EnemyPawns)
+	{
+		if (Pawn)
+		{
+			USkeletalMeshComponent* SkeletalMesh = Pawn->GetComponentByClass<USkeletalMeshComponent>();
+			if (SkeletalMesh && SkeletalMesh->GetAnimInstance() && SkeletalMesh->GetAnimInstance()->IsAnyMontagePlaying())
+			{
+				UKismetSystemLibrary::K2_SetTimer(this, TEXT("BattleStartCheck"), 1.f, false);
+				return;
+			}
+		}
+	}
+
+	if (!bBattie)
+	{
+		bBattie = true;
+		FinishTurn();
+	}
+}
+void UBattleSubsystem::NextBattle()
+{
+	BattleStartTurn.Broadcast(); // Pawn bActive 꺼줌
+	OnNextBattle.Broadcast();
 }
 
 void UBattleSubsystem::SelectActionView()
@@ -250,8 +348,8 @@ void UBattleSubsystem::Evolution(AActor* EvolutionActor)
 	ABasePawn* EvolutionPawn = Cast<ABasePawn>(EvolutionActor);
 	if (!EvolutionPawn) { ensure(false); return; }
 	SetBattleState(EBattleState::Evolution);
-	EvolutionPawn->Evolution();
 	OnEvolution.Broadcast(EvolutionPawn->Species);
+	EvolutionPawn->Evolution();
 }
 
 void UBattleSubsystem::MoveActionView() //필요없는거같은데 일단 보류
@@ -300,19 +398,23 @@ void UBattleSubsystem::CalcExp()
 		uint8 c;
 		if (Pawn->StatusComponent->GetSpeciesInfo()->Boss == EBattleSpec::Boss)
 		{
-			c = 2;
+			c = 3;
 		}
 		else
 		{
-			c = 1.5;
+			c = 2;
 		}
-		
-		uint32 ResultExp = (a* b* c + 5) * 1000;
-	
+
+		uint32 ResultExp = (a * b * c + 5) * 1000;
+
 		Exp += ResultExp;
 	}
 
 }
+
+
+
+
 
 void UBattleSubsystem::SetViewCameraMode(ECameraViewMode InViewMode)
 {

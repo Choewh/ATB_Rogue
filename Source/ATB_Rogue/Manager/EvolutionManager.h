@@ -13,6 +13,7 @@
 #include "Data/PawnTableRow.h"
 #include "Data/AnimMontageTableRow.h"
 #include "Components/TimelineComponent.h"
+#include "Misc/Utils.h"
 #include "EvolutionManager.generated.h"
 
 UCLASS()
@@ -36,6 +37,8 @@ public:
 public:
 
 	//애니메이션 시작
+	UFUNCTION()
+	void AddEvolutionPawn(ESpecies AddSpecies);
 	UFUNCTION()
 	void PlayEvolutionSequence(ESpecies InSpecies);
 	void SetData(ESpecies InSpecies); // 메쉬와 애니메이션 설정
@@ -62,6 +65,11 @@ public:
 
 	void MaterialInit();
 
+	UFUNCTION()
+	void OnSequenceFinished();
+
+	UFUNCTION()
+	void OnSequenceStop(const FInputActionValue& InputActionValue);
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Evolution")
 	UAnimMontage* EvoReactMontage;
@@ -73,6 +81,8 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	USkeletalMeshComponent* SkeletalMeshComponent;
 
+	UPROPERTY()
+	UInputMappingContext* IMC_Evolution;
 protected:
 	UPROPERTY(VisibleAnywhere)
 	UTimelineComponent* DestroyEffectTimelineComponent;
@@ -80,7 +90,7 @@ protected:
 	UTimelineComponent* SpawnEffectTimelineComponent;
 	TArray<UMaterialInstanceDynamic*> MaterialInstanceDynamics;
 private:
-
+	TQueue<ESpecies> EvolutionPawns;
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* SceneComponent;
 

@@ -112,13 +112,7 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 	if (SpeciesInfo.Get()->LevelExp >= NextLevelExp)
 	{
 		SpeciesInfo.Get()->Level++;
-		//2레벨 업 할수도있으니 GetLevelExp(0)
 		
-		//진화 레벨 체크 
-		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
-		check(ATBUserUISubSystem);
-		ATBUserUISubSystem->UpdatePawnUI(GetOwner());
-
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		//진화레벨일 경우 실행
@@ -142,6 +136,11 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 		default:
 			break;
 		}
+		//정보 업데이트
+		UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->UpdatePawnUI(GetOwner());
+		//2레벨 업 할수도있으니 GetLevelExp(0)
 		GetLevelExp(0);
 		//UI 업데이트 짜피 시작할때 할거니까 ㄱㅊ을듯?
 	}

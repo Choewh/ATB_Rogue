@@ -37,6 +37,7 @@ void ABasePlayerController::BeginPlay()
 	{
 		BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		BattleSubsystem->SetPlayerController(this);
+		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::StartBattle);
 		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::StartTurn);
 		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::FinishTurn);
 	}
@@ -175,6 +176,10 @@ void ABasePlayerController::MoveCancle()
 	{
 		MovePoint = ActionPawn->GetTargetLocation();
 	}
+}
+void ABasePlayerController::StartBattle(uint8 Round)
+{
+	Init();
 }
 
 void ABasePlayerController::StartTurn()

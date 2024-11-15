@@ -45,6 +45,7 @@ void AATBHUD::PostInitializeComponents()
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUI);
+		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::HideBattleUI);
 	}
 	
 	{
@@ -80,6 +81,19 @@ void AATBHUD::ShowBattleUI(uint8 Round)
 	if (ATBBattleUserWidget && !ATBBattleUserWidget->IsInViewport())
 	{
 		ATBBattleUserWidget->AddToViewport();
+		UE_LOG(LogTemp, Log, TEXT("UI가 뷰포트에 추가되었습니다."));
+	}
+
+	// 가시성 조정 (보이도록 설정)
+	ATBBattleUserWidget->SetVisibility(ESlateVisibility::Visible);
+	UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+}
+
+void AATBHUD::HideBattleUI()
+{
+	if (ATBBattleUserWidget && ATBBattleUserWidget->IsInViewport())
+	{
+		ATBBattleUserWidget->SetVisibility(ESlateVisibility::Hidden);
 		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
 	}
 	//if (ATBWidget && !ATBWidget->IsInViewport())
@@ -89,7 +103,6 @@ void AATBHUD::ShowBattleUI(uint8 Round)
 	//	UE_LOG(LogTemp, Log, TEXT("ShowATBBarAddTOViewport 바인딩 성공"));
 	//}
 }
-
 void AATBHUD::ShowTurnActionWidget()
 {
 	if (TurnActionWidget && !TurnActionWidget->IsInViewport())

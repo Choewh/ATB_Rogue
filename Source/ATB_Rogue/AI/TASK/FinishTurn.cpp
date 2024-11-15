@@ -24,6 +24,8 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	UObject* TargetPawn = BlackboardComponent->GetValueAsObject(TEXT("TargetPawn"));
 	ABasePawn* Target = Cast<ABasePawn>(TargetPawn);
 
+	if (!Target) { return EBTNodeResult::Succeeded; }
+
 	if (Target->OnDieCheck())
 	{
 		return EBTNodeResult::InProgress;
