@@ -34,8 +34,8 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 		SpringArmComponent->bInheritPitch = false;
 		//SpringArmComponent->bDoCollisionTest = false; //Temp
 		SpringArmComponent->bEnableCameraRotationLag = true;
-		SpringArmComponent->CameraRotationLagSpeed = 1.f;
-		SpringArmComponent->SetUsingAbsoluteRotation(false);
+		SpringArmComponent->CameraRotationLagSpeed = 50.f;
+		//SpringArmComponent->SetUsingAbsoluteRotation(false);
 	}
 	{
 		CameraComponent->SetupAttachment(SpringArmComponent);
@@ -45,7 +45,16 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer& ObjectInitializer)
 	{
 		PawnViewCameraComponent->SetupAttachment(RootComponent);
 	}
-	bUseControllerRotationYaw = false;
+	{
+		UCharacterMovementComponent* CharacterMovementComponent = Cast<UCharacterMovementComponent>(GetMovementComponent());
+		CharacterMovementComponent->GravityScale = 0.f;
+		
+	}
+	{
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	bUseControllerRotationYaw = true;
 }
 
 // Called every frame
@@ -60,7 +69,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 	if (ActionPawn)
 	{
 		ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
-		float LerpSpeed = 3.0f;
+		float LerpSpeed = 5.0f;
 		if (ActionPawnController->TargetPawn && BasePlayerController->GetViewCameraMode() == ECameraViewMode::Attack)
 		{
 			FVector StartVec = ActionPawn->GetActorLocation();
@@ -76,17 +85,10 @@ void ABaseCharacter::Tick(float DeltaTime)
 			//카메라 위치와 회전 보간
 			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
 			FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
-			NewRotation.Pitch = 0.f;
-			SetActorLocationAndRotation(NewLocation, NewRotation);
+			NewRotation.Roll = 0.f;
+
+			SetActorLocationAndRotation(ActionPawn->GetActorLocation(), ActionPawn->GetActorRotation());
 		}
-		//카메라의 회전 액션폰이 바라보는 방향 뒤에 서게 함
-		FVector StartVec = GetActorLocation();
-		FVector TargetVec = ActionPawn->GetActorForwardVector();
-
-		FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation(StartVec, TargetVec);
-
-		// 최종 회전 적용
-		SetActorRotation(LookAtRotator);
 	}
 }
 
@@ -101,7 +103,7 @@ void ABaseCharacter::BeginPlay()
 		Controller->Possess(this);
 	}
 
-	CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	//CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	//레벨 시작시 Instance 에서 폰정보를 받아옴
 	{
 		UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();

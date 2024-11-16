@@ -11,17 +11,19 @@ UENUM(BlueprintType)
 enum class ESpecies : uint8
 {
 	None = 0 UMETA(DisplayName = "None"),
-	//BabyI
-	Jyarimon UMETA(DisplayName = "Jyarimon"),
-	//BabyII
-	Gigimon UMETA(DisplayName = "Gigimon"),
 	//Rookie
 	Guilmon UMETA(DisplayName = "Guilmon"),
+	Plotmon UMETA(DisplayName = "Plotmon"),
 	//Champion
 	Growmon UMETA(DisplayName = "Growmon"),
+	Tailmon UMETA(DisplayName = "Tailmon"),
 	//Ultimate
 	Megalogrowmon UMETA(DisplayName = "Megalogrowmon"),
+	Angewomon UMETA(DisplayName = "Angewomon"),
 	//Mege
 	Dukemon UMETA(DisplayName = "Dukemon"),
+	Ofanimon UMETA(DisplayName = "Ofanimon"),
+
+
 	End UMETA(DisplayName = "End")
 };

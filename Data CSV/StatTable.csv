@@ -1,6 +1,6 @@
-Species,Species,Stage,Attribute,HP,ATK,DEF,SPATK,SPDEF,SPD
-Megalogrowmon,Megalogrowmon,Ultimate,Virus,95,100,96,82,42,18
-Growmon,Growmon,Champion,Virus,70,45,30,53,32,20
-Dukemon,Dukemon,Mega,Virus,162,189,164,173,147,20
-Guilmon,Guilmon,Rookie,Virus,50,14,8,18,8,25
-Jyarimon,Jyarimon,BabyI,None,20,5,5,5,5,10
+---,Species,Stage,Attribute,HP,ATK,DEF,SPATK,SPDEF,SPD,ACC,EVA,MoveRange
+Megalogrowmon,"Megalogrowmon","Ultimate","Virus","95.000000","100.000000","96.000000","82.000000","42.000000","18.000000","100.000000","10.000000","1200.000000"
+Growmon,"Growmon","Champion","Virus","70.000000","45.000000","30.000000","53.000000","32.000000","20.000000","100.000000","10.000000","1200.000000"
+Dukemon,"Dukemon","Mega","Virus","162.000000","189.000000","164.000000","173.000000","147.000000","20.000000","100.000000","10.000000","1800.000000"
+Guilmon,"Guilmon","Rookie","Virus","50.000000","14.000000","8.000000","18.000000","8.000000","25.000000","100.000000","10.000000","1200.000000"
+Jyarimon,"Jyarimon","BabyII","None","20.000000","5.000000","5.000000","5.000000","5.000000","10.000000","100.000000","10.000000","1200.000000"
