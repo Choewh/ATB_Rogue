@@ -1,0 +1,200 @@
+[
+	{
+		"Name": "NewRow",
+		"Species": "None",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_3"
+		}
+	},
+	{
+		"Name": "Guilmon",
+		"Species": "Guilmon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": false,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Guilmon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Guilmon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "None"
+		}
+	},
+	{
+		"Name": "Growmon",
+		"Species": "Growmon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Growmon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Growmon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Growmon_3"
+		}
+	},
+	{
+		"Name": "Megalogrowmon",
+		"Species": "Megalogrowmon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Megalogrowmon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Megalogrowmon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Megalogrowmon_3"
+		}
+	},
+	{
+		"Name": "Dukemon",
+		"Species": "Dukemon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Dukemon_3"
+		}
+	},
+	{
+		"Name": "Plotmon",
+		"Species": "Plotmon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": false,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Plotmon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Plotmon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "None"
+		}
+	},
+	{
+		"Name": "Tailmon",
+		"Species": "Tailmon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": false,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Tailmon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Tailmon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "None"
+		}
+	},
+	{
+		"Name": "Angewomon",
+		"Species": "Angewomon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Angewomon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Angewomon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Angewomon_3"
+		}
+	},
+	{
+		"Name": "Ofanimon",
+		"Species": "Ofanimon",
+		"Skill_1": true,
+		"Skill_2": true,
+		"Skill_3": true,
+		"FirstSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Ofanimon_1"
+		},
+		"SecondSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Ofanimon_2"
+		},
+		"ThirdSkill":
+		{
+			"DataTable": "/Script/Engine.DataTable'/Game/DataTable/SkillTable.SkillTable'",
+			"RowName": "Ofanimon_3"
+		}
+	}
+]

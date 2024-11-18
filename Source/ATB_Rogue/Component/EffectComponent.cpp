@@ -33,16 +33,10 @@ void UEffectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UEffectComponent::SetData(ESpecies InSpecies)
 {
-	TArray<FEffectTableRow*> EffectTable_Array;
-	EffectDataTable->GetAllRows<FEffectTableRow>("", EffectTable_Array);
+	FEffectTableRow* EffectTable = EffectDataTable->FindRow<FEffectTableRow>("Default", "Not Found");
 
-	for (auto& EffectTable : EffectTable_Array)
-	{
-		if (EffectTable->Species == InSpecies)
-		{
-			EffectData = EffectTable;
-		}
-	}
+	EffectData = EffectTable;
+
 	if (!PawnGruopEffect)
 	{
 		PawnGruopEffect = GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnGroupEffect(GetOwner(), *EffectData);
@@ -55,11 +49,11 @@ void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 }
 
-void UEffectComponent::ShowRange(FVector PawnLocation,float MoveRange)
+void UEffectComponent::ShowRange(FVector PawnLocation, float MoveRange)
 {
 	float Scale = (MoveRange) / 100;
 	FTransform NewTransform(FRotator::ZeroRotator, PawnLocation, FVector(100.f, Scale, Scale));
-	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform,*EffectData);
+	GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnRangeEffect(NewTransform, *EffectData);
 }
 
 void UEffectComponent::HideRange()

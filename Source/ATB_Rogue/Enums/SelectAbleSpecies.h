@@ -18,6 +18,8 @@ enum class ESelectAbleSpecies : uint8
 	//Gigimon UMETA(DisplayName = "Gigimon"),
 	////Rookie
 	Guilmon UMETA(DisplayName = "Guilmon"),
+	Plotmon UMETA(DisplayName = "Plotmon"),
+	 
 
 
 

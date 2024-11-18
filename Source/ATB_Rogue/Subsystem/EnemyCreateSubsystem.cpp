@@ -109,7 +109,7 @@ ESpecies UEnemyCreateSubsystem::GetRandomSpecies()
 {
 	ESpecies Species = ESpecies::None;
 
-	int32 Min = static_cast<int32>(ESpecies::Gigimon);
+	int32 Min = static_cast<int32>(ESpecies::None);
 	int32 Max = static_cast<int32>(ESpecies::End);
 
 	// 열거형의 범위 내에서 난수 생성
