@@ -217,13 +217,13 @@ void UBaseFloatingPawnMovement::TickComponent(float DeltaTime, ELevelTick TickTy
 				Velocity = Velocity.GetUnsafeNormal() * MaxSpeed;
 			}
 
-			//static const FVector GravityDirection = FVector::UpVector;
-			//static const FVector Gravity = -GravityDirection * 980.0;
+			static const FVector GravityDirection = FVector::UpVector;
+			static const FVector Gravity = -GravityDirection * 980.0;
 
-			//if (CheckFalling(DeltaTime))
-			//{
-			//	Velocity.Z -= 1.f;
-			//}
+			if (CheckFalling(DeltaTime))
+			{
+				Velocity = NewFallVelocity(Velocity, Gravity, FallingDeltaTime);
+			}
 			/*			if (CheckFalling(DeltaTime))
 			{
 				Velocity = NewFallVelocity(Velocity, Gravity, FallingDeltaTime);

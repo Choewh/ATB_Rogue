@@ -28,15 +28,12 @@ protected:
 	virtual void PostLoadSubobjects(FObjectInstancingGraph* OuterInstanceGraph) override;
 	virtual void PostInitializeComponents() override;
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	ASpawnTransform* AddSpawnTransform(ASpawnTransform* InTemplate = nullptr);
 
 	TArray<ASpawnTransform*> PrevFriendlySpawnLocation;
 #endif
 public:
-
-public:
 	TArray<FTransform> GetSpawnTransform();
-protected:
-	ASpawnTransform* AddSpawnTransform(ASpawnTransform* InTemplate = nullptr);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnTransform")

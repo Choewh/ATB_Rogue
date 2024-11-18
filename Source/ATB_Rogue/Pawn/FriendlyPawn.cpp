@@ -5,6 +5,12 @@
 #include "Subsystem/ATBGameInstanceSubsystem.h"
 #include "AI/FriendlyAIController.h"
 
+AFriendlyPawn::AFriendlyPawn(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+
+}
+
 void AFriendlyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
@@ -16,17 +22,11 @@ void AFriendlyPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 }
 
-AFriendlyPawn::AFriendlyPawn(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-
-}
 
 void AFriendlyPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SetActorRotation(FRotator(0.f, -90.f, 0.f));
+	//SetActorRotation(FRotator(0.f, -90.f, 0.f));
 }
 
 void AFriendlyPawn::SetData()

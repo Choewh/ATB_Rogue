@@ -19,9 +19,11 @@ void AEnemySpawnTransform::Destroyed()
 			}
 		}
 	}
+#endif
 
 }
 
+#if WITH_EDITOR
 void AEnemySpawnTransform::PreEditChange(FProperty* PropertyAboutToChange)
 {
 	Super::PreEditChange(PropertyAboutToChange);

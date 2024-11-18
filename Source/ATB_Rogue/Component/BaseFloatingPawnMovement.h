@@ -29,7 +29,6 @@ protected:
 	virtual bool CheckFalling(float DeltaTime);
 	virtual FVector NewFallVelocity(const FVector& InitialVelocity, const FVector& Gravity, float DeltaTime) const;
 
-	void ApplyFriction(FVector& Velocity, float DeltaTime) const;
 
 	UPROPERTY()
 	FVector AccelerationAdvance;

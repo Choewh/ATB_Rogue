@@ -18,8 +18,10 @@ void AFriendlySpawnLocation::Destroyed()
 			}
 		}
 	}
+#endif
 
 }
+#if WITH_EDITOR
 void AFriendlySpawnLocation::PreEditChange(FProperty* PropertyAboutToChange)
 {
 	Super::PreEditChange(PropertyAboutToChange);

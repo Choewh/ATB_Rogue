@@ -52,5 +52,4 @@ bool URangeDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerCo
 	default:
 		return false;
 	}
-	return false;
 }

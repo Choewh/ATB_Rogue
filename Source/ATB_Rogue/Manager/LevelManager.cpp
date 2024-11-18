@@ -60,7 +60,7 @@ void ALevelManager::SetRoundPawns()
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
 		{																				//TEMP 1 해뒀는데 랜덤으로 나오게 ㄱ
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(1, EPawnGroup::Enemy, CurLevel);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel);
 			RoundsPawns.Add(RoundPawns);
 		}
 		else
