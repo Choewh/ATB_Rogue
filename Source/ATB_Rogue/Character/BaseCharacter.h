@@ -36,10 +36,6 @@ public:
 	virtual void SpawnPawn(); 
 
 	UFUNCTION()
-	virtual void OnStartTurn();
-	UFUNCTION()
-	virtual void OnFinishTurn();
-	UFUNCTION()
 	virtual void OnFirstSet(uint8 Round);
 	UFUNCTION()
 	virtual void OnBattleEndSecond();
@@ -61,7 +57,6 @@ private:
 
 	TArray<TArray<FTransform>> RoundsTransform; 
 
-	ABasePawn* ActionPawn;
 
 private:
 	UPROPERTY(VisibleAnywhere)

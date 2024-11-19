@@ -48,6 +48,7 @@ void UAnimNotify_ProjectileEffect::Notify(USkeletalMeshComponent* MeshComp, UAni
 	Projectile->SetActorRotation(LookAtRotator);
 	FTransform NewTransform;
 	NewTransform.SetLocation(SpawnSocketLocation);
+	Projectile->SetLifeSpan(2.f);
 	//여기서 피니시 스포닝으로 생성
 	Projectile->FinishSpawning(NewTransform);
 }

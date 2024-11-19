@@ -21,6 +21,12 @@ AATBHUD::AATBHUD()
 		check(WidgetClass);
 		TurnActionWidget = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	}
+	{
+		UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
+			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Battle_Menu.ATB_Battle_Menu_C'"));
+		check(WidgetClass);
+		BattleMenuUI = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
+	}
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	/*UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
@@ -40,6 +46,8 @@ void AATBHUD::PostInitializeComponents()
 		ATBUserUISubSystem->AddPawnUI.AddDynamic(this, &ThisClass::AddPawnBattleUI);
 		ATBUserUISubSystem->RemovePawnUI.AddDynamic(this, &ThisClass::RemovePawnBattleUI);
 		ATBUserUISubSystem->UpdatePawnUIUI.AddDynamic(this, &ThisClass::UpdatePawnUI);
+		ATBUserUISubSystem->ShowBattleMenu.AddDynamic(this, &ThisClass::ShowBattleMenuUI);
+
 	}
 	{
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
@@ -109,6 +117,33 @@ void AATBHUD::ShowTurnActionWidget()
 	{
 		TurnActionWidget->AddToViewport();
 		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+	}
+}
+
+void AATBHUD::ShowBattleMenuUI()
+{
+	if (BattleMenuUI && !BattleMenuUI->IsInViewport())
+	{
+		BattleMenuUI->AddToViewport();
+		BattleMenuUI->SetVisibility(ESlateVisibility::Visible);
+		UE_LOG(LogTemp, Log, TEXT("UI가 뷰포트에 추가되었습니다."));
+		return;
+	}
+
+	// 가시성 조정 (보이도록 설정)
+	switch (BattleMenuUI->GetVisibility())
+	{
+	case ESlateVisibility::Visible:
+		BattleMenuUI->SetVisibility(ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+
+		break;
+	case ESlateVisibility::Hidden:
+		BattleMenuUI->SetVisibility(ESlateVisibility::Visible);
+		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+		break;
+	default:
+		break;
 	}
 }
 

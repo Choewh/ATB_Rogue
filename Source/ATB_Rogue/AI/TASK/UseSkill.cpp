@@ -35,7 +35,7 @@ void UUseSkill::UseSkillSet(ESkills SkillNum)
 	SkillComponent = Pawn->SkillComponent;
 	StatusComponent = Pawn->StatusComponent;
 	AActor* TargetPawn = Cast<AActor>(BlackboardComponent->GetValueAsObject(TEXT("TargetPawn")));
-	float SkilDamage;
+	float SkilDamage = 0.f;
 	Pawn->PlaySkillAnimation(SkillNum); // 애니메이션 재생
 	switch (SkillNum)
 	{

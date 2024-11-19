@@ -36,6 +36,7 @@ protected:
 	virtual void SetMaxRound();
 	virtual void SetRoundPawns();
 	virtual void SetRoundsTransform();
+	virtual uint8 SetRandPawn();
 public:
 	UFUNCTION()
 	virtual void SpawnPawn(); // 라운스 시작시 폰들 스폰 //배틀시스템->BattleStart 델리게이트 추가

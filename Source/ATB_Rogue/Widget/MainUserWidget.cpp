@@ -113,12 +113,6 @@ void UMainUserWidget::SelectPawnsUpdata(UImage* PortraitImage)
 	case 3:
 		SelectPawn3->SetBrushFromTexture(Portrait);
 		break;
-	case 4:
-		SelectPawn4->SetBrushFromTexture(Portrait);
-		break;
-	case 5:
-		SelectPawn5->SetBrushFromTexture(Portrait);
-		break;
 	default:
 		break; // CurPawn이 1~5가 아닐 때의 처리
 	}
@@ -137,12 +131,6 @@ void UMainUserWidget::AddedPawnsDelete()
 		break;
 	case 3:
 		SelectPawn3->SetBrushFromTexture(nullptr);
-		break;
-	case 4:
-		SelectPawn4->SetBrushFromTexture(nullptr);
-		break;
-	case 5:
-		SelectPawn5->SetBrushFromTexture(nullptr);
 		break;
 	default:
 		break; // CurPawn이 1~5가 아닐 때의 처리
@@ -166,7 +154,7 @@ bool UMainUserWidget::EnterGame()
 
 void UMainUserWidget::SelectPawn(ESpecies SelectSpecies, UImage* Portrait) // 
 {
-	if (SelectPawns.Num() > 5) { return; }
+	if (SelectPawns.Num() > 3) { return; }
 	SelectPawns.Add(SelectSpecies);
 	SelectPawnsUpdata(Portrait);
 }

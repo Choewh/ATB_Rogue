@@ -19,7 +19,22 @@ AEvolutionManager::AEvolutionManager()
 		check(Asset.Object);
 		IMC_Evolution = Asset.Object;
 	}
+	{
+		StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshObject(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+		if (StaticMeshObject.Succeeded())
+		{
+			StaticMeshComponent->SetStaticMesh(StaticMeshObject.Object);
+		}
+		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialObject(TEXT("/Script/Engine.Material'/Game/FX/EvolutionRoom.EvolutionRoom'"));
+		if (MaterialObject.Succeeded())
+		{
+			StaticMeshComponent->SetMaterial(0, MaterialObject.Object);
+		}
+		StaticMeshComponent->SetRelativeScale3D(FVector(20.f, 20.f, 40.f));
+	}
 	{
 		static ConstructorHelpers::FObjectFinder<UDataTable> PawnDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'"));
 		if (PawnDataObject.Succeeded())
@@ -37,7 +52,20 @@ AEvolutionManager::AEvolutionManager()
 			AnimDataTable = AnimDataObject.Object;
 		}
 	}
+	{
+		static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_02Curve.CV_02Curve'"));
+		check(CurveAsset.Object);
 
+		EvolutionRoomEffectTimelineComponent = CreateDefaultSubobject<UTimelineComponent>(TEXT("EvolutionRoomEffectTimelineComponent"));
+
+		FOnTimelineFloat Delegate;
+		Delegate.BindDynamic(this, &ThisClass::OnEvolutionRoomEffect);
+		EvolutionRoomEffectTimelineComponent->AddInterpFloat(CurveAsset.Object, Delegate);
+
+		FOnTimelineEvent EndDelegate;
+		EndDelegate.BindDynamic(this, &ThisClass::OnEvolutionRoomEffectEnd);
+		EvolutionRoomEffectTimelineComponent->SetTimelineFinishedFunc(EndDelegate);
+	}
 	{
 		static ConstructorHelpers::FObjectFinder<UCurveFloat>CurveAsset(TEXT("/Script/Engine.CurveFloat'/Game/BluePrint/Component/CV_02Curve.CV_02Curve'"));
 		check(CurveAsset.Object);
@@ -75,17 +103,18 @@ AEvolutionManager::AEvolutionManager()
 	RootComponent = SceneComponent;
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 	SkeletalMeshComponent->SetupAttachment(RootComponent);
+	StaticMeshComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AEvolutionManager::BeginPlay()
 {
 	Super::BeginPlay();
-
+	Init();
 	{
 		ABasePlayerController* PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		check(PlayerController);
-		
+
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		Subsystem->AddMappingContext(IMC_Evolution, 0);
 		EnableInput(PlayerController);
@@ -170,6 +199,16 @@ void AEvolutionManager::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
+void AEvolutionManager::Init()
+{
+	UMaterialInterface* NewMaterial = StaticMeshComponent->GetMaterial(0);
+	if (NewMaterial)
+	{
+		StaticMeshMaterialInstanceDynamics = UMaterialInstanceDynamic::Create(NewMaterial, this);
+		StaticMeshComponent->SetMaterial(0, StaticMeshMaterialInstanceDynamics);
+	}
+}
+
 void AEvolutionManager::AddEvolutionPawn(ESpecies AddSpecies)
 {
 	EvolutionPawns.Enqueue(AddSpecies);
@@ -249,6 +288,17 @@ void AEvolutionManager::UpdateEvolutionPawnMesh()
 void AEvolutionManager::StartEvolution()
 {
 	DestroyEffectTimelineComponent->PlayFromStart();
+	EvolutionRoomEffectTimelineComponent->PlayFromStart();
+}
+
+void AEvolutionManager::OnEvolutionRoomEffect(float InDissolve)
+{
+	StaticMeshMaterialInstanceDynamics->SetScalarParameterValue(TEXT("Amount"), InDissolve);
+}
+
+void AEvolutionManager::OnEvolutionRoomEffectEnd()
+{
+	EvolutionRoomEffectTimelineComponent->PlayFromStart();
 }
 
 void AEvolutionManager::OnDestroyEffect(float InDissolve)
@@ -277,6 +327,7 @@ void AEvolutionManager::OnSpawn()
 {
 	MaterialInit();
 	SpawnEffectTimelineComponent->PlayFromStart();
+	//EvolutionRoomEffectTimelineComponent->Stop();
 }
 
 void AEvolutionManager::OnSpawnEffect(float InDissolve)
@@ -299,6 +350,7 @@ void AEvolutionManager::OnSpawnEffectEnd()
 	// 몽타주가 끝났을 때 호출될 함수 바인딩
 	AnimInstance->OnMontageEnded.AddDynamic(this, &AEvolutionManager::OnMontageEnded);
 	AnimInstance->Montage_Play(AnimData->EvoReactMontage);
+	EvolutionRoomEffectTimelineComponent->Stop();
 }
 void AEvolutionManager::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {

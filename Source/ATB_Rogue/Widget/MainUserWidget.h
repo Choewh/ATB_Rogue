@@ -59,13 +59,6 @@ private:
 	UImage* SelectPawn2;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	UImage* SelectPawn3;
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* SelectPawn4;
-	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-	UImage* SelectPawn5;
-
-
-
 
 };
 

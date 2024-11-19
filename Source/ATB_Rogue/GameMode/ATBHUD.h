@@ -38,7 +38,8 @@ public:
 	void HideBattleUI();
 	UFUNCTION()
 	void ShowTurnActionWidget();
-
+	UFUNCTION()
+	void ShowBattleMenuUI();
 private:
 	UPROPERTY()
 	TObjectPtr<class ABasePlayerController> PlayerController;
@@ -48,6 +49,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UATBUserWidget> TurnActionWidget;
+	UPROPERTY()
+	TObjectPtr<UATBUserWidget> BattleMenuUI;
 
 	/*UPROPERTY()
 	TObjectPtr<UATBBarUserWidget> ATBWidget;*/

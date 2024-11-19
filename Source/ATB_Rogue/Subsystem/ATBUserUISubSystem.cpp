@@ -21,3 +21,8 @@ void UATBUserUISubSystem::BattleUIRemovePawn(ABasePawn* InBasePawn)
 {
 	RemovePawnUI.Broadcast(InBasePawn);
 }
+
+void UATBUserUISubSystem::BattleUIMenu()
+{
+	ShowBattleMenu.Broadcast();
+}

@@ -9,6 +9,7 @@
 class ABasePawn;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAddPawnUI, ABasePawn*, InPawn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FShowBattleMenu);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRemovePawnUI, ABasePawn*, DeadPawn);
 
@@ -29,8 +30,11 @@ public :
 	void BattleUIAddPawn(ABasePawn* InBasePawn);
 	UFUNCTION()
 	void BattleUIRemovePawn(ABasePawn* DeadPawn);
-	
+	UFUNCTION()
+	void BattleUIMenu();
 public:
+	UPROPERTY()
+	FShowBattleMenu ShowBattleMenu;
 	UPROPERTY()
 	FAddPawnUI AddPawnUI;
 	UPROPERTY()

@@ -7,8 +7,10 @@
 //처음 플레이어 폰 생성시 호출
 bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPlayerSpecies)
 {
+	PlayerPawnsInfo.Empty();
+	PlayerAlivePawnsInfo.Empty();
 	int InPawnsNum = InPlayerSpecies.Num();
-	if (InPawnsNum > 5) // 7개인적은 없었으니 대충 하나만 줄이기
+	if (InPawnsNum > 3) // 7개인적은 없었으니 대충 하나만 줄이기
 	{
 		InPlayerSpecies.Pop();
 		InPawnsNum = InPlayerSpecies.Num();
@@ -37,7 +39,7 @@ bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPl
 bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerPawns)
 {
 	int InPawnsNum = InPlayerPawns.Num();
-	if (InPawnsNum > 5) // 7개인적은 없었으니 대충 하나만 줄이기
+	if (InPawnsNum > 3) // 7개인적은 없었으니 대충 하나만 줄이기
 	{
 		InPlayerPawns.Pop();
 		InPawnsNum = InPlayerPawns.Num();

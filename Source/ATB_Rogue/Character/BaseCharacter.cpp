@@ -62,34 +62,34 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
-	//CameraViewMode
-	if (BasePlayerController->GetViewCameraMode() == ECameraViewMode::PawnView) { return; }
+	//ABasePlayerController* BasePlayerController = Cast<ABasePlayerController>(GetController());
+	////CameraViewMode
+	//if (BasePlayerController->GetViewCameraMode() == ECameraViewMode::PawnView) { return; }
 
-	if (ActionPawn)
-	{
-		ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
-		float LerpSpeed = 5.0f;
-		if (ActionPawnController->TargetPawn && BasePlayerController->GetViewCameraMode() == ECameraViewMode::Attack)
-		{
-			FVector StartVec = ActionPawn->GetActorLocation();
-			FVector TargetVec = ActionPawnController->TargetPawn->GetActorLocation();
-			FVector MiddleVec = (StartVec + TargetVec) * 0.5f;
+	//if (ActionPawn)
+	//{
+	//	ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
+	//	float LerpSpeed = 5.0f;
+	//	if (ActionPawnController->TargetPawn && BasePlayerController->GetViewCameraMode() == ECameraViewMode::Attack)
+	//	{
+	//		FVector StartVec = ActionPawn->GetActorLocation();
+	//		FVector TargetVec = ActionPawnController->TargetPawn->GetActorLocation();
+	//		FVector MiddleVec = (StartVec + TargetVec) * 0.5f;
 
-			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), MiddleVec, DeltaTime, LerpSpeed);
+	//		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), MiddleVec, DeltaTime, LerpSpeed);
 
-			SetActorLocation(NewLocation);
-		}
-		else
-		{
-			//카메라 위치와 회전 보간
-			FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
-			FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
-			NewRotation.Roll = 0.f;
+	//		SetActorLocation(NewLocation);
+	//	}
+	//	else
+	//	{
+	//		//카메라 위치와 회전 보간
+	//		FVector NewLocation = FMath::VInterpTo(GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
+	//		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+	//		NewRotation.Roll = 0.f;
 
-			SetActorLocationAndRotation(ActionPawn->GetActorLocation(), ActionPawn->GetActorRotation());
-		}
-	}
+	//		SetActorLocationAndRotation(ActionPawn->GetActorLocation(), ActionPawn->GetActorRotation());
+	//	}
+	//}
 }
 
 // Called when the game starts or when spawned
@@ -114,9 +114,6 @@ void ABaseCharacter::BeginPlay()
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartFirst.AddDynamic(this, &ThisClass::OnFirstSet);
 		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::OnBattleEndSecond);
-
-		BattleSubsystem->BattleStartTurn.AddDynamic(this, &ThisClass::OnStartTurn);
-		BattleSubsystem->BattleFinishTurn.AddDynamic(this, &ThisClass::OnFinishTurn);
 	}
 	Init();
 }
@@ -160,22 +157,6 @@ void ABaseCharacter::SpawnPawn()
 		ATBUserUISubSystem->BattleUIAddPawn(NewPawn);
 		NewPawn->SetActorTransform(RoundsTransform[0][i]);
 		CurHavePawns.Add(NewPawn);
-	}
-}
-
-void ABaseCharacter::OnStartTurn()
-{
-	ABasePawn* Pawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
-	if (Pawn)
-	{
-		ActionPawn = Pawn;
-	}
-}
-void ABaseCharacter::OnFinishTurn()
-{
-	if (ActionPawn)
-	{
-		ActionPawn = nullptr;
 	}
 }
 

@@ -33,9 +33,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
-
+	void Init();
 public:
-
+	
 	//애니메이션 시작
 	UFUNCTION()
 	void AddEvolutionPawn(ESpecies AddSpecies);
@@ -48,6 +48,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateEvolutionPawnMesh();
 
+	UFUNCTION()
+	void OnEvolutionRoomEffect(float InDissolve);
+	UFUNCTION()
+	void OnEvolutionRoomEffectEnd();
 	UFUNCTION()
 	void StartEvolution();
 	UFUNCTION()
@@ -87,12 +91,17 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UTimelineComponent* DestroyEffectTimelineComponent;
 	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* EvolutionRoomEffectTimelineComponent;
+	UPROPERTY(VisibleAnywhere)
 	UTimelineComponent* SpawnEffectTimelineComponent;
 	TArray<UMaterialInstanceDynamic*> MaterialInstanceDynamics;
+	UMaterialInstanceDynamic* StaticMeshMaterialInstanceDynamics;
 private:
 	TQueue<ESpecies> EvolutionPawns;
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* SceneComponent;
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* StaticMeshComponent;
 
 	UDataTable* PawnDataTable;
 	UDataTable* AnimDataTable;

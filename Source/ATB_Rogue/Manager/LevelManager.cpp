@@ -48,7 +48,7 @@ void ALevelManager::Init()
 void ALevelManager::SetMaxRound()
 {
 	//라운드는 고정적으로 그냥 10씩 ㄱ
-	MaxRound = 2; //TEMP 10 -> 2
+	MaxRound = 5; //TEMP 10 -> 2
 	BossRound = MaxRound;
 }
 
@@ -59,13 +59,13 @@ void ALevelManager::SetRoundPawns()
 	{
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
-		{																				//TEMP 1 해뒀는데 랜덤으로 나오게 ㄱ
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(5, EPawnGroup::Enemy, CurLevel);
+		{																				
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(SetRandPawn(), EPawnGroup::Enemy, CurLevel);
 			RoundsPawns.Add(RoundPawns);
 		}
 		else
 		{
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(2, EPawnGroup::Enemy, CurLevel, EBattleSpec::Boss);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(SetRandPawn(), EPawnGroup::Enemy, CurLevel, EBattleSpec::Boss);
 			RoundsPawns.Add(RoundPawns);
 		}
 	}
@@ -90,6 +90,14 @@ void ALevelManager::SetRoundsTransform()
 		AEnemySpawnTransform* EnemySpawnTransforms = Cast<AEnemySpawnTransform>(Transforms);
 		RoundsTransform.Add(EnemySpawnTransforms->GetSpawnTransform());
 	}
+}
+
+uint8 ALevelManager::SetRandPawn()
+{
+	// 열거형의 범위 내에서 난수 생성
+	uint8 Result = FMath::RandRange(1, 3);
+
+	return Result;
 }
 
 // Called every frame

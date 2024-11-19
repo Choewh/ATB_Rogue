@@ -33,7 +33,7 @@ public:
 	ABasePlayerController();
 
 	void BeginPlay();
-
+	virtual void TickActor(float DeltaTime, enum ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
 public:
 
 
@@ -44,7 +44,7 @@ public:
 	void OnRightPress(const FInputActionValue& InputActionValue);
 	void OnViewCameraMove(const FInputActionValue& InputActionValue);
 	void OnViewAroundMove(const FInputActionValue& InputActionValue);
-
+	void OnViewMenu(const FInputActionValue& InputActionValue);
 public:
 
 	void CameraSet();
@@ -117,7 +117,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	EBattleState BattleState = EBattleState::Default;
 
-
+	UPROPERTY(VisibleAnywhere)
+	ABasePawn* ActionPawn;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bMove;

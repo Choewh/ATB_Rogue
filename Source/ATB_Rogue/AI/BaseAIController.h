@@ -45,7 +45,6 @@ public:
 public:
 	UPROPERTY()
 	ABasePawn* TargetPawn;
-
 protected:
 	UPROPERTY()
 	UStatusComponent* StatusComponentRef;

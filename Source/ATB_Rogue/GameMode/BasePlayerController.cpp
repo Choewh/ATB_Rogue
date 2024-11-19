@@ -6,6 +6,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PlayerCameraManager/BasePlayerCameraManager.h"
 #include "Subsystem/BattleSubsystem.h"
+#include "Subsystem/ATBUserUISubSystem.h"
+#include "AI/EnemyAIController.h"
 #include "Pawn/EnemyPawn.h"
 
 //class AEnemyPawn;
@@ -43,6 +45,76 @@ void ABasePlayerController::BeginPlay()
 	}
 	CameraSet();
 	Init();
+}
+
+void ABasePlayerController::TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction)
+{
+	Super::TickActor(DeltaTime, TickType, ThisTickFunction);
+
+	if (GetViewCameraMode() == ECameraViewMode::PawnView) { return; }
+
+	if (ActionPawn)
+	{
+		ABaseAIController* ActionPawnController = Cast<ABaseAIController>(ActionPawn->GetController());
+		float LerpSpeed = 1.0f;
+		FVector NewLocation;
+		FVector StartVec;
+		FVector TargetVec;
+		FVector MiddleVec;
+		FRotator NewRotation;
+		switch (ActionPawn->PawnGroup)
+		{
+		case EPawnGroup::Enemy:
+			if (ActionPawnController->TargetPawn && GetViewCameraMode() == ECameraViewMode::Attack)
+			{
+				StartVec = ActionPawn->GetActorLocation();
+				TargetVec = ActionPawnController->TargetPawn->GetActorLocation();
+				MiddleVec = (StartVec + TargetVec) * 0.5f;
+
+				NewLocation = FMath::VInterpTo(GetPawn()->GetActorLocation(), MiddleVec, DeltaTime, LerpSpeed);
+
+				GetPawn()->SetActorLocation(NewLocation);
+			}
+			else
+			{
+				//카메라 위치와 회전 보간
+				NewLocation = FMath::VInterpTo(GetPawn()->GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
+				NewRotation = FMath::RInterpTo(GetPawn()->GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+				NewRotation.Roll = 0.f;
+				GetPawn()->SetActorLocation(NewLocation);
+				SetControlRotation(NewRotation);
+				//GetPawn()->SetActorLocationAndRotation(ActionPawn->GetActorLocation(), ActionPawn->GetActorRotation());
+			}
+			break;
+		case EPawnGroup::Friendly:
+			if (ActionPawnController->TargetPawn && GetViewCameraMode() == ECameraViewMode::Attack)
+			{
+				StartVec = ActionPawn->GetActorLocation();
+				TargetVec = ActionPawnController->TargetPawn->GetActorLocation();
+				MiddleVec = (StartVec + TargetVec) * 0.5f;
+
+				NewLocation = FMath::VInterpTo(GetPawn()->GetActorLocation(), MiddleVec, DeltaTime, LerpSpeed);
+
+				GetPawn()->SetActorLocation(NewLocation);
+			}
+			else
+			{
+				//카메라 위치와 회전 보간
+				NewLocation = FMath::VInterpTo(GetPawn()->GetActorLocation(), ActionPawn->GetActorLocation(), DeltaTime, LerpSpeed);
+				NewRotation = FMath::RInterpTo(GetPawn()->GetActorRotation(), ActionPawn->GetActorRotation(), DeltaTime, LerpSpeed);
+				NewRotation.Roll = 0.f;
+				GetPawn()->SetActorLocation(NewLocation);
+				AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(ActionPawnController);
+				if (EnemyAIController)
+				{
+					SetControlRotation(NewRotation);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void ABasePlayerController::CameraSet()
@@ -88,7 +160,10 @@ void ABasePlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ABasePlayerController::OnViewAroundMove);
 	}
-
+	if (const UInputAction* InputAction = FUtils::GetInputActionFromName(IMC, TEXT("IA_Menu")))
+	{
+		EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &ABasePlayerController::OnViewMenu);
+	}
 }
 
 
@@ -139,6 +214,7 @@ void ABasePlayerController::CameraViewUpdate()
 		break;
 	}
 }
+
 void ABasePlayerController::BattleStateUpdate()
 {
 	switch (BattleState)
@@ -171,10 +247,10 @@ bool ABasePlayerController::CheckBattleState(EBattleState CheckBattleState)
 
 void ABasePlayerController::MoveCancle()
 {
-	ABasePawn* ActionPawn = BattleSubsystem->GetActionPawn();
-	if (ActionPawn)
+	ABasePawn* PlayeActionPawn = BattleSubsystem->GetActionPawn();
+	if (PlayeActionPawn)
 	{
-		MovePoint = ActionPawn->GetTargetLocation();
+		MovePoint = PlayeActionPawn->GetTargetLocation();
 	}
 }
 void ABasePlayerController::StartBattle(uint8 Round)
@@ -184,13 +260,21 @@ void ABasePlayerController::StartBattle(uint8 Round)
 
 void ABasePlayerController::StartTurn()
 {
+	ABasePawn* InActionPawn = GetWorld()->GetSubsystem<UBattleSubsystem>()->GetActionPawn();
+	if (InActionPawn)
+	{
+		ActionPawn = InActionPawn;
+	}
 }
 
 void ABasePlayerController::FinishTurn()
 {
 	Init();
+	if (ActionPawn)
+	{
+		ActionPawn = nullptr;
+	}
 }
-
 
 void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValue)
 {
@@ -300,6 +384,14 @@ void ABasePlayerController::OnViewAroundMove(const FInputActionValue& InputActio
 	{
 		AddYawInput(InputValue * 2.f);
 	}
+}
+
+void ABasePlayerController::OnViewMenu(const FInputActionValue& InputActionValue)
+{
+	static UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+	check(ATBUserUISubSystem);
+	ATBUserUISubSystem->BattleUIMenu();
+	SetPause(true);
 }
 
 
