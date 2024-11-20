@@ -17,7 +17,7 @@ AATBHUD::AATBHUD()
 	}
 	{
 		UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
-		TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Battle_Turn.ATB_Battle_Turn_C'"));
+			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Battle_Turn.ATB_Battle_Turn_C'"));
 		check(WidgetClass);
 		TurnActionWidget = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	}
@@ -55,7 +55,7 @@ void AATBHUD::PostInitializeComponents()
 		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUI);
 		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::HideBattleUI);
 	}
-	
+
 	{
 		PlayerController = Cast<ABasePlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 		check(PlayerController);
@@ -135,6 +135,7 @@ void AATBHUD::ShowBattleMenuUI()
 	{
 	case ESlateVisibility::Visible:
 		BattleMenuUI->SetVisibility(ESlateVisibility::Hidden);
+
 		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
 
 		break;

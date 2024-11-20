@@ -9,7 +9,7 @@
 #include "Misc/AllDamageType.h"
 
 
-	
+
 // Sets default values for this component's properties
 UStatusComponent::UStatusComponent()
 {
@@ -60,20 +60,27 @@ void UStatusComponent::SetData(ESpecies InSpecies)
 		NewSpeciesInfo.Get()->LevelExp = SpeciesInfo.Get()->LevelExp;
 		NewSpeciesInfo.Get()->Boss = SpeciesInfo.Get()->Boss;
 
+		float Mod1 = 1.f;
+		if (NewSpeciesInfo.Get()->Boss == EBattleSpec::Boss)
+		{
+			Mod1 = 1.2f;
+		}
 		//베이스 스탯
 		NewSpeciesInfo.Get()->Species = InSpecies;
 		NewSpeciesInfo.Get()->Stage = StatData->Stage;
 		NewSpeciesInfo.Get()->Attribute = StatData->Attribute;
 
-		NewSpeciesInfo.Get()->HP = StatData->HP;
-		NewSpeciesInfo.Get()->ATK = StatData->ATK;
-		NewSpeciesInfo.Get()->DEF = StatData->DEF;
-		NewSpeciesInfo.Get()->SPATK = StatData->SPATK;
-		NewSpeciesInfo.Get()->SPDEF = StatData->SPDEF;
+		NewSpeciesInfo.Get()->HP = StatData->HP * Mod1;
+		NewSpeciesInfo.Get()->ATK = StatData->ATK * Mod1;
+		NewSpeciesInfo.Get()->DEF = StatData->DEF * Mod1;
+		NewSpeciesInfo.Get()->SPATK = StatData->SPATK * Mod1;
+		NewSpeciesInfo.Get()->SPDEF = StatData->SPDEF * Mod1;
 
-		NewSpeciesInfo.Get()->SPD = StatData->SPD;
-		NewSpeciesInfo.Get()->ACC = StatData->ACC;
-		NewSpeciesInfo.Get()->EVA = StatData->EVA;
+		NewSpeciesInfo.Get()->SPD = StatData->SPD * Mod1;
+
+		//얘네 둘은 아직 안쓰긴함 명중률 회피률
+		NewSpeciesInfo.Get()->ACC = StatData->ACC * Mod1;
+		NewSpeciesInfo.Get()->EVA = StatData->EVA * Mod1;
 
 		NewSpeciesInfo.Get()->MoveRange = StatData->MoveRange;
 		// 베이스 스탯
@@ -88,7 +95,15 @@ float UStatusComponent::TakeDamage(float Damage, FDamageEvent const& DamageEvent
 
 	ABasePawn* DamageCauserPawn = Cast<ABasePawn>(DamageCauser);
 
-	float Mod1 =  AffinityCalcu(DamageCauserPawn->StatusComponent->GetSpeciesInfo()->Attribute,SpeciesInfo.Get()->Attribute);
+	float Mod1 = AffinityCalcu(DamageCauserPawn->StatusComponent->GetSpeciesInfo()->Attribute, SpeciesInfo.Get()->Attribute);
+
+	//보스는 스탯에서 따로 난이도 조절 해주면서 아래는 주석처리
+	//float Mod2 = 1.f;
+
+	//if (DamageCauserPawn->StatusComponent->GetSpeciesInfo()->Boss == EBattleSpec::Boss)
+	//{
+	//	Mod2 = 1.5f;
+	//}
 
 	if (DamageEvent.DamageTypeClass == USpecialType::StaticClass())
 	{
@@ -112,7 +127,7 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 	if (SpeciesInfo.Get()->LevelExp >= NextLevelExp)
 	{
 		SpeciesInfo.Get()->Level++;
-		
+
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		//진화레벨일 경우 실행
@@ -122,14 +137,14 @@ void UStatusComponent::GetLevelExp(uint16 Exp)
 			if (SpeciesInfo.Get()->Level >= 16)
 				BattleSubsystem->Evolution(GetOwner());
 			break;
-				//에볼루션 매니저 호출
+			//에볼루션 매니저 호출
 		case EStage::Champion:
-			if(SpeciesInfo.Get()->Level >= 35)
+			if (SpeciesInfo.Get()->Level >= 35)
 				BattleSubsystem->Evolution(GetOwner());
 			break;
 
 		case EStage::Ultimate:
-			if(SpeciesInfo.Get()->Level >= 50)
+			if (SpeciesInfo.Get()->Level >= 50)
 				BattleSubsystem->Evolution(GetOwner());
 			break;
 

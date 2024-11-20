@@ -23,9 +23,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OpenLevelWithLoadingScreen(TSubclassOf<UUserWidget> WidgetClass, const TSoftObjectPtr<UWorld> Level);
 
-	UFUNCTION(BlueprintCallable)
-	void NextLevelOpen();
-
-	UUserWidget* LoadingScreenWidget;
-	TSoftObjectPtr<UWorld> OpenLevel;
 };

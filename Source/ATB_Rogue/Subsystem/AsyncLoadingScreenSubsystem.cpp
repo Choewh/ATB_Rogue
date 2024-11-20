@@ -18,27 +18,21 @@ void UAsyncLoadingScreenSubsystem::OpenLevelWithLoadingScreen(TSubclassOf<UUserW
 		ensureMsgf(false, TEXT("WidgetClass is nullptr"));
 		return;
 	}
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
 
-    LoadingScreenWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
-    OpenLevel = Level;
-    if (LoadingScreenWidget)
-    {
-        // 위젯을 뷰포트에 추가하여 표시
-        LoadingScreenWidget->AddToViewport();
 
-        // 3초 후에 로딩 화면을 숨기기 위한 타이머 설정
-        FTimerHandle TimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::NextLevelOpen, 3.f, false);
-    }
-}
 
-void UAsyncLoadingScreenSubsystem::NextLevelOpen()
-{
-    //// 로딩 화면 위젯을 숨기기
-    //if (LoadingScreenWidget)
-    //{
-    //    LoadingScreenWidget->RemoveFromViewport();
-    //}
+	if (IsMoviePlayerEnabled())
+	{
+		FLoadingScreenAttributes LoadingScreenAttributes;
+		LoadingScreenAttributes.WidgetLoadingScreen = Widget->TakeWidget();
+		//LoadingScreenAttributes.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
+		LoadingScreenAttributes.MinimumLoadingScreenDisplayTime = 3.f;
+		LoadingScreenAttributes.bAutoCompleteWhenLoadingCompletes = true;
+		LoadingScreenAttributes.bAllowEngineTick = true;
 
-    UGameplayStatics::OpenLevelBySoftObjectPtr(this, OpenLevel);
+		GetMoviePlayer()->SetupLoadingScreen(LoadingScreenAttributes);
+	}
+
+	UGameplayStatics::OpenLevelBySoftObjectPtr(this, Level);
 }

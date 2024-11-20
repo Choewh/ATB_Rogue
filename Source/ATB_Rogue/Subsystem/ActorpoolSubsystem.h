@@ -8,6 +8,7 @@
 #include "Misc/Actorpool.h"
 #include "Effect/PawnRange.h"
 #include "Effect/PawnGroupEffect.h"
+#include "Effect/CursorEffect.h"
 #include "ActorpoolSubsystem.generated.h"
 
 /**
@@ -29,6 +30,8 @@ public:
 	APawnGroupEffect* SpawnGroupEffect(AActor* Owner,FEffectTableRow& EffectTableRow);
 	void DeSpawnGroupEffect();
 
+	ACursorEffect* CursorEffectSpawn(const FVector SpawnTransform);
+
 	void SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle);
 
 protected:
@@ -37,4 +40,5 @@ protected:
 protected:
 	FCircularActorPool<APawnRange> PawnRange;
 	FCircularActorPool<APawnGroupEffect> PawnGroupEffect;
+	FCircularActorPool<ACursorEffect> CursorEffect;
 };

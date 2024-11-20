@@ -59,7 +59,7 @@ TArray<FBasePawnInfo> UEnemyCreateSubsystem::CreateRoundSpecies(uint8 MaxSpecies
 	{
 		FBasePawnInfo NewSpecies;
 		//보스는 따로 생성
-		if (Level == ELevels::None) // 소환시 레벨환경제한이 없는 폰
+		if (BattleSpec == EBattleSpec::Boss) // 소환시 레벨환경제한이 없는 폰
 		{
 			//함수를 따로 추가 ㄱ
 			NewSpecies = CreateSpecies(SpawnGroup, BattleSpec);

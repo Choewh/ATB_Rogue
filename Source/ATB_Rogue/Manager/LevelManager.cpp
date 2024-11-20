@@ -48,7 +48,7 @@ void ALevelManager::Init()
 void ALevelManager::SetMaxRound()
 {
 	//라운드는 고정적으로 그냥 10씩 ㄱ
-	MaxRound = 5; //TEMP 10 -> 2
+	MaxRound = 2; //TEMP 10 -> 2 보여주기 위해 라운드 2 로 최소화 
 	BossRound = MaxRound;
 }
 
@@ -60,7 +60,7 @@ void ALevelManager::SetRoundPawns()
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
 		{																				
-			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(SetRandPawn(), EPawnGroup::Enemy, CurLevel);
+			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(SetRandPawn(), EPawnGroup::Enemy, CurLevel); //생성시 레벨은 현재 라운드 생각해서 계산 현재는 그냥 1로 해서 보여주기만 하기
 			RoundsPawns.Add(RoundPawns);
 		}
 		else
@@ -119,6 +119,7 @@ void ALevelManager::SpawnPawn()
 			NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[1][i - 1], ActorSpawnParameters);
 			NewPawn->Species = RoundsPawns[Round][i - 1].Species;
 			NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
+			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i-1].SpeciesInfo);
 			NewPawn->SetData();
 			NewPawn->SetActorTransform(RoundsTransform[1][i - 1]);
 		}
@@ -127,6 +128,7 @@ void ALevelManager::SpawnPawn()
 			NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[0][i - 1], ActorSpawnParameters);
 			NewPawn->Species = RoundsPawns[Round][i - 1].Species;
 			NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
+			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i - 1].SpeciesInfo);
 			NewPawn->SetData();
 			NewPawn->SetActorTransform(RoundsTransform[0][i - 1]);
 		}

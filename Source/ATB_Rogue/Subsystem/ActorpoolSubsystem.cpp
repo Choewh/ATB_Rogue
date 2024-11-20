@@ -34,13 +34,13 @@ void UActorpoolSubsystem::DeSpawnGroupEffect()
 	if (!DeNewPawnGroup) { return; }
 	DeNewPawnGroup->HideEffect();
 }
-//
-//void UActorpoolSubsystem::DeSpawnRangeEffect(APooledActor* DeSpawnActor)
-//{
-//	APawnRange* DeSpawnPawnRange =	Cast<APawnRange>(DeSpawnActor);
-//	if (!DeSpawnPawnRange) { return; }
-//	DeSpawnPawnRange->ReturnToPool();
-//}
+ACursorEffect* UActorpoolSubsystem::CursorEffectSpawn(const FVector SpawnTransform)
+{
+	ACursorEffect* NewCursorEffect = CursorEffect.GetActorFromPool();
+	NewCursorEffect->SetActorLocation(SpawnTransform);
+	NewCursorEffect->PlayEffect();
+	return NewCursorEffect;
+}
 
 void UActorpoolSubsystem::SpawnViewUI(const FTransform& SpawnTransform, const FDataTableRowHandle& InDataTableRowHandle)
 {
@@ -50,4 +50,5 @@ void UActorpoolSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	PawnRange.InitializePool(&InWorld, 1);
 	PawnGroupEffect.InitializePool(&InWorld, 10);
+	CursorEffect.InitializePool(&InWorld, 1);
 }

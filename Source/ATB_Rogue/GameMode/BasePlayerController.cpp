@@ -7,6 +7,7 @@
 #include "PlayerCameraManager/BasePlayerCameraManager.h"
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/ATBUserUISubSystem.h"
+#include "Subsystem/ActorpoolSubsystem.h"
 #include "AI/EnemyAIController.h"
 #include "Pawn/EnemyPawn.h"
 
@@ -131,6 +132,7 @@ void ABasePlayerController::CameraSet()
 		else if (it->GetName() == TEXT("Camera"))
 		{
 			DefaultCamera = it;
+			DefaultCamera->SetFieldOfView(90.f);
 		}
 	}
 	//카메라 껏다 켯다하는걸로 관리하기
@@ -286,9 +288,10 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		FVector EndPoint = CursorHitResult.ImpactPoint;
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
-		GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_Visibility, CollisionParams);
+		GetWorld()->LineTraceSingleByProfile(HitResult, CameraLocation, EndPoint,TEXT("FloorTarget"), CollisionParams);
 		//UKismetSystemLibrary::LineTraceSingleByProfile(CameraLocation, EndPoint )
 		MovePoint = HitResult.ImpactPoint;
+		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->CursorEffectSpawn(HitResult.ImpactPoint);
 		//로그
 		{
 			FString LogMessage = MovePoint.ToString();
@@ -388,10 +391,10 @@ void ABasePlayerController::OnViewAroundMove(const FInputActionValue& InputActio
 
 void ABasePlayerController::OnViewMenu(const FInputActionValue& InputActionValue)
 {
-	static UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
-	check(ATBUserUISubSystem);
-	ATBUserUISubSystem->BattleUIMenu();
-	SetPause(true);
+		static UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+		check(ATBUserUISubSystem);
+		ATBUserUISubSystem->BattleUIMenu();
+		SetPause(true);
 }
 
 
