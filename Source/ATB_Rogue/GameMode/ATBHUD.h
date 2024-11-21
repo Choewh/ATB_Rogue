@@ -32,12 +32,21 @@ public:
 	void RemovePawnBattleUI(ABasePawn* DeadPawn);
 	UFUNCTION()
 	void UpdatePawnUI(ABasePawn* UpdatePawn);
+
 	UFUNCTION()
 	void ShowBattleUI(uint8 Round);
 	UFUNCTION()
+	void ShowBattleUtilsUI(uint8 Round);
+	UFUNCTION()
 	void HideBattleUI();
 	UFUNCTION()
+	void HideBattleUtilsUI();
+
+	UFUNCTION()
 	void ShowTurnActionWidget();
+	
+	UFUNCTION()
+	void HideTurnActionWidget();
 	UFUNCTION()
 	void ShowBattleMenuUI();
 private:
@@ -51,6 +60,8 @@ private:
 	TObjectPtr<UATBUserWidget> TurnActionWidget;
 	UPROPERTY()
 	TObjectPtr<UATBUserWidget> BattleMenuUI;
+	UPROPERTY()
+	TObjectPtr<UATBUserWidget> BattleUtilsUI;
 
 	/*UPROPERTY()
 	TObjectPtr<UATBBarUserWidget> ATBWidget;*/

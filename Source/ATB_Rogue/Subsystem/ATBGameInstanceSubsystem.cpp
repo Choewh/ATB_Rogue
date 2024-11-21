@@ -75,7 +75,19 @@ bool UATBGameInstanceSubsystem::SavePlayerPawnsInfo(TArray<ABasePawn*> InPlayerP
 	}
 	return true;
 }
-
+uint16 UATBGameInstanceSubsystem::GetFriendlyPawnsMinLevel()
+{
+	uint16 Result = UINT16_MAX;
+	for (auto& PawnInfo : PlayerPawnsInfo)
+	{
+		if (Result > PawnInfo.SpeciesInfo->Level)
+		{
+			Result = PawnInfo.SpeciesInfo->Level;
+		}
+	}
+	GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->SetMinLevel(Result);
+	return Result;
+}
 void UATBGameInstanceSubsystem::AddDiePawnInfo(ABasePawn* DiePawn)
 {
 

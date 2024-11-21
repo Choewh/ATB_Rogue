@@ -23,7 +23,6 @@ UStatusComponent::UStatusComponent()
 		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
 		StatDataTable = StatDataObject.Object;
 	}
-
 	SpeciesInfo = MakeShared<FSpeciesInfo>();
 }
 

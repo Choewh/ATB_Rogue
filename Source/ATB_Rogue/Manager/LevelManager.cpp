@@ -6,6 +6,7 @@
 
 #include "Pawn/EnemySpawnTransform.h"
 #include "Subsystem/ATBUserUISubSystem.h"
+#include "Subsystem/ATBGameInstanceSubsystem.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -59,7 +60,7 @@ void ALevelManager::SetRoundPawns()
 	{
 		TArray<FBasePawnInfo> RoundPawns;
 		if (i != BossRound)
-		{																				
+		{
 			RoundPawns = GetWorld()->GetSubsystem<UEnemyCreateSubsystem>()->CreateRoundSpecies(SetRandPawn(), EPawnGroup::Enemy, CurLevel); //생성시 레벨은 현재 라운드 생각해서 계산 현재는 그냥 1로 해서 보여주기만 하기
 			RoundsPawns.Add(RoundPawns);
 		}
@@ -119,7 +120,7 @@ void ALevelManager::SpawnPawn()
 			NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[1][i - 1], ActorSpawnParameters);
 			NewPawn->Species = RoundsPawns[Round][i - 1].Species;
 			NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
-			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i-1].SpeciesInfo);
+			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i - 1].SpeciesInfo);
 			NewPawn->SetData();
 			NewPawn->SetActorTransform(RoundsTransform[1][i - 1]);
 		}
@@ -156,6 +157,10 @@ void ALevelManager::OnFirstSet(uint8 Round)
 void ALevelManager::NextLevel()
 {
 	uint8 OnNextBattle = CurRound + 1;
+	UATBGameInstanceSubsystem* GameInstanceSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>();
+	check(GameInstanceSubsystem);
+	GameInstanceSubsystem->NextRound();
+
 	CurRoundPawns.Empty();//전에 비우는건 공통이니까 ㄱ
 	if (OnNextBattle > MaxRound)
 	{

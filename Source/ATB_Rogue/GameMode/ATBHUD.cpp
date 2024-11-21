@@ -27,6 +27,12 @@ AATBHUD::AATBHUD()
 		check(WidgetClass);
 		BattleMenuUI = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
 	}
+	{
+		UClass* WidgetClass = LoadClass<UATBUserWidget>(nullptr,
+			TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/UI/Battle/ATB_Battle_Utils.ATB_Battle_Utils_C'"));
+		check(WidgetClass);
+		BattleUtilsUI = CreateWidget<UATBUserWidget>(GetWorld(), WidgetClass);
+	}
 	//배틀시스템에서 하기 오너는 폰으로 셋 해주기
 	/*UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	check(BattleSubsystem);
@@ -53,7 +59,10 @@ void AATBHUD::PostInitializeComponents()
 		UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 		check(BattleSubsystem);
 		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUI);
+		BattleSubsystem->BattleStartSecond.AddDynamic(this, &ThisClass::ShowBattleUtilsUI);
+
 		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::HideBattleUI);
+		BattleSubsystem->BattleEndSecond.AddDynamic(this, &ThisClass::HideBattleUtilsUI);
 	}
 
 	{
@@ -111,6 +120,26 @@ void AATBHUD::HideBattleUI()
 	//	UE_LOG(LogTemp, Log, TEXT("ShowATBBarAddTOViewport 바인딩 성공"));
 	//}
 }
+void AATBHUD::ShowBattleUtilsUI(uint8 Round)
+{
+	if (BattleUtilsUI && !BattleUtilsUI->IsInViewport())
+	{
+		BattleUtilsUI->AddToViewport();
+		UE_LOG(LogTemp, Log, TEXT("UI가 뷰포트에 추가되었습니다."));
+	}
+
+	// 가시성 조정 (보이도록 설정)
+	BattleUtilsUI->SetVisibility(ESlateVisibility::Visible);
+	UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+}
+void AATBHUD::HideBattleUtilsUI()
+{
+	if (BattleUtilsUI && BattleUtilsUI->IsInViewport())
+	{
+		BattleUtilsUI->SetVisibility(ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+	}
+}
 void AATBHUD::ShowTurnActionWidget()
 {
 	if (TurnActionWidget && !TurnActionWidget->IsInViewport())
@@ -118,8 +147,18 @@ void AATBHUD::ShowTurnActionWidget()
 		TurnActionWidget->AddToViewport();
 		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
 	}
-}
 
+	TurnActionWidget->SetVisibility(ESlateVisibility::Visible);
+	UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+}
+void AATBHUD::HideTurnActionWidget()
+{
+	if (TurnActionWidget && TurnActionWidget->IsInViewport())
+	{
+		TurnActionWidget->SetVisibility(ESlateVisibility::Hidden);
+		UE_LOG(LogTemp, Log, TEXT("UI가 보입니다."));
+	}
+}
 void AATBHUD::ShowBattleMenuUI()
 {
 	if (BattleMenuUI && !BattleMenuUI->IsInViewport())

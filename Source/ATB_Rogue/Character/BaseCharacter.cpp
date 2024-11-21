@@ -96,7 +96,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	OriginalTransform = GetActorTransform();
 	if (Controller == nullptr)
 	{
 		Controller = GetWorld()->SpawnActor<ABasePlayerController>(ABasePlayerController::StaticClass());
@@ -160,8 +160,12 @@ void ABaseCharacter::SpawnPawn()
 	}
 }
 
+
 void ABaseCharacter::OnFirstSet(uint8 Round)
 {
+	
+	SetActorTransform(OriginalTransform);
+
 	CurRound++;
 	UBattleSubsystem* BattleSubsystem = GetWorld()->GetSubsystem<UBattleSubsystem>();
 	if (CurRound % 10 == 1)

@@ -61,4 +61,6 @@ private:
 private:
 	UPROPERTY(VisibleAnywhere)
 	uint8 CurRound = 0;
+	UPROPERTY(VisibleAnywhere)
+	FTransform OriginalTransform;
 };

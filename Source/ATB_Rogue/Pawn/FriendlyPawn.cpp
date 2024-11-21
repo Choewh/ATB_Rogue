@@ -51,7 +51,7 @@ void AFriendlyPawn::SetData()
 	{
 		AIControllerClass = PawnData->EnemyAIController;
 	}
-	else 
+	else
 	{
 		AIControllerClass = PawnData->FriendlyAIController;
 	}
@@ -98,7 +98,7 @@ bool AFriendlyPawn::Movealbe(FVector NewDestination)
 void AFriendlyPawn::MoveTo(FVector NewDestination)
 {
 	AFriendlyAIController* AIController = Cast<AFriendlyAIController>(GetController());
-	AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bMove"), true);
+	//AIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bMove"), true);
 	AIController->GetBlackboardComponent()->SetValueAsVector(TEXT("MovePoint"), NewDestination);
 }
 
@@ -113,9 +113,19 @@ bool AFriendlyPawn::OnAutoPlay(bool Active)
 	{
 		bAuto = false;
 	}
+	ABasePawn* NewTargetPawn;
+	bool bAction;
+	bool bMove;
+	bool bAttack;
 
 	AAIController* CurrentController = GetController<AAIController>();
-
+	{
+		ABaseAIController* BaseAIController = Cast<ABaseAIController>(CurrentController);
+		NewTargetPawn = BaseAIController->TargetPawn;
+		bAction = BaseAIController->GetBlackboardComponent()->GetValueAsBool(TEXT("bAction"));
+		bMove = BaseAIController->GetBlackboardComponent()->GetValueAsBool(TEXT("bMove"));
+		bAttack = BaseAIController->GetBlackboardComponent()->GetValueAsBool(TEXT("bAttack"));
+	}
 	if (PawnData)
 	{
 		CollisionComponent->SetCollisionProfileName(TEXT("Friendly"));
@@ -146,6 +156,11 @@ bool AFriendlyPawn::OnAutoPlay(bool Active)
 		{
 			// 새로운 컨트롤러가 Pawn을 소유하도록 설정
 			NewController->Possess(this);
+			ABaseAIController* NewBaseAIController = Cast<ABaseAIController>(NewController);
+			NewBaseAIController->TargetPawn = NewTargetPawn;
+			NewBaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAction"), bAction);
+			NewBaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bMove"), bMove);
+			NewBaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), bAttack);
 		}
 	}
 

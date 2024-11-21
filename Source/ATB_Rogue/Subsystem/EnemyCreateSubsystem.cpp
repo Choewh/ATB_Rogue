@@ -3,7 +3,6 @@
 
 #include "Subsystem/EnemyCreateSubsystem.h"
 
-
 void UEnemyCreateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -95,11 +94,14 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, EBattl
 FBasePawnInfo UEnemyCreateSubsystem::CreateSpeciesFromLevel(ELevels Level, EPawnGroup SpawnGroup)
 {
 	FBasePawnInfo NewSpecies;
+	//그룹
 	NewSpecies.PawnGroup = SpawnGroup;
-	//랜덤
+	//종
 	FLevelTableRow* LeveData = GetLevelDataById(Level);
 	uint8 SpeciesIndex = GetRandomSpecies(LeveData->Species.Num()); //GetRandomSpecies안에서 -1 해주고있음
 	NewSpecies.Species = LeveData->Species[SpeciesIndex];
+	//레벨 Temp
+	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(FriendlyMinLevel);
 	//TEMP //만들어줄때 보스면 StatusComponent 불러서 보스 체크
 
 	return NewSpecies;

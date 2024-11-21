@@ -3,6 +3,7 @@
 
 #include "Subsystem/BattleSubsystem.h"
 #include "Subsystem/ActorpoolSubsystem.h"
+#include "GameMode/ATBHUD.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -133,6 +134,10 @@ bool UBattleSubsystem::AutoPlay()
 		AFriendlyPawn* Pawn = Cast<AFriendlyPawn>(FriendlyPawns[i]);
 		Pawn->OnAutoPlay(bAuto);
 	};
+	
+	AATBHUD* ATBHUD = Cast<AATBHUD>(PlayerController->GetHUD());
+	ATBHUD->HideTurnActionWidget();
+
 	return bAuto;
 }
 
@@ -323,7 +328,7 @@ void UBattleSubsystem::SelectTargetPawn(AActor* InTargetPawn)//폰 데이터 전
 	{
 		BaseAIController->TargetPawn = Cast<ABasePawn>(TargetPawn);
 		BaseAIController->GetBlackboardComponent()->SetValueAsObject(TEXT("TargetPawn"), BaseAIController->TargetPawn);
-		BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true);
+		//BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), true); Temp
 	}
 	UE_LOG(LogTemp, Log, TEXT("TargetPawn Name : %s"), *TargetPawn->GetName());
 	//거리체크하는 태스크
@@ -338,7 +343,7 @@ void UBattleSubsystem::SelectAttackAccept()
 void UBattleSubsystem::SelectAttackCancle()
 {
 	ABaseAIController* BaseAIController = Cast<ABaseAIController>(ActionPawn->GetController());
-	BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), false);
+	//BaseAIController->GetBlackboardComponent()->SetValueAsBool(TEXT("bAttack"), false); Temp
 	SetBattleState(EBattleState::Default);
 	SetViewCameraMode(ECameraViewMode::PawnView);
 }
