@@ -288,7 +288,7 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		FVector EndPoint = CursorHitResult.ImpactPoint;
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
-		GetWorld()->LineTraceSingleByProfile(HitResult, CameraLocation, EndPoint,TEXT("FloorTarget"), CollisionParams);
+		GetWorld()->LineTraceSingleByProfile(HitResult, CameraLocation, EndPoint, TEXT("FloorTarget"), CollisionParams);
 		//UKismetSystemLibrary::LineTraceSingleByProfile(CameraLocation, EndPoint )
 		MovePoint = HitResult.ImpactPoint;
 		GetWorld()->GetSubsystem<UActorpoolSubsystem>()->CursorEffectSpawn(HitResult.ImpactPoint);
@@ -391,10 +391,13 @@ void ABasePlayerController::OnViewAroundMove(const FInputActionValue& InputActio
 
 void ABasePlayerController::OnViewMenu(const FInputActionValue& InputActionValue)
 {
-		static UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
-		check(ATBUserUISubSystem);
-		ATBUserUISubSystem->BattleUIMenu();
-		SetPause(true);
+	static UATBUserUISubSystem* ATBUserUISubSystem = GetWorld()->GetSubsystem<UATBUserUISubSystem>();
+	check(ATBUserUISubSystem);
+	GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+		{
+			ATBUserUISubSystem->BattleUIMenu();
+		});
+	SetPause(true);
 }
 
 

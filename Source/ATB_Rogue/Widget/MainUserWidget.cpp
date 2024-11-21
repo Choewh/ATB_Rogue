@@ -177,13 +177,14 @@ void UMainUserWidget::CreateButtons(uint8 InNum)
 
 		{
 
-			UEnum* EnumPtr = StaticEnum<ESpecies>();
+			UEnum* EnumPtr = StaticEnum<ESpecies>(); //ESpecies의 스태틱이넘
 			if (EnumPtr)
 			{
 				// 2. FName을 Enum 값으로 변환하기
-				FName StageName = SelectAblePawnNames[i]; // 예를 들어 "Rookie"라는 이름이 열거형에 있다고 가정
-				int32 EnumIndex = EnumPtr->GetIndexByName(StageName);
-				SelectableCell->Species = static_cast<ESpecies>(EnumIndex);
+				FName StageName = SelectAblePawnNames[i]; // 성장기인 디지몬의 이름을 하나씩 가져옴
+				int32 EnumIndex = EnumPtr->GetIndexByName(StageName); // 이름이 일치하는 ESpecies 값이 있으면 인덱스를 가져옴
+				SelectableCell->Species = static_cast<ESpecies>(EnumIndex); // SelectableCell은 슬레이트를 이용해 만든거임
+																			// 버튼에 정보를 담고싶어 찾아보다 발견
 
 				UDataTable* PawnDataTable = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, TEXT("/Script/Engine.DataTable'/Game/DataTable/PawnTableRow.PawnTableRow'")));
 					if (PawnDataTable)

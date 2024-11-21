@@ -53,6 +53,7 @@ void AATBHUD::PostInitializeComponents()
 		ATBUserUISubSystem->RemovePawnUI.AddDynamic(this, &ThisClass::RemovePawnBattleUI);
 		ATBUserUISubSystem->UpdatePawnUIUI.AddDynamic(this, &ThisClass::UpdatePawnUI);
 		ATBUserUISubSystem->ShowBattleMenu.AddDynamic(this, &ThisClass::ShowBattleMenuUI);
+		int a = 0;
 
 	}
 	{

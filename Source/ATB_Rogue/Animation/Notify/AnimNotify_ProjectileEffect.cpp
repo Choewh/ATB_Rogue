@@ -18,7 +18,7 @@ UAnimNotify_ProjectileEffect::UAnimNotify_ProjectileEffect()
 void UAnimNotify_ProjectileEffect::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
-	
+
 	if (!ParticleSystem) { return; } //파티클 없으면 패스
 
 	AActor* OwningActor = MeshComp->GetOwner();
@@ -41,8 +41,13 @@ void UAnimNotify_ProjectileEffect::Notify(USkeletalMeshComponent* MeshComp, UAni
 		FTransform::Identity, Pawn, Pawn, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	//셋데이터에서 Edit에서 설정해준 파티클로 설정해주기
 	Projectile->SetTargetActor(TargetPawn);
-	Projectile->SetParticleSystem(ParticleSystem);
-	Projectile->SetHitParticleSystem(HitParticleSystem);
+	if (ParticleSystem) {
+		Projectile->SetParticleSystem(ParticleSystem);
+	}
+
+	if (HitParticleSystem) {
+		Projectile->SetHitParticleSystem(HitParticleSystem);
+	}
 	Projectile->SetTargetGroup(TargetPawn->PawnGroup);
 	FRotator LookAtRotator = UKismetMathLibrary::FindLookAtRotation( OwningActor->GetActorLocation(),TargetPawn->GetActorLocation()); //ȸ���� ��Ƽ���� ��
 	Projectile->SetActorRotation(LookAtRotator);

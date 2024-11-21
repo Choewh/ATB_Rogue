@@ -10,7 +10,7 @@ bool UATBGameInstanceSubsystem::InitSpawnPlayerPawnSpecies(TArray<ESpecies> InPl
 	PlayerPawnsInfo.Empty();
 	PlayerAlivePawnsInfo.Empty();
 	int InPawnsNum = InPlayerSpecies.Num();
-	if (InPawnsNum > 3) // 7개인적은 없었으니 대충 하나만 줄이기
+	if (InPawnsNum > 3) // 4개인적은 없었으니 대충 하나만 줄이기
 	{
 		InPlayerSpecies.Pop();
 		InPawnsNum = InPlayerSpecies.Num();

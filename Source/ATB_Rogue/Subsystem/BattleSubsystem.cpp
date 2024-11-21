@@ -12,21 +12,14 @@
 UBattleSubsystem::UBattleSubsystem()
 {
 }
+
 void UBattleSubsystem::BattleStart(uint8 Round)
 {
-	//TODO
-	//Evolution 중이라면 잠깐 멈추고 Evolution 끝나면 하기 
-	// Evolution 여러마리라면?
-	//Evolution 매니저에 TArray 해놓고 순서대로 진화해주기? ㄱㅊ은듯
 	Init();
 	BattleStartFirst.Broadcast(Round);
 	BattleStartSecond.Broadcast(Round);
 	CalcExp();
-	//OnBattleStart();
 	UKismetSystemLibrary::K2_SetTimer(this, TEXT("OnBattleStart"), 2.f, false);
-	//배틀 끝날때마다 초기화 해주니 처음 시작시 한번싹 초기화 해주기
-	//타이머말고 로어 끝나면 하는걸로 OR 그냥 배틀스타트 자체에서 로어 해주기
-	//UKismetSystemLibrary::K2_SetTimer(this, TEXT("FinishTurn"), 4.f, false);
 }
 
 void UBattleSubsystem::Init()
@@ -127,6 +120,8 @@ bool UBattleSubsystem::AutoPlay()
 	else
 	{
 		bAuto = true;
+		AATBHUD* ATBHUD = Cast<AATBHUD>(PlayerController->GetHUD());
+		ATBHUD->HideTurnActionWidget();
 	}
 
 	for (int32 i = 0; i < FriendlyPawns.Num(); i++)
@@ -134,9 +129,7 @@ bool UBattleSubsystem::AutoPlay()
 		AFriendlyPawn* Pawn = Cast<AFriendlyPawn>(FriendlyPawns[i]);
 		Pawn->OnAutoPlay(bAuto);
 	};
-	
-	AATBHUD* ATBHUD = Cast<AATBHUD>(PlayerController->GetHUD());
-	ATBHUD->HideTurnActionWidget();
+
 
 	return bAuto;
 }
@@ -184,13 +177,11 @@ void UBattleSubsystem::OnBattleStart()
 
 void UBattleSubsystem::BattleStartCheck()
 {
-	int a = 0;
 	UKismetSystemLibrary::K2_SetTimer(this, TEXT("PawnMongtageIsPlaying"), 1.f, false);
 }
 
 void UBattleSubsystem::PawnMongtageIsPlaying()
 {
-	int a = 0;
 	for (auto& Pawn : FriendlyPawns)
 	{
 		if (Pawn)
@@ -223,6 +214,7 @@ void UBattleSubsystem::PawnMongtageIsPlaying()
 		FinishTurn();
 	}
 }
+
 void UBattleSubsystem::NextBattle()
 {
 	BattleStartTurn.Broadcast(); // Pawn bActive 꺼줌

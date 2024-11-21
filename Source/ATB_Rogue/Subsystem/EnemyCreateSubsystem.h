@@ -55,7 +55,7 @@ public:
 	TArray<FBasePawnInfo> CreateRoundSpecies(uint8 MaxSpecies , EPawnGroup SpawnGroup, ELevels Level = ELevels::None , EBattleSpec BattleSpec = EBattleSpec::Default);//나중엔 레벨 종류도 받아서 맞는 폰 생성
 	//폰 생성 정보 전달 스탯 구조체 있는지 확인
 	FBasePawnInfo CreateSpecies(EPawnGroup SpawnGroup, EBattleSpec BattleSpec, uint8 Level = 1, ESpecies SpawnSpecies = ESpecies::None);
-	FBasePawnInfo CreateSpeciesFromLevel(ELevels Level , EPawnGroup SpawnGroup = EPawnGroup::Enemy);
+	FBasePawnInfo CreateSpeciesFromLevel(ELevels Level , EPawnGroup SpawnGroup = EPawnGroup::Enemy , EBattleSpec BattleSpec = EBattleSpec::Default);
 
 
 	ESpecies GetRandomSpecies();//랜덤종

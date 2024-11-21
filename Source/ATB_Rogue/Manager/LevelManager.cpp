@@ -49,7 +49,7 @@ void ALevelManager::Init()
 void ALevelManager::SetMaxRound()
 {
 	//라운드는 고정적으로 그냥 10씩 ㄱ
-	MaxRound = 2; //TEMP 10 -> 2 보여주기 위해 라운드 2 로 최소화 
+	MaxRound = 4; //TEMP 10 -> 2 보여주기 위해 라운드 2 로 최소화 
 	BossRound = MaxRound;
 }
 

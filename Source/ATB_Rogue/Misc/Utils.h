@@ -50,7 +50,7 @@ public:
 	// ESpecies를 넣으면 Display 네임으로 바꿔주는거
 	static const FText  GetSpeciesName(ESpecies InSpecies)
 	{
-		// UEnum 객체를 가져옵니다.
+		// UEnum 객체를 가져옴.
 		UEnum* EnumPtr = StaticEnum<ESpecies>();
 		if (EnumPtr)
 		{

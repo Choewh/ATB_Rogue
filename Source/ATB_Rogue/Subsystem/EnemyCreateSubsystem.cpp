@@ -61,7 +61,7 @@ TArray<FBasePawnInfo> UEnemyCreateSubsystem::CreateRoundSpecies(uint8 MaxSpecies
 		if (BattleSpec == EBattleSpec::Boss) // 소환시 레벨환경제한이 없는 폰
 		{
 			//함수를 따로 추가 ㄱ
-			NewSpecies = CreateSpecies(SpawnGroup, BattleSpec);
+			NewSpecies = CreateSpeciesFromLevel(Level, SpawnGroup, BattleSpec);
 		}
 		else// 레벨이 있다는건 필요한 정보가 있다는거니까 ㅇ
 		{
@@ -91,7 +91,7 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpecies(EPawnGroup SpawnGroup, EBattl
 	return NewSpecies;
 }
 
-FBasePawnInfo UEnemyCreateSubsystem::CreateSpeciesFromLevel(ELevels Level, EPawnGroup SpawnGroup)
+FBasePawnInfo UEnemyCreateSubsystem::CreateSpeciesFromLevel(ELevels Level, EPawnGroup SpawnGroup , EBattleSpec BattleSpec)
 {
 	FBasePawnInfo NewSpecies;
 	//그룹
@@ -101,7 +101,10 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpeciesFromLevel(ELevels Level, EPawn
 	uint8 SpeciesIndex = GetRandomSpecies(LeveData->Species.Num()); //GetRandomSpecies안에서 -1 해주고있음
 	NewSpecies.Species = LeveData->Species[SpeciesIndex];
 	//레벨 Temp
-	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(FriendlyMinLevel);
+	
+	int EnemyLevel = FriendlyMinLevel - 10;
+		EnemyLevel = FMath::Clamp(EnemyLevel, 1, FriendlyMinLevel);
+	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(EnemyLevel,BattleSpec);
 	//TEMP //만들어줄때 보스면 StatusComponent 불러서 보스 체크
 
 	return NewSpecies;
