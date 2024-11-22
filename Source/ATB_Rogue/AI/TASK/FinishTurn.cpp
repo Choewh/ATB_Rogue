@@ -49,10 +49,10 @@ EBTNodeResult::Type UFinishTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	uint8 Skill = BlackboardComponent->GetValueAsEnum(TEXT("SKill"));
 
 	// 구체를 그립니다.
-	DrawDebugSphere(GetWorld(), MovePoint, 100.f, 12, MovePointColor, false, Duration);
+	//DrawDebugSphere(GetWorld(), MovePoint, 100.f, 12, MovePointColor, false, Duration);
 	if (Target)
 	{
-		DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 12, TargetPawnColor, false, Duration);
+		//DrawDebugSphere(GetWorld(), Target->GetActorLocation(), 100.f, 12, TargetPawnColor, false, Duration);
 	}
 	return EBTNodeResult::Succeeded;
 }

@@ -69,9 +69,9 @@ public:
 	UDataTable* LevelDataTable;
 	FLevelTableRow* GetLevelDataById(ELevels Level) const;
 	void SetMinLevel(uint16 Level) { FriendlyMinLevel = Level; }
+	int FriendlyMinLevel = 5;
 
 private:
 	// 데이터 테이블 경로로부터 데이터 테이블 로드
 	void LoadDataTable();
-	uint16 FriendlyMinLevel = 5;
 };

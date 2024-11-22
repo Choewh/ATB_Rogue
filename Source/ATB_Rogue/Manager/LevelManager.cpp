@@ -120,6 +120,12 @@ void ALevelManager::SpawnPawn()
 			NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[1][i - 1], ActorSpawnParameters);
 			NewPawn->Species = RoundsPawns[Round][i - 1].Species;
 			NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
+			
+			uint16 FriendlyMinLevel = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>()->GetFriendlyPawnsMinLevel();
+			FriendlyMinLevel = FriendlyMinLevel - 10;
+			FriendlyMinLevel = FMath::Clamp(FriendlyMinLevel, 1, FriendlyMinLevel);
+			RoundsPawns[Round][i - 1].SpeciesInfo->Level = FriendlyMinLevel;
+
 			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i - 1].SpeciesInfo);
 			NewPawn->SetData();
 			NewPawn->SetActorTransform(RoundsTransform[1][i - 1]);
@@ -129,6 +135,12 @@ void ALevelManager::SpawnPawn()
 			NewPawn = GetWorld()->SpawnActor<AEnemyPawn>(AEnemyPawn::StaticClass(), RoundsTransform[0][i - 1], ActorSpawnParameters);
 			NewPawn->Species = RoundsPawns[Round][i - 1].Species;
 			NewPawn->PawnGroup = RoundsPawns[Round][i - 1].PawnGroup;
+			
+			int FriendlyMinLevel = GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>()->GetFriendlyPawnsMinLevel();
+			FriendlyMinLevel = FriendlyMinLevel - 10;
+			FriendlyMinLevel = FMath::Clamp(FriendlyMinLevel, 1, FriendlyMinLevel);
+			RoundsPawns[Round][i - 1].SpeciesInfo->Level = FriendlyMinLevel;
+
 			NewPawn->StatusComponent->SetSpeciesInfo(RoundsPawns[Round][i - 1].SpeciesInfo);
 			NewPawn->SetData();
 			NewPawn->SetActorTransform(RoundsTransform[0][i - 1]);

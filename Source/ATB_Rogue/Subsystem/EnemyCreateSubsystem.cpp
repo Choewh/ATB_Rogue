@@ -100,11 +100,7 @@ FBasePawnInfo UEnemyCreateSubsystem::CreateSpeciesFromLevel(ELevels Level, EPawn
 	FLevelTableRow* LeveData = GetLevelDataById(Level);
 	uint8 SpeciesIndex = GetRandomSpecies(LeveData->Species.Num()); //GetRandomSpecies안에서 -1 해주고있음
 	NewSpecies.Species = LeveData->Species[SpeciesIndex];
-	//레벨 Temp
-	
-	int EnemyLevel = FriendlyMinLevel - 10;
-		EnemyLevel = FMath::Clamp(EnemyLevel, 1, FriendlyMinLevel);
-	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(EnemyLevel,BattleSpec);
+	NewSpecies.SpeciesInfo = MakeShared<FSpeciesInfo>(FriendlyMinLevel,BattleSpec);
 	//TEMP //만들어줄때 보스면 StatusComponent 불러서 보스 체크
 
 	return NewSpecies;

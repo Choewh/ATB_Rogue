@@ -94,7 +94,7 @@ bool UBattleSubsystem::IsDieCheck()
 		Exp = 0; //계산후 경험치 초기화
 		//데이터 저장
 		BattleEndSecond.Broadcast();
-
+		GetWorld()->GetGameInstance()->GetSubsystem<UATBGameInstanceSubsystem>()->SavePlayerPawnsInfo(FriendlyPawns);
 		if (PlayerController->CheckBattleState(EBattleState::Evolution))
 		{
 			SetViewCameraMode(ECameraViewMode::DefaultView);
@@ -402,7 +402,7 @@ void UBattleSubsystem::CalcExp()
 			c = 2;
 		}
 
-		uint32 ResultExp = (a * b * c + 5) * 1000;
+		uint32 ResultExp = (a * b * c + 5) * 2000;
 
 		Exp += ResultExp;
 	}

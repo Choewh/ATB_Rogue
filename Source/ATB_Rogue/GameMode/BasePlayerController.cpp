@@ -296,7 +296,7 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		{
 			FString LogMessage = MovePoint.ToString();
 			UE_LOG(LogTemp, Log, TEXT("%s"), *LogMessage);
-			DrawDebugPoint(GetWorld(), HitResult.Location, 20, FColor::Red, false, 1.f);
+			//DrawDebugPoint(GetWorld(), HitResult.Location, 20, FColor::Red, false, 1.f);
 		}
 	}
 	else if (BattleState == EBattleState::Attack) // 폰 감지
@@ -308,7 +308,7 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 		TArray<FHitResult> HitResults;
 		TArray<AActor*> IgnoreActors;
 		bool bHit = UKismetSystemLibrary::SphereTraceMultiByProfile(this, CursorHitVector, CursorHitVector,
-			50.f, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::ForDuration,
+			50.f, TEXT("EnemyTarget"), false, IgnoreActors, EDrawDebugTrace::None,
 			HitResults, true);
 		//FCollisionQueryParams CollisionParams;
 		//GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, EndPoint, ECollisionChannel::ECC_GameTraceChannel5, CollisionParams);
@@ -337,9 +337,6 @@ void ABasePlayerController::OnLeftClick(const FInputActionValue& InputActionValu
 			if (ClosestActor)
 			{
 				UE_LOG(LogTemp, Log, TEXT("%s"), *ClosestActor->GetName());
-
-				DrawDebugSphere(GetWorld(), ClosestActor->GetActorLocation(), 20.f, 10, FColor::Red, false, 5.0f, 0, 1.0f);
-				DrawDebugLine(GetWorld(), CameraLocation, ClosestActor->GetActorLocation(), FColor::Red, false, 5.f);
 			}
 
 			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(ClosestActor);
@@ -408,7 +405,7 @@ void ABasePlayerController::DrawRange(FVector CenterPoint, float Range, bool bPe
 	float Duration = 5.0f; // 영구적으로 표시하려면 0으로 설정
 
 	// 구체를 그립니다.
-	DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines, Duration);
+	//DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines, Duration);
 }
 
 

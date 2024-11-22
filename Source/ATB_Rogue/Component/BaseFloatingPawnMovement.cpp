@@ -138,18 +138,6 @@ bool UBaseFloatingPawnMovement::CheckFalling(float DeltaTime)
 		FVector Start = OldLocation;
 		FVector End = Start - FVector(0.0f, 0.0f, SearchHeight);
 		bFoundFloor = GetWorld()->LineTraceSingleByProfile(HitResult, Start, End, TEXT("Floor"), Params);
-
-
-		if (bFoundFloor)
-		{
-			DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 5.f);
-			FallingDeltaTime = 0.f;
-		}
-		else
-		{
-			DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.f);
-			FallingDeltaTime += DeltaTime;
-		}
 	}
 
 	bFalling = !bFoundFloor;

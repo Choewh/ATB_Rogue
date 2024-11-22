@@ -489,12 +489,3 @@ void ABasePawn::OnSpawnEffectEnd()
 /// <summary>
 /// Debug
 /// </summary>
-void ABasePawn::DrawRange(FVector CenterPoint, float Range, bool bPersistentLines)
-{
-	// 범위의 색상과 선 두께 설정
-	FColor SphereColor = FColor::Green;
-	float Duration = 0.0f; // 영구적으로 표시하려면 0으로 설정
-
-	// 구체를 그립니다.
-	DrawDebugSphere(GetWorld(), CenterPoint, Range, 12, SphereColor, bPersistentLines, Duration);
-}

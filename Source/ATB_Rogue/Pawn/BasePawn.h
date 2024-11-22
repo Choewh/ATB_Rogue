@@ -210,6 +210,4 @@ public:
 	virtual void OnFinishTurn();
 	UFUNCTION()
 	virtual void OnBattleEndFirst(uint16 Exp);
-private:
-	void DrawRange(FVector CenterPoint, float Range, bool bPersistentLines = false);
 };
