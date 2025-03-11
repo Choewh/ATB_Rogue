@@ -141,7 +141,7 @@ void UBattleSubsystem::EnterActiveTurn(ABasePawn* InPawn)
 	SetActionPawn(InPawn); // 액션폰 설정
 	BattleStartTurn.Broadcast();
 	InPawn->ControllerInit(true);
-	InPawn->ActiveCollision(false); // 그냥 병123신같이 움직이는것도 포용하기...
+	InPawn->ActiveCollision(false); //
 	switch (InPawn->PawnGroup)
 	{
 	case EPawnGroup::Enemy:
