@@ -5,9 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 
-#include "Engine/DataTable.h"
-#include "Data/SkillTableRow.h"
-#include "Data/SpeciesSkillTableRow.h"
+#include "Misc/Datas.h"
 #include "Enums/Skills.h"
 #include "SkillComponent.generated.h"
 
@@ -23,15 +21,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
 	virtual void SetData(ESpecies InSpecies);
 
 	FSkillTableRow* GetSkillData(ESkills InSkill);
 public:
-	UDataTable* SpeciesSkillDataTable;
-	FSpeciesSkillTableRow* SpeciesSkillData;
+	FSpeciesSkillTableRow* SkillData;
 	FSkillTableRow* FirstSkillData;
 	FSkillTableRow* SecondSkillData;
 	FSkillTableRow* ThirdSkillData;

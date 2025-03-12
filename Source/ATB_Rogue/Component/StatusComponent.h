@@ -6,8 +6,7 @@
 
 #include "Components/ActorComponent.h"
 
-#include "Engine/DataTable.h"
-#include "Data/StatTableRow.h"
+#include "Misc/Datas.h"
 
 #include "Enums/Stat.h"
 #include "Enums/Stage.h"
@@ -168,7 +167,7 @@ public:
 	virtual void SetData(ESpecies InSpecies);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
 public:
-	UDataTable* StatDataTable;
+
 	FStatTableRow* StatData;
 
 public:

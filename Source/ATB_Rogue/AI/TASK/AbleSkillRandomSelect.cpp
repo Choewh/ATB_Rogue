@@ -36,7 +36,7 @@ void UAbleSkillRandomSelect::PickRandomSkill()
 	ABasePawn* Pawn = Cast<ABasePawn>(AIOwner->GetPawn());
 	uint8 RandomInt;
 
-	if (Pawn->SkillComponent->SpeciesSkillData->Skill_3)
+	if (Pawn->SkillComponent->SkillData->Skill_3)
 	{
 		RandomInt = FMath::RandRange(0, 2);
 	}

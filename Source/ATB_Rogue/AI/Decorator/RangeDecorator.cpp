@@ -42,7 +42,7 @@ bool URangeDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerCo
 		}
 		return false;
 	case ESkills::ThirdSkill: //3 ��ų�� �����ϴ��� üũ
-		if (!OwnerPawn->SkillComponent->SpeciesSkillData->Skill_3) { return false; }
+		if (!OwnerPawn->SkillComponent->SkillData->Skill_3) { return false; }
 
 		if (Distance <= OwnerPawn->SkillComponent->ThirdSkillData->Skill_Range)
 		{

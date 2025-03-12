@@ -6,8 +6,7 @@
 
 #include "Components/ActorComponent.h"
 
-#include "Engine/DataTable.h"
-#include "Data/EffectTableRow.h"
+#include "Misc/Datas.h"
 
 #include "Effect/PawnGroupEffect.h"
 
@@ -32,12 +31,8 @@ protected:
 public:
 	virtual void SetData(ESpecies InSpecies);
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	//������ ���̺�
-	UDataTable* EffectDataTable;
 	FEffectTableRow* EffectData;
 public:
 	void ShowRange(FVector PawnLocation,float MoveRange);

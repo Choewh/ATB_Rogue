@@ -6,8 +6,7 @@
 #include "Components/ActorComponent.h"
 
 
-#include "Engine/DataTable.h"
-#include "Data/AnimMontageTableRow.h"
+#include "Misc/Datas.h"
 
 #include "AnimComponent.generated.h"
 
@@ -26,13 +25,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
 	virtual void SetData(ESpecies InSpecies);
 
 public:
-	UDataTable* AnimDataTable;
 	FAnimMontageTableRow* AnimData;
 };

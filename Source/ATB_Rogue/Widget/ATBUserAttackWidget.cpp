@@ -57,7 +57,7 @@ void UATBUserAttackWidget::ShowSkillRange(ESkills UseSkill)
 		BasePawn->EffectComponent->ShowRange(BasePawn->GetActorLocation(), BasePawn->SkillComponent->SecondSkillData->Skill_Range);
 		break;
 	case ESkills::ThirdSkill:
-		if (!BasePawn->SkillComponent->SpeciesSkillData->Skill_3) { return; }
+		if (!BasePawn->SkillComponent->SkillData->Skill_3) { return; }
 		
 		BasePawn->EffectComponent->HideRange();
 		BasePawn->EffectComponent->ShowRange(BasePawn->GetActorLocation(), BasePawn->SkillComponent->ThirdSkillData->Skill_Range);
@@ -84,7 +84,7 @@ void UATBUserAttackWidget::CreateSkillUI()
 
 	for (uint8 i = 1; i <= 3; i++)
 	{
-		if (i == 3 && !BasePawn->SkillComponent->SpeciesSkillData->Skill_3) { break; }
+		if (i == 3 && !BasePawn->SkillComponent->SkillData->Skill_3) { break; }
 		UOverlay* SkillOverlay = NewObject<UOverlay>(this);
 		UBorder* SkillBorder = NewObject<UBorder>(this);
 		UImage* SkillImage = NewObject<UImage>(this);

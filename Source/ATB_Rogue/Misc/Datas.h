@@ -1,0 +1,10 @@
+#pragma once
+#include "CoreMinimal.h"
+#include "Enums/DataTableType.h"
+#include "Engine/DataTable.h"
+#include "Data/PawnTableRow.h"
+#include "Data/EffectTableRow.h"
+#include "Data/AnimMontageTableRow.h"
+#include "Data/StatTableRow.h"
+#include "Data/SkillTableRow.h"
+#include "Data/SpeciesSkillTableRow.h"

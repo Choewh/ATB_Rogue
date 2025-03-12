@@ -6,6 +6,7 @@
 #include "Pawn/BasePawn.h"
 #include "Subsystem/ATBUserUISubSystem.h"
 #include "Subsystem/BattleSubSystem.h"
+#include "Subsystem/DataSubsystem.h"
 #include "Misc/AllDamageType.h"
 
 
@@ -13,16 +14,6 @@
 // Sets default values for this component's properties
 UStatusComponent::UStatusComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
-
-	static ConstructorHelpers::FObjectFinder<UDataTable> StatDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/StatTable.StatTable'"));
-	if (StatDataObject.Succeeded())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PawnData Succeeded"));
-		StatDataTable = StatDataObject.Object;
-	}
 	SpeciesInfo = MakeShared<FSpeciesInfo>();
 }
 
@@ -37,17 +28,7 @@ void UStatusComponent::BeginPlay()
 
 void UStatusComponent::SetData(ESpecies InSpecies)
 {
-	TArray<FStatTableRow*> StatTable_Array;
-	StatDataTable->GetAllRows<FStatTableRow>("", StatTable_Array);
-
-	for (auto& StatTable : StatTable_Array)
-	{
-		if (StatTable->Species == InSpecies)
-		{
-			StatData = StatTable;
-			break;
-		}
-	}
+	StatData = GetWorld()->GetGameInstance()->GetSubsystem<UDataSubsystem>()->GetDataTableRow<FStatTableRow>(EDataTableType::Status, InSpecies);
 
 	if (!StatData) { UE_LOG(LogTemp, Log, TEXT("StatusComponent is Not Find")); return; }
 

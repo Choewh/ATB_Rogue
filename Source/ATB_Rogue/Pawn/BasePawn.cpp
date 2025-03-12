@@ -11,6 +11,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/SkinnedAssetCommon.h"
+#include "Subsystem/DataSubsystem.h"
 #include "Subsystem/ActorpoolSubsystem.h"
 
 class UBattleSubsystem;
@@ -109,19 +110,8 @@ void ABasePawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 //서브게임인스턴스에 추가 - > 배틀시작트리거 -> 배틀시작시 배열추가
 void ABasePawn::SetData()
 {
-	TArray<FPawnTableRow*> PawnTable_Array;
-	PawnDataTable->GetAllRows<FPawnTableRow>("", PawnTable_Array);
-
-	if (Species == ESpecies::None) { return; }
-
-	for (auto& PawnTable : PawnTable_Array)
-	{
-		if (PawnTable->Species == Species)
-		{
-			PawnData = PawnTable;
-			break;
-		}
-	}
+	
+	PawnData = GetGameInstance()->GetSubsystem<UDataSubsystem>()->GetDataTableRow<FPawnTableRow>(EDataTableType::Pawn,Species);
 
 	{
 		if (PawnGroup == EPawnGroup::Enemy)

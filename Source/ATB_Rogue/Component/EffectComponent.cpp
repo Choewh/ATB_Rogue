@@ -3,20 +3,13 @@
 
 #include "Component/EffectComponent.h"
 #include "Subsystem/ActorpoolSubsystem.h"
+#include "Subsystem/DataSubsystem.h"
+
 #include "EffectComponent.h"
 
 
 UEffectComponent::UEffectComponent()
 {
-
-	PrimaryComponentTick.bCanEverTick = true;
-
-	static ConstructorHelpers::FObjectFinder<UDataTable> EffectDataObject(TEXT("/Script/Engine.DataTable'/Game/DataTable/EffectTableRow.EffectTableRow'"));
-	if (EffectDataObject.Succeeded())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EffectData Succeeded"));
-		EffectDataTable = EffectDataObject.Object;
-	}
 }
 
 
@@ -33,20 +26,12 @@ void UEffectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UEffectComponent::SetData(ESpecies InSpecies)
 {
-	FEffectTableRow* EffectTable = EffectDataTable->FindRow<FEffectTableRow>("Default", "Not Found");
-
-	EffectData = EffectTable;
+	EffectData = GetWorld()->GetGameInstance()->GetSubsystem<UDataSubsystem>()->GetEffect();
 
 	if (!PawnGruopEffect)
 	{
 		PawnGruopEffect = GetWorld()->GetSubsystem<UActorpoolSubsystem>()->SpawnGroupEffect(GetOwner(), *EffectData);
 	}
-}
-
-void UEffectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 }
 
 void UEffectComponent::ShowRange(FVector PawnLocation, float MoveRange)

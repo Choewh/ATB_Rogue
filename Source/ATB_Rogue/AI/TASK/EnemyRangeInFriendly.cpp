@@ -55,7 +55,7 @@ void UEnemyRangeInFriendly::SkillRangeCheck()
 
 	TArray<float> Range;
 	bool Has3 = false;
-	if (!SkillComponent->SpeciesSkillData->Skill_3) // 3스킬 유무
+	if (!SkillComponent->SkillData->Skill_3) // 3스킬 유무
 	{
 		Range.Add(SkillComponent->GetSkillData(ESkills::FirstSkill)->Skill_Range);
 		Range.Add(SkillComponent->GetSkillData(ESkills::SecondSkill)->Skill_Range);
